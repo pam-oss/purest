@@ -4,131 +4,84 @@ import Layout from "@/layouts/Layout.astro";
 const contactEmail = "drink@purestelectrolyte.com";
 ---
 
-<Layout title="Contact · Purest Electrolyte" description="Get in touch with Purest Electrolyte. Pam reads every message personally.">
+<Layout title="Contact · Purest Electrolyte" description="Get in touch with Purest Electrolyte.">
   <section class="contact-page" aria-labelledby="contact-title">
-    <div class="contact-grid">
-      <header class="contact-intro">
-        <p class="contact-eyebrow">Get in touch</p>
-        <h1 id="contact-title">Real people.<br />Real answers.</h1>
-        <p class="contact-description">
-          Questions about your order, ingredients, wholesale, or anything else?
-          We'd love to hear from you.
-        </p>
-        <p class="contact-personal">Pam reads every message personally.</p>
-      </header>
+    <header class="contact-heading">
+      <h1 id="contact-title">Get in touch.</h1>
+      <a id="contact-email-address" href={'mailto:' + contactEmail}>{contactEmail}</a>
+    </header>
 
-      <div class="contact-form-wrap">
-        <div class="contact-form-heading">
-          <h2>Send us a message.</h2>
-          <p><span aria-hidden="true">*</span> Required fields</p>
+    <form
+      id="contact-form"
+      class="contact-form"
+      action="https://formspree.io/f/xgaewbzw"
+      method="POST"
+      accept-charset="UTF-8"
+      aria-describedby="contact-status"
+      aria-busy="false"
+    >
+      <input type="hidden" name="_subject" value="New message from the Purest website" />
+
+      <div class="contact-fields-row">
+        <div class="contact-field">
+          <label for="contact-name">Name</label>
+          <input id="contact-name" name="name" type="text" required autocomplete="name" maxlength="120" />
         </div>
-        <form
-          id="contact-form"
-          class="contact-form"
-          action="https://formspree.io/f/xgaewbzw"
-          method="POST"
-          accept-charset="UTF-8"
-          aria-describedby="contact-status"
-          aria-busy="false"
-        >
-          <input type="hidden" name="_subject" value="New message from the Purest website" />
-
-          <div class="contact-fields-row">
-            <div class="contact-field">
-              <label for="contact-name">Your name <span aria-hidden="true">*</span></label>
-              <input id="contact-name" name="name" type="text" required autocomplete="name"
-                maxlength="120" placeholder="First and last name" />
-            </div>
-            <div class="contact-field">
-              <label for="contact-email">Email address <span aria-hidden="true">*</span></label>
-              <input id="contact-email" name="email" type="email" required autocomplete="email"
-                maxlength="254" placeholder="you@example.com" />
-            </div>
-          </div>
-
-          <div class="contact-field">
-            <label for="contact-order">Order number <span class="contact-optional">(optional)</span></label>
-            <input id="contact-order" name="order_number" type="text" autocomplete="off"
-              maxlength="80" placeholder="If you're getting in touch about an order" />
-          </div>
-
-          <div class="contact-field">
-            <label for="contact-message">How can we help? <span aria-hidden="true">*</span></label>
-            <textarea id="contact-message" name="message" required rows="5" maxlength="5000"
-              placeholder="Tell us what's on your mind..."></textarea>
-          </div>
-
-          <button id="contact-submit" class="contact-submit" type="submit">
-            <span id="contact-submit-label">Send message</span>
-            <span class="contact-arrow" aria-hidden="true">→</span>
-          </button>
-          <p id="contact-status" class="contact-status" role="status" aria-live="polite">
-            Your message goes directly to Purest Electrolyte.
-          </p>
-        </form>
+        <div class="contact-field">
+          <label for="contact-email">Email</label>
+          <input id="contact-email" name="email" type="email" required autocomplete="email" maxlength="254" />
+        </div>
       </div>
 
-      <aside id="email-contact" class="contact-details" aria-label="Other ways to get in touch">
-        <h2 class="contact-eyebrow">Prefer email?</h2>
-        <a id="contact-email-address" class="contact-email-address" href={'mailto:' + contactEmail}>
-          {contactEmail}
-        </a>
-        <button id="copy-email" class="contact-copy" type="button">Copy email address</button>
-        <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+      <div class="contact-field">
+        <label for="contact-message">Message</label>
+        <textarea id="contact-message" name="message" required rows="6" maxlength="5000"></textarea>
+      </div>
 
-        <div class="contact-location">
-          <p class="contact-eyebrow">Aspen, Colorado</p>
-          <a href="https://instagram.com/purestelectrolyte" class="contact-instagram">
-            Follow along on Instagram <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-      </aside>
-    </div>
+      <button id="contact-submit" class="contact-submit" type="submit">
+        <span id="contact-submit-label">Send message</span>
+      </button>
+      <p id="contact-status" class="contact-status" role="status" aria-live="polite"></p>
+    </form>
   </section>
 </Layout>
 
 <style>
   .contact-page {
-    max-width: 1168px;
+    width: 100%;
+    max-width: 688px;
     margin: 0 auto;
-    padding: 72px 24px 88px;
+    padding: 64px 24px 80px;
     background: #fff;
     color: #111;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  .contact-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    grid-template-areas: "intro form" "details form";
-    grid-template-rows: auto 1fr;
-    column-gap: 88px;
-    row-gap: 40px;
-    align-items: start;
-  }
-  .contact-intro { grid-area: intro; }
-  .contact-eyebrow { margin: 0; font-size: 11px; line-height: 1.6; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
-  .contact-intro h1 {
-    margin: 22px 0 24px;
+  .contact-heading { margin-bottom: 40px; text-align: center; }
+  .contact-heading h1 {
+    margin: 0;
     font-family: inherit;
-    font-size: clamp(48px, 4.8vw, 68px);
-    line-height: 1.04;
+    font-size: clamp(36px, 4vw, 48px);
+    line-height: 1.15;
     font-weight: 700;
-    letter-spacing: -0.055em;
-    text-wrap: initial;
+    letter-spacing: -0.045em;
   }
-  .contact-description { max-width: 34ch; margin: 0; color: #555; font-size: 16px; line-height: 1.7; }
-  .contact-personal { margin: 20px 0 0; font-size: 13px; line-height: 1.6; font-weight: 500; }
-  .contact-form-wrap { grid-area: form; min-width: 0; border-top: 2px solid #111; padding-top: 24px; }
-  .contact-form-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 28px; }
-  .contact-form-heading h2 { margin: 0; font-family: inherit; font-size: 25px; line-height: 1.25; font-weight: 700; letter-spacing: -0.035em; }
-  .contact-form-heading p { margin: 0; color: #555; font-size: 11px; }
+  .contact-heading a {
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 14px;
+    overflow-wrap: anywhere;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .contact-heading a:hover { color: #111; text-decoration-line: underline; }
   .contact-form { display: grid; gap: 24px; }
-  .contact-fields-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .contact-fields-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
   .contact-field { display: grid; gap: 9px; min-width: 0; }
   .contact-field label { font-size: 13px; line-height: 1.5; font-weight: 500; }
-  .contact-field label > span[aria-hidden] { padding-left: 2px; }
-  .contact-optional { color: #555; font-size: 12px; font-weight: 400; }
   .contact-field input, .contact-field textarea {
     display: block;
     width: 100%;
@@ -144,18 +97,16 @@ const contactEmail = "drink@purestelectrolyte.com";
     transition: border-color 150ms ease;
   }
   .contact-field input { min-height: 54px; }
-  .contact-field textarea { min-height: 158px; resize: vertical; }
-  .contact-field input::placeholder, .contact-field textarea::placeholder { color: #757575; opacity: 1; }
+  .contact-field textarea { min-height: 174px; resize: vertical; }
   .contact-field input:hover, .contact-field textarea:hover { border-color: #111; }
   .contact-field input:focus-visible, .contact-field textarea:focus-visible,
-  .contact-submit:focus-visible, .contact-copy:focus-visible,
-  .contact-email-address:focus-visible, .contact-instagram:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
+  .contact-submit:focus-visible, .contact-heading a:focus-visible { outline: 2px solid #111; outline-offset: 4px; }
   .contact-submit {
     display: flex;
     width: 100%;
-    min-height: 56px;
+    min-height: 54px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     border: 1px solid #111;
     border-radius: 2px;
     padding: 14px 20px;
@@ -168,33 +119,13 @@ const contactEmail = "drink@purestelectrolyte.com";
   }
   .contact-submit:hover { background: #333; }
   .contact-submit:disabled { cursor: wait; opacity: 0.6; }
-  .contact-arrow { font-size: 25px; line-height: 1; font-weight: 400; }
-  .contact-status { margin: -10px 0 0; color: #555; font-size: 12px; line-height: 1.6; }
+  .contact-status { margin: -8px 0 0; color: #555; font-size: 12px; line-height: 1.6; }
+  .contact-status:empty { display: none; }
   .contact-form[data-state="error"] .contact-status { border-left: 2px solid #111; padding-left: 12px; color: #111; }
-  .contact-details { grid-area: details; min-width: 0; border-top: 1px solid #111; padding-top: 24px; }
-  .contact-email-address { display: block; width: fit-content; max-width: 100%; margin-top: 12px; overflow-wrap: anywhere; font-size: 17px; line-height: 1.5; font-weight: 500; letter-spacing: -0.025em; text-decoration-thickness: 1px; text-underline-offset: 4px; }
-  .contact-email-address:hover { text-decoration-line: underline; }
-  .contact-copy { min-height: 44px; margin-top: 18px; border: 1px solid #111; border-radius: 2px; padding: 10px 16px; background: #fff; color: #111; font-family: inherit; font-size: 12px; line-height: 1.5; font-weight: 500; }
-  .contact-copy:hover { background: #111; color: #fff; }
-  .copy-status { min-height: 18px; margin: 8px 0 0; color: #555; font-size: 11px; line-height: 1.6; }
-  .contact-location { margin-top: 24px; }
-  .contact-instagram { display: inline-block; margin-top: 12px; font-size: 13px; line-height: 1.6; text-decoration: underline; text-underline-offset: 4px; }
-  .contact-instagram span { margin-left: 6px; }
-  @media (max-width: 1000px) { .contact-grid { column-gap: 48px; } }
-  @media (max-width: 760px) {
-    .contact-page { max-width: 640px; padding: 40px 24px 56px; }
-    .contact-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "form" "details"; gap: 40px; }
-    .contact-intro h1 { margin-top: 18px; font-size: clamp(46px, 9vw, 62px); }
-    .contact-description { max-width: 42ch; }
-    .contact-personal { margin-top: 14px; }
-    .contact-form-heading { margin-bottom: 24px; }
-    .contact-form-heading h2 { font-size: 23px; }
-    .contact-location { margin-top: 18px; }
-  }
   @media (max-width: 540px) {
+    .contact-page { padding: 40px 24px 56px; }
+    .contact-heading { margin-bottom: 32px; }
     .contact-fields-row { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .contact-form-heading { display: block; }
-    .contact-form-heading p { margin-top: 9px; }
   }
   @media (prefers-reduced-motion: reduce) { .contact-field input, .contact-field textarea, .contact-submit { transition: none; } }
 </style>
@@ -204,8 +135,6 @@ const contactEmail = "drink@purestelectrolyte.com";
   const submitButton = document.getElementById('contact-submit') as HTMLButtonElement | null;
   const submitLabel = document.getElementById('contact-submit-label');
   const contactStatus = document.getElementById('contact-status');
-  const copyButton = document.getElementById('copy-email') as HTMLButtonElement | null;
-  const copyStatus = document.getElementById('copy-status');
   const emailAddress = document.getElementById('contact-email-address')?.textContent?.trim() ?? '';
 
   contactForm?.addEventListener('submit', async (event) => {
@@ -230,20 +159,6 @@ const contactEmail = "drink@purestelectrolyte.com";
       if (contactStatus) contactStatus.textContent = 'Your message could not be sent. Please try again or email ' + emailAddress + '.';
       if (submitButton) submitButton.disabled = false;
       if (submitLabel) submitLabel.textContent = 'Send message';
-    }
-  });
-
-  copyButton?.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(emailAddress);
-      copyButton.textContent = 'Copied!';
-      if (copyStatus) copyStatus.textContent = 'Email address copied to your clipboard.';
-      window.setTimeout(() => {
-        copyButton.textContent = 'Copy email address';
-        if (copyStatus) copyStatus.textContent = '';
-      }, 2500);
-    } catch {
-      if (copyStatus) copyStatus.textContent = 'Copy this address: ' + emailAddress;
     }
   });
 </script>
