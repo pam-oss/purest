@@ -3,8 +3,8 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 
 const DEFAULT_NOTIFICATION_CHAT_ID = '7600577677';
-const CONTACT_EMAIL = 'hydrate@purestelectrolyte.com';
-const DEFAULT_FROM_EMAIL = 'Purest Website <website@purestelectrolyte.com>';
+const CONTACT_EMAIL = 'drink@purestelectrolyte.com';
+const DEFAULT_FROM_EMAIL = 'Purest Website <drink@purestelectrolyte.com>';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type ContactMessage = {

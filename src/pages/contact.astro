@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 
-const contactEmail = "hydrate@purestelectrolyte.com";
+const contactEmail = "drink@purestelectrolyte.com";
 ---
 
 <Layout title="Contact · Purest Electrolyte" description="Get in touch with Purest Electrolyte. Pam reads every message personally.">
@@ -159,7 +159,7 @@ const contactEmail = "hydrate@purestelectrolyte.com";
       window.location.assign('/contact-thank-you');
     } catch {
       if (contactStatus) {
-        contactStatus.textContent = 'Your message could not be sent. Please try again or email hydrate@purestelectrolyte.com.';
+        contactStatus.textContent = 'Your message could not be sent. Please try again or email drink@purestelectrolyte.com.';
       }
       if (submitButton) {
         submitButton.disabled = false;
