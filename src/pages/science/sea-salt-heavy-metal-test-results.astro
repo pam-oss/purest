@@ -1,0 +1,45 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SeaSaltTestingArticle from "@/components/SeaSaltTestingArticle.astro";
+import report from "@/data/sea-salt-testing.json";
+
+const title = "Sea Salt Electrolyte Heavy Metal Test Results | Purest";
+const description = "See Purest’s French sea salt testing for lead, arsenic, cadmium and mercury, with exact results, certificate dates and photos from our farmers in France.";
+const canonical = "https://www.purestelectrolyte.com/science/sea-salt-heavy-metal-test-results";
+const articleSchema = {
+  "@context": "https://schema.org", "@type": "BlogPosting",
+  "@id": `${canonical}#article`, headline: report.title, description,
+  datePublished: report.published, dateModified: report.published,
+  author: { "@type": "Organization", name: "Purest Electrolyte", url: "https://www.purestelectrolyte.com/about" },
+  publisher: { "@type": "Organization", name: "Purest Electrolyte", url: "https://www.purestelectrolyte.com", logo: { "@type": "ImageObject", url: "https://www.purestelectrolyte.com/images/purest-logo.png" } },
+  mainEntityOfPage: canonical, inLanguage: "en-US",
+  image: ["https://www.purestelectrolyte.com/images/blog/pam-sweeney-salt-farmer-france.webp", "https://www.purestelectrolyte.com/images/blog/pam-sweeney-guerande-salt-marshes.webp"],
+  keywords: ["sea salt electrolyte", "sea salt heavy metal test results", "French sea salt", "clean electrolyte", "lead", "arsenic", "cadmium", "mercury"],
+  citation: ["https://www.purestelectrolyte.com/documents/purest-sea-salt-certificate.pdf", "https://www.fda.gov/food/chemical-contaminants-pesticides/environmental-contaminants-food"]
+};
+const breadcrumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+  { "@type": "ListItem", position: 1, name: "Home", item: "https://www.purestelectrolyte.com/" },
+  { "@type": "ListItem", position: 2, name: "Science", item: "https://www.purestelectrolyte.com/science" },
+  { "@type": "ListItem", position: 3, name: report.title, item: canonical }
+] };
+---
+
+<Layout title={title} description={description} canonical={canonical} image="/images/blog/pam-sweeney-salt-farmer-france.webp"
+  imageWidth={1199} imageHeight={1600} type="article" publishedTime={report.published} modifiedTime={report.published}>
+  <Fragment slot="head">
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="Purest Electrolyte" />
+    <link rel="alternate" type="text/plain" href="/science/sea-salt-heavy-metal-test-results.txt" title="Sea salt test results as plain text" />
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbs)} />
+  </Fragment>
+  <article class="container max-w-5xl pb-16 pt-12 md:pb-24 md:pt-20">
+    <header class="mx-auto mb-10 max-w-3xl text-center md:mb-14">
+      <a href="/science" class="text-xs uppercase tracking-[0.2em] text-muted-foreground underline-offset-4 hover:underline">The Science</a>
+      <h1 class="mt-5 font-serif text-4xl leading-[1.12] tracking-tight md:text-6xl">{report.title}</h1>
+      <p class="mt-5 text-sm text-muted-foreground">By Purest Electrolyte</p>
+      <time datetime={report.published} class="mt-2 block text-xs text-muted-foreground">November 8, 2026</time>
+    </header>
+    <SeaSaltTestingArticle idPrefix="science-sea-salt" />
+  </article>
+</Layout>

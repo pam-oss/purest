@@ -278,25 +278,37 @@ export async function getArticle(blogHandle: string, articleHandle: string): Pro
 
 export async function getBlogArticles(blogHandle: string): Promise<{ handle: string; title: string; excerptHtml: string; publishedAt: string; image: { url: string; altText: string | null } | null }[]> {
   if (!hasShopify) return [];
-  const query = `{
-    blog(handle: "${blogHandle}") {
-      articles(first: 20) {
+  const query = `query ScienceArticles($handle: String!, $after: String) {
+    blog(handle: $handle) {
+      articles(first: 100, after: $after) {
         edges {
           node {
             handle title excerptHtml publishedAt
             image { url altText }
           }
         }
+        pageInfo { hasNextPage endCursor }
       }
     }
   }`;
-  type Resp = { blog: { articles: { edges: { node: any }[] } } };
-  const { data, errors } = await shopifyFetch<Resp>(query);
-  if (errors?.length || !data?.blog) return [];
-  return data.blog.articles.edges.map((e: any) => ({
-    ...e.node,
-    excerptHtml: repairArticleLinks(e.node.excerptHtml ?? ''),
-  }));
+  type Resp = { blog: { articles: { edges: { node: any }[]; pageInfo: { hasNextPage: boolean; endCursor: string | null } } } | null };
+  const articles: any[] = [];
+  const seen = new Set<string>();
+  let after: string | null = null;
+  while (true) {
+    const { data, errors } = await shopifyFetch<Resp>(query, { handle: blogHandle, after });
+    if (errors?.length || !data?.blog) {
+      throw new Error(errors?.map((e) => e.message).join("; ") || `Unable to load the ${blogHandle} article index`);
+    }
+    const connection = data.blog.articles;
+    articles.push(...connection.edges.map(({ node }) => ({ ...node, excerptHtml: repairArticleLinks(node.excerptHtml ?? '') })));
+    if (!connection.pageInfo.hasNextPage) break;
+    const next = connection.pageInfo.endCursor;
+    if (!next || seen.has(next)) throw new Error("The article index returned an invalid pagination cursor");
+    seen.add(next);
+    after = next;
+  }
+  return [...new Map(articles.map((article) => [article.handle, article])).values()];
 }
 
 /** Fetches a single product by handle with all images. */

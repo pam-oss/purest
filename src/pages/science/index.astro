@@ -5,7 +5,7 @@ import { getBlogArticles } from "@/lib/shopify";
 const articles = await getBlogArticles("science");
 ---
 
-<Layout title="The Science · Purest Electrolyte" description="Research and science behind Purest Electrolyte.">
+<Layout title="The Science · Purest Electrolyte" description="Explore Purest’s sea salt heavy metal test results, ingredient sourcing and research behind our real fruit electrolyte.">
   <section class="container py-16 md:py-20">
     <header class="max-w-2xl">
       <p class="text-xs uppercase tracking-widest text-muted-foreground">Research</p>
@@ -14,6 +14,14 @@ const articles = await getBlogArticles("science");
     </header>
 
     <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <a href="/science/sea-salt-heavy-metal-test-results" class="group block rounded-xl border border-border/60 bg-white p-6 transition-shadow hover:shadow-md">
+        <div class="mb-4 aspect-video overflow-hidden rounded-lg bg-stone-100">
+          <img src="/images/blog/pam-sweeney-salt-farmer-france.webp" alt="Pam, the founder, with one of our salt farmers beside sea salt in Guérande, France" width="1199" height="1600" class="h-full w-full object-cover object-[50%_38%]" loading="eager" />
+        </div>
+        <p class="text-xs text-muted-foreground">November 8, 2026</p>
+        <h2 class="mt-2 font-serif text-xl tracking-tight transition-opacity group-hover:opacity-70">Purest Electrolyte Sea Salt Test Results</h2>
+        <p class="mt-2 text-sm text-muted-foreground">Meet our salt farmers in Guérande, France, and see the exact lead, arsenic, cadmium and mercury results from our sea salt certificate.</p>
+      </a>
       <a href="/science/electrolyte-in-a-glass-jar" class="group block rounded-xl border border-border/60 bg-white p-6 transition-shadow hover:shadow-md">
         <div class="mb-4 aspect-video overflow-hidden rounded-lg bg-stone-100">
           <img
@@ -29,7 +37,12 @@ const articles = await getBlogArticles("science");
         <p class="mt-2 line-clamp-3 text-sm text-muted-foreground">Purest Electrolyte is a premium real fruit electrolyte powder packaged in clear glass. We chose a glass jar because transparency should not stop at the ingredient label.</p>
       </a>
 
-      {articles.map((article) => (
+      <a href="/science/why-water-doesnt-hydrate-you" class="group block rounded-xl border border-border/60 bg-white p-6 transition-shadow hover:shadow-md">
+        <h2 class="font-serif text-xl tracking-tight transition-opacity group-hover:opacity-70">Why water alone may not be enough for hydration</h2>
+        <p class="mt-2 text-sm text-muted-foreground">Read more about water, electrolytes and the minerals involved in hydration.</p>
+      </a>
+
+      {articles.filter((article) => !["sea-salt-heavy-metal-test-results", "electrolyte-in-a-glass-jar", "why-water-doesnt-hydrate-you"].includes(article.handle)).map((article) => (
         <a href={`/science/${article.handle}`} class="group block rounded-xl border border-border/60 bg-white p-6 transition-shadow hover:shadow-md">
           {article.image && (
             <div class="mb-4 aspect-video overflow-hidden rounded-lg bg-stone-100">

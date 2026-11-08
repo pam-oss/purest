@@ -1,7 +1,19 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import SeaSaltTestingArticle from "@/components/SeaSaltTestingArticle.astro";
 
 const faqs = [
+  {
+    q: "Is your sea salt tested for heavy metals?",
+    a: "Yes. The certificate we share for our French sea salt reports lead at 0.57 ppm, arsenic at 0.06 ppm, cadmium at less than 0.01 ppm and mercury at less than 0.005 ppm. All four results were below the limits listed on the certificate. The full report below includes the analysis and certificate dates.",
+    featured: true,
+    id: "sea-salt-testing"
+  },
+  {
+    q: "What should I look for in a clean sea salt electrolyte?",
+    a: "Look at the ingredient list and the actual test results. Purest combines French gray sea salt with real freeze dried fruit. Ingredients vary by flavor and are listed on each product page. Our published sea salt analysis gives the exact heavy metal results for the ingredient listed in that certificate.",
+    testingLink: true
+  },
   {
     q: "What's in Purest Electrolyte?",
     a: "Purest is made with organic freeze-dried real fruit, natural sun-dried French gray sea salt, and a short list of clearly labeled plant-derived ingredients that vary by flavor. You can see every ingredient in the jar."
@@ -17,10 +29,6 @@ const faqs = [
   {
     q: "Do you use anti-caking agents?",
     a: "No. We do not add any anti-caking agents."
-  },
-  {
-    q: "Is your sea salt tested for heavy metals?",
-    a: "Yes. Our sea salt is tested for heavy metals and has tested low for heavy metals."
   },
   {
     q: "Do you test your sea salt for microplastics?",
@@ -63,9 +71,21 @@ const faqs = [
     a: "Purest was developed and tested at 8,900 feet in Aspen, Colorado — by Pam Sweeney and her four high-level athlete kids who needed real hydration at altitude."
   },
 ];
+const faqSchema = {
+  "@context": "https://schema.org", "@type": "FAQPage",
+  "@id": "https://www.purestelectrolyte.com/faq#questions",
+  mainEntity: faqs.slice(0, 2).map((faq) => ({
+    "@type": "Question", name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a }
+  }))
+};
 ---
 
-<Layout title="FAQ · Purest Electrolyte" description="Frequently asked questions about Purest Electrolyte.">
+<Layout title="Sea Salt Testing and Electrolyte FAQs | Purest" canonical="https://www.purestelectrolyte.com/faq" description="See Purest’s French sea salt heavy metal test results and answers about ingredients, sodium, sourcing and how to use our real fruit electrolyte.">
+  <Fragment slot="head">
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
   <section class="container py-16 md:py-20 max-w-3xl">
     <header>
       <p class="text-xs uppercase tracking-widest text-muted-foreground">Help</p>
@@ -75,14 +95,37 @@ const faqs = [
 
     <div class="mt-12 divide-y divide-border">
       {faqs.map((faq) => (
-        <details class="group py-5">
+        <details id={faq.id} open={faq.featured} class="group py-5">
           <summary class="flex cursor-pointer items-center justify-between gap-4 font-serif text-lg tracking-tight list-none">
             {faq.q}
             <span class="text-muted-foreground transition-transform group-open:rotate-45">+</span>
           </summary>
           <p class="mt-3 text-muted-foreground leading-relaxed">{faq.a}</p>
+          {(faq.featured || faq.testingLink) && (
+            <p class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+              <a href="/science/sea-salt-heavy-metal-test-results" class="underline underline-offset-4">Read the Science article</a>
+              <a href="#sea-salt-full-report" class="underline underline-offset-4" data-open-salt-report>Read the full report on this page</a>
+            </p>
+          )}
         </details>
       ))}
     </div>
+    <section id="sea-salt-full-report" class="mt-14 border-t border-border pt-10 scroll-mt-24">
+      <h2 class="font-serif text-2xl tracking-tight md:text-3xl">Our sea salt sourcing and test results</h2>
+      <p class="mt-4 text-muted-foreground leading-relaxed">Read the full article here, including our visit to Guérande, France, and the complete sea salt certificate summary.</p>
+      <details id="salt-report-details" class="mt-6">
+        <summary class="cursor-pointer rounded-lg border border-border bg-secondary px-5 py-4 font-medium">View the full sea salt article and certificate</summary>
+        <div class="mt-8"><SeaSaltTestingArticle idPrefix="faq-sea-salt" /></div>
+      </details>
+    </section>
   </section>
 </Layout>
+
+<script>
+  document.querySelectorAll('[data-open-salt-report]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const report = document.getElementById('salt-report-details') as HTMLDetailsElement | null;
+      if (report) report.open = true;
+    });
+  });
+</script>

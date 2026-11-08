@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getProducts } from "@/lib/shopify";
+import { getProducts, getBlogArticles } from "@/lib/shopify";
 
 export const prerender = true;
 
@@ -11,6 +11,8 @@ const staticPaths = [
   "/about",
   "/science",
   "/science/electrolyte-in-a-glass-jar",
+  "/science/why-water-doesnt-hydrate-you",
+  "/science/sea-salt-heavy-metal-test-results",
   "/faq",
   "/contact",
   "/returns",
@@ -19,15 +21,17 @@ const staticPaths = [
 ];
 
 export const GET: APIRoute = async () => {
-  const products = await getProducts();
-  const paths = [
+  const [products, articles] = await Promise.all([getProducts(), getBlogArticles("science")]);
+  const paths = [...new Set([
     ...staticPaths,
     ...products.map((product) => `/products/${product.handle}`),
-  ];
+    ...articles.map((article) => `/science/${article.handle}`),
+  ])];
 
   const urls = paths.map((path) => {
     const loc = new URL(path, "https://www.purestelectrolyte.com").toString();
-    return `  <url><loc>${loc}</loc></url>`;
+    const lastmod = ["/science/sea-salt-heavy-metal-test-results", "/faq", "/science"].includes(path) ? "<lastmod>2026-11-08</lastmod>" : "";
+    return `  <url><loc>${loc}</loc>${lastmod}</url>`;
   }).join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

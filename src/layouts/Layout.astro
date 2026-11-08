@@ -8,6 +8,7 @@ import Cart from "@/components/Cart.tsx";
 import siteConfig from "@/data/site-config.json";
 
 interface Props {
+  canonical?: string;
   title?: string;
   description?: string;
   image?: string;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 const {
+  canonical,
   title = siteConfig.brand.name,
   description = siteConfig.brand.tagline,
   image = "/images/product-lineup.jpg",
@@ -29,7 +31,7 @@ const {
   modifiedTime,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, "https://www.purestelectrolyte.com").toString();
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, "https://www.purestelectrolyte.com").toString();
 const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toString();
 ---
 

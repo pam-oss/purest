@@ -1,0 +1,100 @@
+---
+import report from "@/data/sea-salt-testing.json";
+
+interface Props { idPrefix?: string; }
+const { idPrefix = "sea-salt" } = Astro.props;
+const [summary, ...blocks] = report.blocks;
+---
+
+<div class="salt-report">
+  <div class="sourcing-intro">
+    <p class="eyebrow">Our sourcing in Guérande France</p>
+    <p>{report.sourcing}</p>
+    <p class="report-summary">{summary.text}</p>
+  </div>
+
+  <div class="visit-photos">
+    <figure>
+      <img src="/images/blog/pam-sweeney-salt-farmer-france.webp"
+        alt="Pam Sweeney, founder of Purest Electrolyte, with one of our salt farmers beside harvested sea salt in Guérande, France"
+        width="1199" height="1600" loading="eager" fetchpriority="high" />
+      <figcaption>{report.caption}</figcaption>
+    </figure>
+    <figure>
+      <img src="/images/blog/pam-sweeney-guerande-salt-marshes.webp"
+        alt="Pam Sweeney talking with one of our salt farmers beside the salt ponds in Guérande, France"
+        width="1200" height="1600" loading="lazy" />
+      <figcaption>Meeting our salt farmer at the salt marshes in Guérande, France.</figcaption>
+    </figure>
+  </div>
+
+  <div class="report-body">
+    {blocks.map((block, i) => (
+      block.kind === "heading" ? (
+        block.level === 3 ? <h3>{block.text}</h3> : <h2>{block.text}</h2>
+      ) : block.kind === "table" ? (
+        <div class="report-table" tabindex="0" role="region" aria-label={block.caption}>
+          <table id={`${idPrefix}-table-${i}`}>
+            <caption>{block.caption}</caption>
+            <thead><tr>{block.headers?.map((heading) => <th scope="col">{heading}</th>)}</tr></thead>
+            <tbody>{block.rows?.map((row) => <tr>{row.map((cell, index) => index === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>)}</tr>)}</tbody>
+          </table>
+        </div>
+      ) : <p set:html={block.html} />
+    ))}
+  </div>
+
+  <div class="report-download">
+    <p>Keep a copy of the results</p>
+    <a href="/documents/purest-sea-salt-certificate.pdf">Download the sea salt certificate summary</a>
+    <a href="/science/sea-salt-heavy-metal-test-results.txt">Read the report as plain text</a>
+  </div>
+
+  <section class="further-reading" aria-label="Related reading">
+    <h2>Choosing a clean sea salt electrolyte</h2>
+    <p>If you are looking for a sea salt electrolyte that is low in heavy metals, compare the actual test numbers and what was tested. Look at the ingredient list too. Explore our ingredients and sourcing, and read more about Purest.</p>
+    <ul>
+      <li><a href="/real-ingredients">See the real ingredients in Purest Electrolyte</a></li>
+      <li><a href="/why-french-gray-sea-salt">Why we use French gray sea salt</a></li>
+      <li><a href="/science/electrolyte-in-a-glass-jar">Why we put our electrolyte powder in a clear glass jar</a></li>
+      <li><a href="/science">Read all Science articles</a></li>
+      <li><a href="/faq#sea-salt-testing">Sea salt testing questions and answers</a></li>
+    </ul>
+  </section>
+</div>
+
+<style>
+  .salt-report { color: #242424; font-size: 1.0625rem; line-height: 1.85; }
+  .sourcing-intro { max-width: 48rem; margin: 0 auto; }
+  .sourcing-intro p { margin: 0 0 1.35rem; }
+  .eyebrow { font-size: .72rem; line-height: 1.5; text-transform: uppercase; letter-spacing: .16em; color: #686868; }
+  .report-summary { font-weight: 500; }
+  .visit-photos { display: grid; gap: 1.25rem; grid-template-columns: repeat(2,minmax(0,1fr)); margin: 2.5rem 0 3rem; }
+  figure { margin: 0; position: relative; overflow: hidden; border-radius: .25rem; background: #efefeb; }
+  figure img { width: 100%; height: auto; display: block; }
+  figcaption { position: absolute; inset: auto 0 0; padding: 2.5rem 1rem 1rem; color: #fff; font-size: .8rem; line-height: 1.55; background: linear-gradient(transparent,rgba(0,0,0,.8)); }
+  .report-body, .report-download, .further-reading { max-width: 48rem; margin-left: auto; margin-right: auto; }
+  .report-body p { margin: 0 0 1.1rem; }
+  .report-body h2, .further-reading h2 { font-family: 'Fraunces',Georgia,serif; font-size: clamp(1.6rem,3vw,2rem); line-height: 1.25; margin: 2.6rem 0 1rem; font-weight: 400; color: #111; }
+  .report-body h3 { font-weight: 600; font-size: 1.1rem; margin: 1.7rem 0 .6rem; color: #111; }
+  .report-body a, .report-download a, .further-reading a { text-decoration: underline; text-underline-offset: .2em; }
+  .report-table { overflow-x: auto; margin: 1.4rem 0; border: 1px solid #ddd; border-radius: .25rem; }
+  table { border-collapse: collapse; width: 100%; min-width: 29rem; font-size: .9rem; line-height: 1.5; }
+  caption { text-align: left; padding: 1rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .09em; background: #f7f7f4; color: #555; }
+  th,td { padding: .8rem 1rem; border-top: 1px solid #ddd; text-align: right; }
+  thead th { background: #f1f1ee; font-size: .8rem; font-weight: 600; vertical-align: bottom; }
+  tbody th { font-weight: 400; }
+  th:first-child { text-align: left; }
+  .report-download { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 1.5rem 0; margin-top: 2rem; }
+  .report-download p { font-weight: 600; margin: 0 0 .35rem; }
+  .report-download a { display: block; font-size: .9rem; margin-top: .35rem; }
+  .further-reading p { margin: 0 0 1rem; }
+  .further-reading ul { padding-left: 1.25rem; list-style: disc; }
+  .further-reading li { margin: .4rem 0; }
+  @media(max-width: 600px) {
+    .salt-report { font-size: 1rem; line-height: 1.8; }
+    .visit-photos { grid-template-columns: 1fr; gap: 1rem; margin: 1.8rem 0 2.2rem; }
+    .visit-photos figure { max-width: 30rem; margin: 0 auto; }
+    th,td { padding: .7rem .75rem; }
+  }
+</style>
