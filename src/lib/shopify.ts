@@ -65,6 +65,21 @@ export interface Product {
   sellingPlanGroups: SellingPlanGroup[];
 }
 
+const currentPriceOverrides: Record<string, string> = {
+  "5-day-hydration-kit": "16.99",
+};
+
+function applyCurrentPrice(product: Product): Product {
+  const amount = currentPriceOverrides[product.handle];
+  if (!amount) return product;
+  const price = { amount, currencyCode: product.priceRange.minVariantPrice.currencyCode };
+  return {
+    ...product,
+    priceRange: { ...product.priceRange, minVariantPrice: price },
+    variants: product.variants.map((variant) => ({ ...variant, price })),
+  };
+}
+
 /**
  * Repairs known stale or malformed links embedded in Shopify blog HTML.
  * Keeping this at the content boundary also protects rebuilt pages when an old
@@ -185,7 +200,7 @@ export async function getProducts(): Promise<Product[]> {
   if (errors?.length || !data) {
     throw new Error(errors?.map((e) => e.message).join("; ") ?? "Unknown Shopify error");
   }
-  return data.products.edges.map(({ node }) => ({
+  return data.products.edges.map(({ node }) => applyCurrentPrice({
     id: node.id,
     title: node.title,
     description: node.description,
@@ -359,7 +374,7 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
   }
   const p = data.product;
   const images = p.images.edges.map((e: any) => e.node);
-  return {
+  return applyCurrentPrice({
     id: p.id, title: p.title, description: p.description, descriptionHtml: p.descriptionHtml ?? '', handle: p.handle,
     priceRange: p.priceRange,
     image: images[0] ?? null,
@@ -369,5 +384,5 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
       name: g.node.name,
       sellingPlans: g.node.sellingPlans.edges.map((s: any) => s.node),
     })),
-  };
+  });
 }
