@@ -20,7 +20,13 @@ const faqs = [
   },
   {
     q: "How is Purest different from other electrolytes?",
-    a: "Most electrolytes use only 3 synthetic minerals. Purest delivers 85+ trace minerals naturally occurring in sun-dried sea salt, paired with real freeze-dried fruit for glucose-assisted absorption. No lab-made ingredients. No hidden additives."
+    a: "Purest combines French gray sea salt with real freeze-dried fruit. Our salt provides sodium and chloride along with smaller amounts of magnesium, potassium, calcium and trace constituents. See our trace minerals Science article for the ingredient analysis."
+  },
+  {
+    q: "What are trace minerals, and does PUREST contain them?",
+    a: "Trace minerals are elements needed in small amounts by the body. PUREST uses French gray sea salt, whose supplier analysis documents magnesium, potassium, calcium and certain trace constituents. Learn how ocean elements differ from the measured minerals in our salt.",
+    traceLink: true,
+    id: "trace-minerals"
   },
   {
     q: "Are your fruit powders organic?",
@@ -101,6 +107,7 @@ const faqSchema = {
             <span class="text-muted-foreground transition-transform group-open:rotate-45">+</span>
           </summary>
           <p class="mt-3 text-muted-foreground leading-relaxed">{faq.a}</p>
+          {faq.traceLink && (<p class="mt-3 text-sm"><a href="/science/trace-minerals-in-electrolytes" class="underline underline-offset-4">Read the trace minerals Science article</a></p>)}
           {(faq.featured || faq.testingLink) && (
             <p class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
               <a href="/science/sea-salt-heavy-metal-test-results" class="underline underline-offset-4">Read the Science article</a>
