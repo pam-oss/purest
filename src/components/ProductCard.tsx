@@ -152,6 +152,12 @@ export default function ProductCard({ product }: Props) {
           {isBundle && (
             <p className="text-xs font-medium text-green-700 mt-0.5">You save $17.98 vs. buying separately</p>
           )}
+          <div className="mt-2" aria-label="Customer rating">
+            <div
+              className="jdgm-widget jdgm-preview-badge"
+              data-id={product.id.split("/").pop() ?? ""}
+            ></div>
+          </div>
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
             {(flavorCopy as any)[product.handle]?.tagline ?? product.description}
           </p>
