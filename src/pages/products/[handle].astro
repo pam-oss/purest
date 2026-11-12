@@ -323,7 +323,7 @@ const price = new Intl.NumberFormat("en-US", {
   {/* Judge.me All Reviews */}
   <section class="container py-12 border-t border-stone-100">
     <h2 class="font-serif text-2xl mb-6">Customer reviews</h2>
-    <div class="jdgm-widget jdgm-all-reviews-widget" data-id={shopifyProductId}></div>
+    <div class="jdgm-widget jdgm-review-widget jdgm-outside-widget" data-id={shopifyProductId} data-product-title={product.title}></div>
   </section>
 
   {/* FAQ */}
