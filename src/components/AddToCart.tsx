@@ -2,14 +2,29 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
 import type { Product, SellingPlan } from "@/lib/shopify";
+import { formatPrice } from "@/lib/utils";
 
 export default function AddToCart({ product }: { product: Product }) {
   const hasVariants = product.variants.length > 1;
+  const isSizeProduct = product.variants.some((v) => /^\d+\s+servings?$/i.test(v.title.trim()));
+  const displayTitle = product.title.replace(/^10\s+servings?\s+/i, "");
+  const defaultVariant = isSizeProduct
+    ? product.variants.find((v) => /^10\s+servings?$/i.test(v.title.trim()))
+    : undefined;
   const [selectedVariantId, setSelectedVariantId] = useState<string>(
-    (product.variants.find((v) => v.availableForSale) ?? product.variants[0])?.id ?? ""
+    (defaultVariant ?? product.variants.find((v) => v.availableForSale) ?? product.variants[0])?.id ?? ""
   );
   const variant = product.variants.find((v) => v.id === selectedVariantId) ?? product.variants[0];
   const soldOut = !variant?.availableForSale;
+
+  function chooseVariant(nextVariant: Product["variants"][number]) {
+    setSelectedVariantId(nextVariant.id);
+    if (isSizeProduct) {
+      window.dispatchEvent(new CustomEvent("purest:variant-change", {
+        detail: { amount: nextVariant.price.amount, currencyCode: nextVariant.price.currencyCode },
+      }));
+    }
+  }
 
   // Flatten all selling plans from all groups
   const allPlans: SellingPlan[] = (product.sellingPlanGroups ?? []).flatMap(
@@ -38,7 +53,7 @@ export default function AddToCart({ product }: { product: Product }) {
     addToCart({
       variantId: variant.id,
       productId: product.id,
-      title: product.title,
+      title: displayTitle,
       variantTitle: variant.title,
       price: parseFloat(variant.price.amount),
       currencyCode: variant.price.currencyCode,
@@ -50,25 +65,34 @@ export default function AddToCart({ product }: { product: Product }) {
 
   return (
     <div className="space-y-4">
-      {/* Variant / Flavor selector */}
+      {/* Variant selector */}
       {hasVariants && (
         <div>
-          <p className="text-sm font-medium mb-2">Choose your jar flavor</p>
-          <div className="flex flex-wrap gap-2">
+          <p className="text-sm font-medium mb-2">
+            {isSizeProduct ? "Choose jar size" : "Choose your jar option"}
+          </p>
+          <div className={`gap-2 ${isSizeProduct ? "grid grid-cols-2" : "flex flex-wrap"}`}>
             {product.variants.map((v) => (
               <button
                 key={v.id}
-                onClick={() => setSelectedVariantId(v.id)}
+                type="button"
+                onClick={() => chooseVariant(v)}
                 disabled={!v.availableForSale}
-                className={`px-4 py-2 rounded-full text-sm border transition-colors ${
+                aria-pressed={selectedVariantId === v.id}
+                className={`min-h-14 rounded-full px-4 py-2 text-sm border transition-colors ${
                   selectedVariantId === v.id
                     ? "bg-foreground text-background border-foreground"
                     : v.availableForSale
                     ? "border-border hover:border-foreground"
-                    : "border-border opacity-40 cursor-not-allowed line-through"
+                    : "border-border opacity-40 cursor-not-allowed"
                 }`}
               >
-                {v.title}
+                <span className="block font-medium">{v.title}</span>
+                {isSizeProduct && (
+                  <span className="mt-0.5 block text-xs opacity-80">
+                    {formatPrice(v.price.amount, v.price.currencyCode)}
+                  </span>
+                )}
               </button>
             ))}
           </div>
