@@ -19,11 +19,6 @@ export default function AddToCart({ product }: { product: Product }) {
 
   function chooseVariant(nextVariant: Product["variants"][number]) {
     setSelectedVariantId(nextVariant.id);
-    if (isSizeProduct) {
-      window.dispatchEvent(new CustomEvent("purest:variant-change", {
-        detail: { amount: nextVariant.price.amount, currencyCode: nextVariant.price.currencyCode },
-      }));
-    }
   }
 
   // Flatten all selling plans from all groups
@@ -65,6 +60,12 @@ export default function AddToCart({ product }: { product: Product }) {
 
   return (
     <div className="space-y-4">
+      {isSizeProduct && variant && (
+        <p className="text-2xl font-medium" aria-live="polite">
+          {formatPrice(variant.price.amount, variant.price.currencyCode)}
+        </p>
+      )}
+
       {/* Variant selector */}
       {hasVariants && (
         <div>
