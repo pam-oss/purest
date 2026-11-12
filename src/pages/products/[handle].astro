@@ -207,11 +207,11 @@ const price = new Intl.NumberFormat("en-US", {
             {handle === 'the-hydration-ritual-kit' ? (
               <>
                 <span class="text-sm text-muted-foreground line-through">$66.98</span>
-                {!hasServingSizeVariants && <span class="text-2xl font-medium">{price}</span>}
+                <span class="text-2xl font-medium">{price}</span>
                 <span class="text-sm font-medium text-green-700">Save $17.98</span>
               </>
             ) : (
-              <span class="text-2xl font-medium">{price}</span>
+              !hasServingSizeVariants && <span class="text-2xl font-medium">{price}</span>
             )}
           </div>
           <!-- Judge.me star rating badge -->
