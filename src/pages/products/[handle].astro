@@ -5,13 +5,31 @@ import ProductCard from "@/components/ProductCard.tsx";
 import { getProduct, getProducts } from "@/lib/shopify";
 import flavorCopy from "@/data/flavor-copy.json";
 
+const standalone20Redirects: Record<string, string> = {
+  "20-servings-ginger-lime": "10-count-ginger-limeaid",
+  "20-servings-hibiscus-lime": "10-count-hibiscus-lime",
+  "20-servings-chocolate-cordyceps": "10-count-chocolate-cordyceps-1",
+  "20-servings-passion-cherry": "10-serving-passion-cherry",
+  "20-servings-cranberry": "10-servings-cranberry",
+};
+
 export async function getStaticPaths() {
   const products = await getProducts();
-  return products.map((p) => ({ params: { handle: p.handle } }));
+  const redirectPaths = Object.entries(standalone20Redirects).map(([from, to]) => ({
+    params: { handle: from },
+    redirect: `/products/${to}`,
+  }));
+  return [
+    ...products
+      .filter((p) => !Object.prototype.hasOwnProperty.call(standalone20Redirects, p.handle))
+      .map((p) => ({ params: { handle: p.handle } })),
+    ...redirectPaths,
+  ];
 }
 
 const { handle } = Astro.params;
 const product = await getProduct(handle!);
+const displayTitle = product?.title.replace(/^10\s+servings?\s+/i, "") ?? "";
 
 if (!product) return Astro.redirect("/products");
 
@@ -36,7 +54,7 @@ const price = new Intl.NumberFormat("en-US", {
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Product",
-  "name": product.title,
+  "name": displayTitle,
   "image": product.images.map((img: any) => img.url),
   "description": product.description,
   "category": "Real fruit electrolyte powder in a glass jar",
@@ -200,12 +218,12 @@ const price = new Intl.NumberFormat("en-US", {
       <!-- Product info -->
       <div class="space-y-6 min-w-0">
         <div>
-          <h1 class="font-serif text-3xl tracking-tight md:text-4xl">{product.title}</h1>
+          <h1 class="font-serif text-3xl tracking-tight md:text-4xl">{displayTitle}</h1>
           <div class="mt-3 flex items-baseline gap-3">
             {handle === 'the-hydration-ritual-kit' ? (
               <>
                 <span class="text-sm text-muted-foreground line-through">$66.98</span>
-                <span class="text-2xl font-medium">{price}</span>
+                <span id="selected-product-price" class="text-2xl font-medium">{price}</span>
                 <span class="text-sm font-medium text-green-700">Save $17.98</span>
               </>
             ) : (
@@ -348,6 +366,18 @@ const price = new Intl.NumberFormat("en-US", {
     </div>
   </section>
 </Layout>
+
+<script>
+  window.addEventListener("purest:variant-change", (event) => {
+    const detail = (event as CustomEvent<{ amount: string; currencyCode: string }>).detail;
+    const priceElement = document.getElementById("selected-product-price");
+    if (!detail || !priceElement) return;
+    priceElement.textContent = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: detail.currencyCode,
+    }).format(Number(detail.amount));
+  });
+</script>
 
 <script>
   // FAQ accordion
