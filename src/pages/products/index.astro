@@ -4,9 +4,17 @@ import ProductGrid from "@/components/ProductGrid.tsx";
 import { getProducts } from "@/lib/shopify";
 
 const allProducts = await getProducts();
+const duplicate20Handles = [
+  "20-servings-ginger-lime",
+  "20-servings-hibiscus-lime",
+  "20-servings-chocolate-cordyceps",
+  "20-servings-passion-cherry",
+  "20-servings-cranberry",
+];
+
 // Move the water bottle to the end of the list
 const products = [
-  ...allProducts.filter(p => !p.title.toLowerCase().includes('water bottle')),
+  ...allProducts.filter(p => !duplicate20Handles.includes(p.handle) && !p.title.toLowerCase().includes('water bottle')),
   ...allProducts.filter(p => p.title.toLowerCase().includes('water bottle')),
 ];
 ---
