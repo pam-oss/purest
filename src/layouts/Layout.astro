@@ -112,7 +112,17 @@ const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toStr
 
     <!-- Judge.me platform-independent Reviews Widget -->
     <script is:inline>window.jdgm = window.jdgm || {};window.jdgm.SHOP_DOMAIN = '6d47f8-3c.myshopify.com';window.jdgm.PLATFORM = 'shopify';window.jdgm.PUBLIC_TOKEN = 'RVolVt5dOmLGdFEmALNqeYeIRK0';</script>
-    <script data-cfasync='false' type='text/javascript' async src='https://cdnwidget.judge.me/widget_preloader.js'></script>
+    <script is:inline>
+      window.addEventListener('load', function() {
+        window.setTimeout(function() {
+          var judgeMeScript = document.createElement('script');
+          judgeMeScript.setAttribute('data-cfasync', 'false');
+          judgeMeScript.async = true;
+          judgeMeScript.src = 'https://cdnwidget.judge.me/widget_preloader.js';
+          document.head.appendChild(judgeMeScript);
+        }, 300);
+      }, { once: true });
+    </script>
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PJ3W3KJBLF"></script>
