@@ -14,12 +14,21 @@ import WhatsInside from "@/components/WhatsInside.astro";
 import PressBar from "@/components/PressBar.astro";
 
 const products = await getProducts();
+const duplicate20Handles = [
+  "20-servings-ginger-lime",
+  "20-servings-hibiscus-lime",
+  "20-servings-chocolate-cordyceps",
+  "20-servings-passion-cherry",
+  "20-servings-cranberry",
+];
+
 // Price anchor order: $15.99 kit first → $25.99 jars → $59 bundle → remaining flavors → bottle last
 const kit = products.filter(p => p.handle === '20-count-variety-pack');
 const ginger = products.filter(p => p.handle === '10-count-ginger-limeaid');
 const bundle = products.filter(p => p.handle === 'the-hydration-ritual-kit');
 const passionCherry = products.filter(p => p.handle === '10-serving-passion-cherry');
 const remaining = products.filter(p =>
+  !duplicate20Handles.includes(p.handle) &&
   !p.title.toLowerCase().includes('water bottle') &&
   p.handle !== 'the-hydration-ritual-kit' &&
   p.handle !== '20-count-variety-pack' &&
