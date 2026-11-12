@@ -13,6 +13,7 @@ export async function getStaticPaths() {
 const { handle } = Astro.params;
 const product = await getProduct(handle!);
 const displayTitle = product?.title.replace(/^10\s+servings?\s+/i, "") ?? "";
+const hasServingSizeVariants = product?.variants.some((v) => /^\d+\s+servings?$/i.test(v.title.trim())) ?? false;
 
 if (!product) return Astro.redirect("/products");
 
@@ -206,7 +207,7 @@ const price = new Intl.NumberFormat("en-US", {
             {handle === 'the-hydration-ritual-kit' ? (
               <>
                 <span class="text-sm text-muted-foreground line-through">$66.98</span>
-                <span id="selected-product-price" class="text-2xl font-medium">{price}</span>
+                {!hasServingSizeVariants && <span class="text-2xl font-medium">{price}</span>}
                 <span class="text-sm font-medium text-green-700">Save $17.98</span>
               </>
             ) : (
@@ -349,18 +350,6 @@ const price = new Intl.NumberFormat("en-US", {
     </div>
   </section>
 </Layout>
-
-<script>
-  window.addEventListener("purest:variant-change", (event) => {
-    const detail = (event as CustomEvent<{ amount: string; currencyCode: string }>).detail;
-    const priceElement = document.getElementById("selected-product-price");
-    if (!detail || !priceElement) return;
-    priceElement.textContent = new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: detail.currencyCode,
-    }).format(Number(detail.amount));
-  });
-</script>
 
 <script>
   // FAQ accordion
