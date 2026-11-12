@@ -16,7 +16,7 @@ export default function ProductCard({ product }: Props) {
   const compareAt = variant?.compareAtPrice;
   const soldOut = !variant?.availableForSale;
   const isBundle = product.handle === 'the-hydration-ritual-kit';
-  const displayTitle = product.title.replace(/^10\\s+servings?\\s+/i, "");
+  const displayTitle = product.title.replace(/^10\s+servings?\s+/i, "");
 
   // All subscription plans
   const allPlans: SellingPlan[] = (product.sellingPlanGroups ?? []).flatMap((g) => g.sellingPlans);
