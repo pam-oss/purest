@@ -5,30 +5,10 @@ import ProductCard from "@/components/ProductCard.tsx";
 import { getProduct, getProducts } from "@/lib/shopify";
 import flavorCopy from "@/data/flavor-copy.json";
 
-const standalone20Redirects: Record<string, string> = {
-  "20-servings-ginger-lime": "10-count-ginger-limeaid",
-  "20-servings-hibiscus-lime": "10-count-hibiscus-lime",
-  "20-servings-chocolate-cordyceps": "10-count-chocolate-cordyceps-1",
-  "20-servings-passion-cherry": "10-serving-passion-cherry",
-  "20-servings-cranberry": "10-servings-cranberry",
-};
-
 export async function getStaticPaths() {
   const products = await getProducts();
-  const redirectPaths = Object.entries(standalone20Redirects).map(([from, to]) => ({
-    params: { handle: from },
-    props: { redirectTo: `/products/${to}` },
-  }));
-  return [
-    ...products
-      .filter((p) => !Object.prototype.hasOwnProperty.call(standalone20Redirects, p.handle))
-      .map((p) => ({ params: { handle: p.handle } })),
-    ...redirectPaths,
-  ];
+  return products.map((p) => ({ params: { handle: p.handle } }));
 }
-
-const { redirectTo } = Astro.props;
-if (redirectTo) return Astro.redirect(redirectTo);
 
 const { handle } = Astro.params;
 const product = await getProduct(handle!);
