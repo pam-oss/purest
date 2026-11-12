@@ -16,6 +16,7 @@ export default function ProductCard({ product }: Props) {
   const compareAt = variant?.compareAtPrice;
   const soldOut = !variant?.availableForSale;
   const isBundle = product.handle === 'the-hydration-ritual-kit';
+  const displayTitle = product.title.replace(/^10\\s+servings?\\s+/i, "");
 
   // All subscription plans
   const allPlans: SellingPlan[] = (product.sellingPlanGroups ?? []).flatMap((g) => g.sellingPlans);
@@ -135,7 +136,7 @@ export default function ProductCard({ product }: Props) {
         </div>
         <div className="mt-4">
           <div className="flex items-baseline justify-between gap-2">
-            <h3 className="text-base font-medium">{product.title}</h3>
+            <h3 className="text-base font-medium">{displayTitle}</h3>
             <div className="flex items-baseline gap-1.5 tabular-nums">
               {compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount) ? (
                 <span className="text-sm text-muted-foreground line-through">
@@ -169,7 +170,7 @@ export default function ProductCard({ product }: Props) {
           href={`/products/${product.handle}`}
           className="mt-auto inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
         >
-          Choose flavor →
+          View sizes →
         </a>
       ) : hasSubscription && firstPlanPrice ? (
         <div className="mt-auto pt-4 flex flex-col gap-2">
