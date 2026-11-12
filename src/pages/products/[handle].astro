@@ -17,7 +17,7 @@ export async function getStaticPaths() {
   const products = await getProducts();
   const redirectPaths = Object.entries(standalone20Redirects).map(([from, to]) => ({
     params: { handle: from },
-    redirect: `/products/${to}`,
+    props: { redirectTo: `/products/${to}` },
   }));
   return [
     ...products
@@ -26,6 +26,9 @@ export async function getStaticPaths() {
     ...redirectPaths,
   ];
 }
+
+const { redirectTo } = Astro.props;
+if (redirectTo) return Astro.redirect(redirectTo);
 
 const { handle } = Astro.params;
 const product = await getProduct(handle!);
