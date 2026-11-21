@@ -5,6 +5,7 @@ import "@/styles/global.css";
 import Nav from "@/components/Nav.astro";
 import Footer from "@/components/Footer.astro";
 import Cart from "@/components/Cart.tsx";
+import MetaPixel from "@/components/MetaPixel.astro";
 import siteConfig from "@/data/site-config.json";
 
 interface Props {
@@ -123,6 +124,8 @@ const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toStr
         }, 300);
       }, { once: true });
     </script>
+
+    <MetaPixel />
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PJ3W3KJBLF"></script>

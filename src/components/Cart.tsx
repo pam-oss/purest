@@ -17,6 +17,7 @@ import {
   updateQuantity,
   updateSellingPlan,
 } from "@/lib/cart-store";
+import { shopifyNumericId, trackMetaEvent } from "@/lib/meta";
 import { createCheckout } from "@/lib/shopify";
 import { formatPrice } from "@/lib/utils";
 
@@ -45,6 +46,23 @@ export default function Cart() {
           sellingPlanId: item.sellingPlanId,
         })),
       );
+      const numItems = items.reduce((sum, item) => sum + item.quantity, 0);
+      // Let the pixel and the server event leave before Shopify's checkout page loads.
+      await Promise.race([
+        trackMetaEvent("InitiateCheckout", {
+          content_ids: items.map((item) => shopifyNumericId(item.variantId)),
+          content_type: "product",
+          contents: items.map((item) => ({
+            id: shopifyNumericId(item.variantId),
+            quantity: item.quantity,
+            item_price: Math.round(item.price * 100) / 100,
+          })),
+          currency,
+          value: Math.round(subtotal * 100) / 100,
+          num_items: numItems,
+        }),
+        new Promise((resolve) => setTimeout(resolve, 1200)),
+      ]);
       window.location.href = url;
     } catch (err) {
       setCheckoutError(err instanceof Error ? err.message : "Checkout failed");

@@ -5,6 +5,14 @@
 interface ImportMetaEnv {
   readonly PUBLIC_SHOPIFY_STORE_DOMAIN: string;
   readonly PUBLIC_SHOPIFY_STOREFRONT_TOKEN: string;
+  /** Meta dataset / pixel id. Public. Falls back to the Purest Electrolyte dataset. */
+  readonly PUBLIC_META_PIXEL_ID?: string;
+  /** Meta's facebook-domain-verification code. Omit the tag when this is empty. */
+  readonly PUBLIC_FB_DOMAIN_VERIFICATION?: string;
+  /** Server-only. Never expose this to the browser. */
+  readonly META_CAPI_ACCESS_TOKEN?: string;
+  /** Optional Events Manager test code (TEST...). Leave unset for real traffic. */
+  readonly META_CAPI_TEST_EVENT_CODE?: string;
   readonly RESEND_API_KEY?: string;
   readonly CONTACT_FROM_EMAIL?: string;
   readonly SMTP_HOST?: string;
