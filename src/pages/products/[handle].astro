@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import AddToCart from "@/components/AddToCart.tsx";
 import ProductCard from "@/components/ProductCard.tsx";
+import { shopifyNumericId } from "@/lib/meta";
 import { getProduct, getProducts } from "@/lib/shopify";
 import flavorCopy from "@/data/flavor-copy.json";
 
@@ -31,6 +32,31 @@ const price = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: product.priceRange.minVariantPrice.currencyCode,
 }).format(parseFloat(product.priceRange.minVariantPrice.amount));
+
+// Same default jar the add-to-cart button starts on, so ViewContent and AddToCart
+// refer to the same catalog item.
+const isSizeProduct = product.variants.some((variant) => /^\d+\s+servings?$/i.test(variant.title.trim()));
+const sizedDefault = isSizeProduct
+  ? product.variants.find((variant) => /^10\s+servings?$/i.test(variant.title.trim()))
+  : undefined;
+const viewedVariant = sizedDefault ?? product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
+const viewedPrice = viewedVariant ? Number(parseFloat(viewedVariant.price.amount).toFixed(2)) : 0;
+const metaViewContent = viewedVariant
+  ? {
+      content_ids: [shopifyNumericId(viewedVariant.id)],
+      content_type: "product" as const,
+      content_name: product.title,
+      contents: [
+        {
+          id: shopifyNumericId(viewedVariant.id),
+          quantity: 1,
+          item_price: viewedPrice,
+        },
+      ],
+      currency: viewedVariant.price.currencyCode || "USD",
+      value: viewedPrice,
+    }
+  : null;
 ---
 
 <Layout title={`${product.title} Real Fruit Electrolyte in Glass Jar | Purest`} description={product.description}>
@@ -349,6 +375,13 @@ const price = new Intl.NumberFormat("en-US", {
       ))}
     </div>
   </section>
+  {metaViewContent && (
+    <script is:inline define:vars={{ metaViewContent }}>
+      if (typeof window.purestTrackMeta === "function") {
+        window.purestTrackMeta("ViewContent", metaViewContent);
+      }
+    </script>
+  )}
 </Layout>
 
 <script>

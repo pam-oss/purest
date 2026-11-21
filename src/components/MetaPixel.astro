@@ -1,0 +1,119 @@
+---
+import { META_PIXEL_ID } from "@/lib/meta";
+
+// Meta's domain-verification code is not a secret, but we don't have it yet.
+// Leave the tag out until PUBLIC_FB_DOMAIN_VERIFICATION is set and the site is rebuilt.
+const rawVerification = String(import.meta.env.PUBLIC_FB_DOMAIN_VERIFICATION ?? "").trim();
+const domainVerification =
+  rawVerification.length > 0 &&
+  rawVerification.length <= 200 &&
+  !/[\s<>"'&]/.test(rawVerification)
+    ? rawVerification
+    : "";
+
+const pixelId = META_PIXEL_ID;
+---
+
+{domainVerification && <meta name="facebook-domain-verification" content={domainVerification} />}
+<link rel="preconnect" href="https://connect.facebook.net" />
+
+<!--
+  The site has no cookie banner. Google Analytics already loads for every
+  visitor, and this pixel does too, so Instagram and Facebook can see which
+  visits came from ads. Purchase tracking stays on Shopify checkout, where
+  the Facebook & Instagram app is already connected to this same pixel.
+-->
+<script is:inline define:vars={{ pixelId }}>
+  (function () {
+    if (window.__purestMetaLoaded) return;
+    window.__purestMetaLoaded = true;
+
+    function readCookie(name) {
+      var match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+      if (!match) return "";
+      try {
+        return decodeURIComponent(match[1]);
+      } catch (e) {
+        return match[1];
+      }
+    }
+
+    function eventId() {
+      if (window.crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+        var r = (Math.random() * 16) | 0;
+        var v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    }
+
+    function fbclid() {
+      try {
+        return new URLSearchParams(location.search).get("fbclid") || "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    !(function (f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = "2.0";
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+
+    window.fbq("init", pixelId);
+
+    var allowed = { PageView: 1, ViewContent: 1, AddToCart: 1, InitiateCheckout: 1 };
+
+    window.purestTrackMeta = function (eventName, customData) {
+      try {
+        if (!allowed[eventName]) return Promise.resolve();
+        var id = eventId();
+        window.fbq("track", eventName, customData || {}, { eventID: id });
+        var clickId = fbclid();
+        return fetch("/api/meta-events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          keepalive: true,
+          credentials: "same-origin",
+          body: JSON.stringify({
+            event_name: eventName,
+            event_id: id,
+            event_source_url: location.href.split("#")[0],
+            custom_data: customData || {},
+            fbp: readCookie("_fbp") || undefined,
+            fbc: readCookie("_fbc") || undefined,
+            fbclid: clickId || undefined,
+          }),
+        }).then(
+          function () {},
+          function () {},
+        );
+      } catch (e) {
+        return Promise.resolve();
+      }
+    };
+
+    window.purestTrackMeta("PageView");
+  })();
+</script>
+<noscript>
+  <img
+    height="1"
+    width="1"
+    style="display:none"
+    alt=""
+    src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
+  />
+</noscript>

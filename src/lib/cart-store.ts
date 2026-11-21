@@ -1,4 +1,5 @@
 import { atom, computed } from "nanostores";
+import { shopifyNumericId, trackMetaEvent } from "@/lib/meta";
 
 /**
  * Cart state shared across React islands.
@@ -83,6 +84,24 @@ export function addToCart(item: Omit<CartItem, "quantity">, quantity = 1): void 
     $cart.set([...current, { ...item, quantity }]);
   }
   $cartOpen.set(true); // Open the drawer when something is added — instant feedback.
+
+  // Every add button (product page, product card, homepage) comes through here.
+  const unitPrice = Number(item.price) || 0;
+  void trackMetaEvent("AddToCart", {
+    content_ids: [shopifyNumericId(item.variantId)],
+    content_type: "product",
+    content_name: item.title,
+    contents: [
+      {
+        id: shopifyNumericId(item.variantId),
+        quantity,
+        item_price: Math.round(unitPrice * 100) / 100,
+      },
+    ],
+    currency: item.currencyCode || "USD",
+    value: Math.round(unitPrice * quantity * 100) / 100,
+    num_items: quantity,
+  });
 }
 
 export function updateQuantity(variantId: string, quantity: number): void {
