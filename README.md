@@ -55,7 +55,7 @@ src/
 | `src/data/products.json` | Mock products (only used until Shopify is connected) |
 | `public/images/` | Logo, hero, product photos |
 | `src/pages/about.astro` | Pam's story |
-| `src/components/ValueProps.astro` | "Real fruit / Real salt / Nothing else" blocks |
+| `src/components/ValueProps.astro` | "Real fruit / Real salt / Real hydration" blocks |
 
 ## Connecting Shopify
 

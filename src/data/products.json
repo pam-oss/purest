@@ -41,7 +41,7 @@
     "id": "mock-watermelon",
     "title": "Watermelon Electrolyte",
     "handle": "watermelon",
-    "description": "Real watermelon, mineral-rich salt, and nothing else. Summer in a jar. 30 servings.",
+    "description": "Real watermelon and mineral-rich salt. Summer in a jar. 30 servings.",
     "priceRange": { "minVariantPrice": { "amount": "38.00", "currencyCode": "USD" } },
     "image": {
       "url": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=900&q=80",
