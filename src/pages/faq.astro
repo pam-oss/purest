@@ -42,7 +42,7 @@ const faqs = [
   },
   {
     q: "Where does your citric acid come from?",
-    a: "Our citric acid is derived from cassava root, not mold."
+    a: "Our citric acid is fermented from cassava root and is non GMO. It gives each fruit flavor its bright, tart taste."
   },
   {
     q: "How do I use it?",
@@ -77,10 +77,14 @@ const faqs = [
     a: "Purest was developed and tested at 8,900 feet in Aspen, Colorado, by Pam Sweeney and her four high-level athlete kids who needed real hydration at altitude."
   },
 ];
+const schemaFaqs = [
+  ...faqs.slice(0, 2),
+  ...faqs.filter((faq) => faq.q === "Where does your citric acid come from?"),
+];
 const faqSchema = {
   "@context": "https://schema.org", "@type": "FAQPage",
   "@id": "https://www.purestelectrolyte.com/faq#questions",
-  mainEntity: faqs.slice(0, 2).map((faq) => ({
+  mainEntity: schemaFaqs.map((faq) => ({
     "@type": "Question", name: faq.q,
     acceptedAnswer: { "@type": "Answer", text: faq.a }
   }))

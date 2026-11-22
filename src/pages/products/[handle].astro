@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard.tsx";
 import { shopifyNumericId } from "@/lib/meta";
 import { getProduct, getProducts } from "@/lib/shopify";
 import flavorCopy from "@/data/flavor-copy.json";
+import { citricAcidNoteFromImages, ingredientListFromImages } from "@/lib/citric-acid";
 
 export async function getStaticPaths() {
   const products = await getProducts();
@@ -25,6 +26,9 @@ const displayTitle = product?.title.replace(/^10\s+servings?\s+/i, "") ?? "";
 const hasServingSizeVariants = product?.variants.some((v) => /^\d+\s+servings?$/i.test(v.title.trim())) ?? false;
 
 if (!product) return Astro.redirect("/products");
+
+const citricNote = citricAcidNoteFromImages(product.images ?? []);
+const citricIngredientList = ingredientListFromImages(product.images ?? []);
 
 // Fetch other flavors to show in the "Try Other Flavors" section
 const allProducts = await getProducts();
@@ -73,9 +77,18 @@ const metaViewContent = viewedVariant
   "@context": "https://schema.org",
   "@type": "Product",
   "name": displayTitle,
-  "image": product.images.map((img: any) => img.url),
+  "image": product.images.map((img: any) =>
+    typeof img.url === "string" && img.url.startsWith("/")
+      ? `https://www.purestelectrolyte.com${img.url}`
+      : img.url
+  ),
   "description": product.description,
   "category": isChocolate ? "Electrolyte powder in a glass jar" : "Real fruit electrolyte powder in a glass jar",
+  ...(citricIngredientList
+    ? { additionalProperty: { "@type": "PropertyValue", name: "Ingredients", value: citricIngredientList } }
+    : citricNote
+      ? { additionalProperty: { "@type": "PropertyValue", name: "Citric acid", value: citricNote } }
+      : {}),
   "material": "Clear glass jar",
   "brand": {
     "@type": "Brand",
@@ -263,11 +276,18 @@ const metaViewContent = viewedVariant
             </div>
           </div>
         )}
-        {product.descriptionHtml ? (
-          <div class="text-base leading-relaxed text-foreground/75 space-y-3 prose prose-sm max-w-none" set:html={product.descriptionHtml} />
-        ) : product.description ? (
-          <p class="text-base leading-relaxed text-foreground/75">{product.description}</p>
-        ) : null}
+        {(product.descriptionHtml || product.description || citricNote) && (
+          <div class="space-y-3">
+            {product.descriptionHtml ? (
+              <div class="text-base leading-relaxed text-foreground/75 space-y-3 prose prose-sm max-w-none" set:html={product.descriptionHtml} />
+            ) : product.description ? (
+              <p class="text-base leading-relaxed text-foreground/75">{product.description}</p>
+            ) : null}
+            {citricNote && (
+              <p class="text-sm leading-relaxed text-foreground/75">{citricNote}</p>
+            )}
+          </div>
+        )}
 
         <!-- Add to cart -->
         <AddToCart product={product} client:load />

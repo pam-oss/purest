@@ -2,6 +2,7 @@
  * Approved label wording. Flavor, kit, and bottle descriptions still arrive
  * from Shopify at build time, so the same replacements run on that HTML.
  */
+import { rewriteCitricAcid } from "@/lib/citric-acid";
 
 const RITUAL_KIT_BEFORE =
   "Real freeze-dried fruit. French gray sea salt. 85+ trace minerals. 700+ mg naturally occurring sodium per serving. Zero added sugar, no natural flavors, no maltodextrin, and no anti-caking agents.";
@@ -18,7 +19,7 @@ const NO_JUNK_AFTER =
 
 export function rewriteApprovedClaims(text: string, handle = ""): string {
   if (!text) return text;
-  let next = text;
+  let next = rewriteCitricAcid(text);
 
   next = next.replaceAll(RITUAL_KIT_BEFORE, RITUAL_KIT_AFTER);
   next = next.replaceAll(SCIENCE_SODIUM_BEFORE, SCIENCE_SODIUM_AFTER);

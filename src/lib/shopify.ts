@@ -10,6 +10,7 @@
 
 import mockProducts from "@/data/products.json";
 import { applyProductClaims, rewriteApprovedClaims } from "@/lib/claims";
+import { applyCitricAcidLabel } from "@/lib/citric-acid";
 
 const domain = import.meta.env.PUBLIC_SHOPIFY_STORE_DOMAIN;
 const token = import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_TOKEN;
@@ -381,7 +382,7 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
     console.warn('[shopify] getProduct partial errors:', errors.map(e => e.message).join('; '));
   }
   const p = data.product;
-  const images = p.images.edges.map((e: any) => e.node);
+  const images = p.images.edges.map((e: any) => applyCitricAcidLabel(e.node));
   const copy = applyProductClaims(p.handle, p.description, p.descriptionHtml ?? "");
   return applyCurrentPrice({
     id: p.id, title: p.title, description: copy.description, descriptionHtml: copy.descriptionHtml, handle: p.handle,

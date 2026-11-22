@@ -1,0 +1,25 @@
+{
+  "flavorNote": "Our citric acid is fermented from cassava root and is non GMO. It gives this flavor its bright, tart taste.",
+  "kitNote": "Our citric acid is fermented from cassava root and is non GMO. It gives the fruit flavors their bright, tart taste.",
+  "faqAnswer": "Our citric acid is fermented from cassava root and is non GMO. It gives each fruit flavor its bright, tart taste.",
+  "listItem": "Citric Acid (fermented from cassava root, non GMO)",
+  "labels": {
+    "ginger-lime-10-serving-ingredients-how-to-use.png": {
+      "name": "Ginger Lime",
+      "ingredients": "Freeze dried organic lime, French grey sea salt, organic ginger, sodium bicarbonate, citric acid (fermented from cassava root, non GMO), organic monk fruit."
+    },
+    "hibiscus-lime-10-serving-ingredients-how-to-use.png": {
+      "name": "Hibiscus Lime",
+      "ingredients": "Organic freeze dried lime, French grey sea salt, organic hibiscus flower, dried coconut water, sodium bicarbonate, citric acid (fermented from cassava root, non GMO), organic monk fruit."
+    },
+    "cranberry-10-serving-ingredients-how-to-use.png": {
+      "name": "Cranberry",
+      "ingredients": "Organic freeze dried cranberry, French grey sea salt, sodium bicarbonate, citric acid (fermented from cassava root, non GMO), stevia leaf extract."
+    },
+    "passion-cherry-10-serving-ingredients-how-to-use.png": {
+      "name": "Passion Cherry",
+      "ingredients": "Freeze dried organic cherry, freeze dried organic passion fruit, French grey sea salt, citric acid (fermented from cassava root, non GMO), sodium bicarbonate, organic monk fruit, stevia leaf extract."
+    }
+  },
+  "kitFile": "five-day-kit-all-flavors-nutrition-ingredients.png"
+}
