@@ -9,6 +9,7 @@
  */
 
 import mockProducts from "@/data/products.json";
+import { applyProductClaims, rewriteApprovedClaims } from "@/lib/claims";
 
 const domain = import.meta.env.PUBLIC_SHOPIFY_STORE_DOMAIN;
 const token = import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_TOKEN;
@@ -134,7 +135,10 @@ export async function shopifyFetch<T>(
 /** Fetches all products, or returns mock data if Shopify is not configured. */
 export async function getProducts(): Promise<Product[]> {
   if (!hasShopify) {
-    return mockProducts as Product[];
+    return (mockProducts as Product[]).map((product) => {
+      const copy = applyProductClaims(product.handle, product.description, product.descriptionHtml ?? "");
+      return { ...product, ...copy };
+    });
   }
   const query = `{
     products(first: 20) {
@@ -200,20 +204,23 @@ export async function getProducts(): Promise<Product[]> {
   if (errors?.length || !data) {
     throw new Error(errors?.map((e) => e.message).join("; ") ?? "Unknown Shopify error");
   }
-  return data.products.edges.map(({ node }) => applyCurrentPrice({
-    id: node.id,
-    title: node.title,
-    description: node.description,
-    descriptionHtml: '',
-    handle: node.handle,
-    priceRange: node.priceRange,
-    image: node.images.edges[0]?.node ?? null,
-    variants: node.variants.edges.map((e) => e.node),
-    sellingPlanGroups: (node.sellingPlanGroups?.edges ?? []).map((g: any) => ({
-      name: g.node.name,
-      sellingPlans: g.node.sellingPlans.edges.map((s: any) => s.node),
-    })),
-  }));
+  return data.products.edges.map(({ node }) => {
+    const copy = applyProductClaims(node.handle, node.description, "");
+    return applyCurrentPrice({
+      id: node.id,
+      title: node.title,
+      description: copy.description,
+      descriptionHtml: copy.descriptionHtml,
+      handle: node.handle,
+      priceRange: node.priceRange,
+      image: node.images.edges[0]?.node ?? null,
+      variants: node.variants.edges.map((e) => e.node),
+      sellingPlanGroups: (node.sellingPlanGroups?.edges ?? []).map((g: any) => ({
+        name: g.node.name,
+        sellingPlans: g.node.sellingPlans.edges.map((s: any) => s.node),
+      })),
+    });
+  });
 }
 
 /**
@@ -287,7 +294,7 @@ export async function getArticle(blogHandle: string, articleHandle: string): Pro
   const article = data.blog.articleByHandle;
   return {
     ...article,
-    contentHtml: repairArticleLinks(article.contentHtml ?? ''),
+    contentHtml: rewriteApprovedClaims(repairArticleLinks(article.contentHtml ?? '')),
   };
 }
 
@@ -316,7 +323,7 @@ export async function getBlogArticles(blogHandle: string): Promise<{ handle: str
       throw new Error(errors?.map((e) => e.message).join("; ") || `Unable to load the ${blogHandle} article index`);
     }
     const connection = data.blog.articles;
-    articles.push(...connection.edges.map(({ node }) => ({ ...node, excerptHtml: repairArticleLinks(node.excerptHtml ?? '') })));
+    articles.push(...connection.edges.map(({ node }) => ({ ...node, excerptHtml: rewriteApprovedClaims(repairArticleLinks(node.excerptHtml ?? '')) })));
     if (!connection.pageInfo.hasNextPage) break;
     const next = connection.pageInfo.endCursor;
     if (!next || seen.has(next)) throw new Error("The article index returned an invalid pagination cursor");
@@ -331,7 +338,8 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
   if (!hasShopify) {
     const p = (mockProducts as Product[]).find(p => p.handle === handle);
     if (!p) return null;
-    return { ...p, images: p.image ? [p.image] : [] };
+    const copy = applyProductClaims(p.handle, p.description, "");
+    return { ...p, ...copy, images: p.image ? [p.image] : [] };
   }
   const query = `{
     product(handle: "${handle}") {
@@ -374,8 +382,9 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
   }
   const p = data.product;
   const images = p.images.edges.map((e: any) => e.node);
+  const copy = applyProductClaims(p.handle, p.description, p.descriptionHtml ?? "");
   return applyCurrentPrice({
-    id: p.id, title: p.title, description: p.description, descriptionHtml: p.descriptionHtml ?? '', handle: p.handle,
+    id: p.id, title: p.title, description: copy.description, descriptionHtml: copy.descriptionHtml, handle: p.handle,
     priceRange: p.priceRange,
     image: images[0] ?? null,
     images,

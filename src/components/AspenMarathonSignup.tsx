@@ -80,7 +80,7 @@ export default function AspenMarathonSignup({ dark = false }: { dark?: boolean }
       <div className="text-center py-4">
         <p className={`text-lg font-serif ${dark ? "text-background" : ""}`}>You're entered to win. 🥥</p>
         <p className={`text-sm mt-2 ${dark ? "text-background/60" : "text-muted-foreground"}`}>
-          Check your inbox — your 10% off code is on its way!
+          Check your inbox. Your 10% off code is on its way!
         </p>
         <p className={`text-xs mt-1 ${dark ? "text-background/40" : "text-muted-foreground/70"}`}>
           Winner announced after the race. Good luck!

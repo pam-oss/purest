@@ -13,6 +13,14 @@ export async function getStaticPaths() {
 
 const { handle } = Astro.params;
 const product = await getProduct(handle!);
+const isChocolate = (handle ?? "").includes("chocolate-cordyceps");
+const isFruitFlavor = /ginger-lime|hibiscus-lime|passion-cherry|cranberry/.test(handle ?? "");
+const ingredientBadge = isChocolate
+  ? "Core ingredients are organic cacao, organic cordyceps and sea salt"
+  : isFruitFlavor
+    ? "Main ingredients are freeze-dried fruit and sea salt"
+    : "Core ingredients are listed on the jar";
+const cleanLabelBadge = "No natural flavors, no maltodextrin, no artificial dyes, no anti-caking agents";
 const displayTitle = product?.title.replace(/^10\s+servings?\s+/i, "") ?? "";
 const hasServingSizeVariants = product?.variants.some((v) => /^\d+\s+servings?$/i.test(v.title.trim())) ?? false;
 
@@ -59,7 +67,7 @@ const metaViewContent = viewedVariant
   : null;
 ---
 
-<Layout title={`${product.title} Real Fruit Electrolyte in Glass Jar | Purest`} description={product.description}>
+<Layout title={isChocolate ? `${product.title} in a Glass Jar | Purest` : `${product.title} Real Fruit Electrolyte in Glass Jar | Purest`} description={product.description}>
 
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
@@ -67,7 +75,7 @@ const metaViewContent = viewedVariant
   "name": displayTitle,
   "image": product.images.map((img: any) => img.url),
   "description": product.description,
-  "category": "Real fruit electrolyte powder in a glass jar",
+  "category": isChocolate ? "Electrolyte powder in a glass jar" : "Real fruit electrolyte powder in a glass jar",
   "material": "Clear glass jar",
   "brand": {
     "@type": "Brand",
@@ -268,8 +276,8 @@ const metaViewContent = viewedVariant
         <div class="grid grid-cols-2 gap-2 text-sm text-foreground/60 pt-2 border-t border-border">
           <div class="flex items-center gap-2"><span>✓</span> Zero added sugar</div>
           <div class="flex items-center gap-2"><span>✓</span> No maltodextrin</div>
-          <div class="flex items-center gap-2"><span>✓</span> Real fruit only</div>
-          <div class="flex items-center gap-2"><span>✓</span> No junk. Ever.</div>
+          <div class="flex items-center gap-2"><span>✓</span> {ingredientBadge}</div>
+          <div class="flex items-center gap-2"><span>✓</span> {cleanLabelBadge}</div>
         </div>
 
         <!-- Guarantee badge -->
@@ -359,10 +367,10 @@ const metaViewContent = viewedVariant
     <h2 class="font-serif text-2xl mb-6">Common questions</h2>
     <div class="divide-y divide-border max-w-2xl" id="faq-list">
       {[
-        { q: "How much should I use?", a: "One scoop (one serving) mixed into 12–16 oz of cold water. Most people drink 1–2 servings per day. More if you're active, sweating, or at altitude." },
-        { q: "Is there any sugar in this?", a: "Zero added sugar. The sweetness comes from two sources: real freeze-dried fruit, and a small amount of stevia and monk fruit. Both are completely natural — stevia is extracted from a leaf, monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." },
-        { q: "How is this different from LMNT, Liquid IV, or other brands?", a: "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus real freeze-dried fruit. No artificial anything." },
-        { q: "Does the subscription auto-renew?", a: "Yes — your subscription ships on your chosen schedule and can be paused or cancelled anytime with no fees. Manage it directly from your account or email us." },
+        { q: "How much should I use?", a: "One scoop (one serving) mixed into 12 to 16 oz of cold water. Most people drink 1 to 2 servings per day. More if you're active, sweating, or at altitude." },
+        { q: "Is there any sugar in this?", a: isChocolate ? "Zero added sugar. The sweetness comes from stevia and monk fruit. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." : "Zero added sugar. The sweetness comes from two sources: real freeze-dried fruit, and a small amount of stevia and monk fruit. Both are completely natural. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." },
+        { q: "How is this different from LMNT, Liquid IV, or other brands?", a: isChocolate ? "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus organic cacao and organic cordyceps. No artificial anything." : "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus real freeze-dried fruit. No artificial anything." },
+        { q: "Does the subscription auto-renew?", a: "Yes. Your subscription ships on your chosen schedule and can be paused or cancelled anytime with no fees. Manage it directly from your account or email us." },
         { q: "What's the free shipping threshold?", a: "Free shipping on all orders over $39. Most single jars qualify. Subscribe and it's always free." },
       ].map((item, i) => (
         <div class="faq-item py-4 cursor-pointer" data-index={String(i)}>

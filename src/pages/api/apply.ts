@@ -166,7 +166,7 @@ export const POST: APIRoute = async ({ request }) => {
   const typeLabel = application_type === 'athlete_council' ? 'Athlete Council'
     : application_type === 'both' ? 'Affiliate + Athlete Council'
     : 'Affiliate';
-  const appLabel = `New Partner Application — ${typeLabel}`;
+  const appLabel = `New Partner Application, ${typeLabel}`;
   const listName = PARTNER_LIST_NAME;
   const eventName = 'Partner Application Submitted';
 
