@@ -27,7 +27,7 @@ function cleanText(value: unknown, maxLength: number) {
 
 function formatEmail(contact: ContactMessage) {
   const subject = contact.orderNumber
-    ? `Website contact from ${contact.name} — order ${contact.orderNumber}`
+    ? `Website contact from ${contact.name}, order ${contact.orderNumber}`
     : `Website contact from ${contact.name}`;
 
   const text = [

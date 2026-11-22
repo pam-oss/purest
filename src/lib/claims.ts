@@ -65,6 +65,25 @@ export function rewriteApprovedClaims(text: string, handle = ""): string {
   next = next.replace(/[ \t]{2,}/g, " ");
   next = next.replace(/\s+([.,;:])/g, "$1");
 
+  return rewriteSentenceDashes(next);
+}
+
+/** Turns em dashes, en dashes, and spaced hyphens into normal sentence punctuation. */
+function rewriteSentenceDashes(text: string): string {
+  let next = text;
+  next = next.replace(/(\d+)\s*[–—]\s*(\d+)/g, "$1 to $2");
+  next = next.replace(/spectrum(<\/strong>)?\s*[—–]\s*/gi, "spectrum$1, ");
+  next = next.replace(/Electrolyte\s*[—–]\s*/g, "Electrolyte, ");
+  next = next.replace(/Hydration Kit\s*[—–]\s*/g, "Hydration Kit, and ");
+  next = next.replace(/backorder(<\/strong>)?\s*[—–]\s*/gi, "backorder$1. ");
+  next = next.replace(/Water Bottle\s*[—–]\s*/g, "Water Bottle, ");
+  next = next.replace(/(^|[\n>])\s*[—–]\s*/g, "$1");
+  next = next.replace(/\s*[—–]\s*(?=[A-Z])/g, ". ");
+  next = next.replace(/\s*[—–]\s*/g, ", ");
+  next = next.replace(/ - /g, ", ");
+  next = next.replace(/\s+,/g, ",");
+  next = next.replace(/,\s*\./g, ".");
+  next = next.replace(/[ \t]{2,}/g, " ");
   return next;
 }
 
