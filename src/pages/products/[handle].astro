@@ -77,11 +77,7 @@ const metaViewContent = viewedVariant
   "@context": "https://schema.org",
   "@type": "Product",
   "name": displayTitle,
-  "image": product.images.map((img: any) =>
-    typeof img.url === "string" && img.url.startsWith("/")
-      ? `https://www.purestelectrolyte.com${img.url}`
-      : img.url
-  ),
+  "image": product.images.map((img: any) => img.url),
   "description": product.description,
   "category": isChocolate ? "Electrolyte powder in a glass jar" : "Real fruit electrolyte powder in a glass jar",
   ...(citricIngredientList
