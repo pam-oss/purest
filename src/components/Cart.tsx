@@ -18,6 +18,7 @@ import {
   updateSellingPlan,
 } from "@/lib/cart-store";
 import { shopifyNumericId, trackMetaEvent } from "@/lib/meta";
+import { displayProductTitle } from "@/lib/product-title";
 import { createCheckout } from "@/lib/shopify";
 import { formatPrice } from "@/lib/utils";
 
@@ -100,7 +101,7 @@ export default function Cart() {
                     <div className="flex justify-between gap-2">
                       <div>
                         <div className="text-sm font-medium leading-tight">
-                          {item.title}
+                          {displayProductTitle(item.title)}
                         </div>
                         {item.variantTitle &&
                           item.variantTitle !== "Default Title" && (
@@ -111,7 +112,7 @@ export default function Cart() {
                       </div>
                       <button
                         type="button"
-                        aria-label={`Remove ${item.title}`}
+                        aria-label={`Remove ${displayProductTitle(item.title)}`}
                         onClick={() => removeFromCart(item.variantId)}
                         className="text-muted-foreground transition-colors hover:text-foreground"
                       >

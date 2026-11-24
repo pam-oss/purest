@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
+import { flavorCopyFor } from "@/lib/flavor-copy";
 import type { Product, SellingPlan } from "@/lib/shopify";
+import { displayProductTitle } from "@/lib/product-title";
 import { formatPrice } from "@/lib/utils";
-import flavorCopy from "@/data/flavor-copy.json";
 
 interface Props {
   product: Product;
@@ -16,7 +17,8 @@ export default function ProductCard({ product }: Props) {
   const compareAt = variant?.compareAtPrice;
   const soldOut = !variant?.availableForSale;
   const isBundle = product.handle === 'the-hydration-ritual-kit';
-  const displayTitle = product.title.replace(/^10\s+servings?\s+/i, "");
+  const displayTitle = displayProductTitle(product.title);
+  const tagline = flavorCopyFor(product.handle, product.title)?.tagline ?? product.description;
 
   // All subscription plans
   const allPlans: SellingPlan[] = (product.sellingPlanGroups ?? []).flatMap((g) => g.sellingPlans);
@@ -76,7 +78,7 @@ export default function ProductCard({ product }: Props) {
     addToCart({
       variantId: variant.id,
       productId: product.id,
-      title: product.title,
+      title: displayTitle,
       variantTitle: variant.title,
       price: parseFloat(price.amount),
       currencyCode: price.currencyCode,
@@ -99,7 +101,7 @@ export default function ProductCard({ product }: Props) {
     addToCart({
       variantId: variant.id,
       productId: product.id,
-      title: product.title,
+      title: displayTitle,
       variantTitle: variant.title,
       price: parseFloat(price.amount),
       currencyCode: price.currencyCode,
@@ -126,7 +128,7 @@ export default function ProductCard({ product }: Props) {
           {product.image ? (
             <img
               src={product.image.url}
-              alt={product.image.altText ?? product.title}
+              alt={product.image.altText ?? displayTitle}
               loading="lazy"
               className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-[1.02]"
             />
@@ -160,7 +162,7 @@ export default function ProductCard({ product }: Props) {
             ></div>
           </div>
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-            {(flavorCopy as any)[product.handle]?.tagline ?? product.description}
+            {tagline}
           </p>
         </div>
       </a>
@@ -179,7 +181,7 @@ export default function ProductCard({ product }: Props) {
             type="button"
             onClick={handleAdd}
             disabled={soldOut || !isHydrated}
-            aria-label={justAdded ? `${product.title} added to cart` : `Add ${product.title} to cart for ${formatPrice(price.amount, price.currencyCode)}`}
+            aria-label={justAdded ? `${displayTitle} added to cart` : `Add ${displayTitle} to cart for ${formatPrice(price.amount, price.currencyCode)}`}
             className="flex items-center justify-between w-full rounded-full border border-input bg-background px-5 py-2.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
           >
             <span className="flex items-center gap-1.5">

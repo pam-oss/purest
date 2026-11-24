@@ -10,6 +10,7 @@
 
 import mockProducts from "@/data/products.json";
 import { applyProductClaims, rewriteApprovedClaims } from "@/lib/claims";
+import { displayProductTitle } from "@/lib/product-title";
 
 const domain = import.meta.env.PUBLIC_SHOPIFY_STORE_DOMAIN;
 const token = import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_TOKEN;
@@ -69,6 +70,11 @@ export interface Product {
 const currentPriceOverrides: Record<string, string> = {
   "5-day-hydration-kit": "16.99",
 };
+
+function withDisplayTitle<T extends { title: string }>(product: T): T {
+  const title = displayProductTitle(product.title);
+  return title === product.title ? product : { ...product, title };
+}
 
 function applyCurrentPrice(product: Product): Product {
   const amount = currentPriceOverrides[product.handle];
@@ -137,7 +143,7 @@ export async function getProducts(): Promise<Product[]> {
   if (!hasShopify) {
     return (mockProducts as Product[]).map((product) => {
       const copy = applyProductClaims(product.handle, product.description, product.descriptionHtml ?? "");
-      return { ...product, ...copy };
+      return withDisplayTitle({ ...product, ...copy });
     });
   }
   const query = `{
@@ -206,7 +212,7 @@ export async function getProducts(): Promise<Product[]> {
   }
   return data.products.edges.map(({ node }) => {
     const copy = applyProductClaims(node.handle, node.description, "");
-    return applyCurrentPrice({
+    return applyCurrentPrice(withDisplayTitle({
       id: node.id,
       title: node.title,
       description: copy.description,
@@ -219,7 +225,7 @@ export async function getProducts(): Promise<Product[]> {
         name: g.node.name,
         sellingPlans: g.node.sellingPlans.edges.map((s: any) => s.node),
       })),
-    });
+    }));
   });
 }
 
@@ -339,7 +345,7 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
     const p = (mockProducts as Product[]).find(p => p.handle === handle);
     if (!p) return null;
     const copy = applyProductClaims(p.handle, p.description, "");
-    return { ...p, ...copy, images: p.image ? [p.image] : [] };
+    return withDisplayTitle({ ...p, ...copy, images: p.image ? [p.image] : [] });
   }
   const query = `{
     product(handle: "${handle}") {
@@ -383,7 +389,7 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
   const p = data.product;
   const images = p.images.edges.map((e: any) => e.node);
   const copy = applyProductClaims(p.handle, p.description, p.descriptionHtml ?? "");
-  return applyCurrentPrice({
+  return applyCurrentPrice(withDisplayTitle({
     id: p.id, title: p.title, description: copy.description, descriptionHtml: copy.descriptionHtml, handle: p.handle,
     priceRange: p.priceRange,
     image: images[0] ?? null,
@@ -393,5 +399,5 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
       name: g.node.name,
       sellingPlans: g.node.sellingPlans.edges.map((s: any) => s.node),
     })),
-  });
+  }));
 }

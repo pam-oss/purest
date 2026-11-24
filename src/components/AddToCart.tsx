@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
+import { displayProductTitle } from "@/lib/product-title";
 import type { Product, SellingPlan } from "@/lib/shopify";
 import { formatPrice } from "@/lib/utils";
 
 export default function AddToCart({ product }: { product: Product }) {
   const hasVariants = product.variants.length > 1;
   const isSizeProduct = product.variants.some((v) => /^\d+\s+servings?$/i.test(v.title.trim()));
-  const displayTitle = product.title.replace(/^10\s+servings?\s+/i, "");
+  const displayTitle = displayProductTitle(product.title);
   const defaultVariant = isSizeProduct
     ? product.variants.find((v) => /^10\s+servings?$/i.test(v.title.trim()))
     : undefined;

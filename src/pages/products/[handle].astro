@@ -2,9 +2,10 @@
 import Layout from "@/layouts/Layout.astro";
 import AddToCart from "@/components/AddToCart.tsx";
 import ProductCard from "@/components/ProductCard.tsx";
+import { flavorCopyFor } from "@/lib/flavor-copy";
 import { shopifyNumericId } from "@/lib/meta";
+import { displayProductTitle } from "@/lib/product-title";
 import { getProduct, getProducts } from "@/lib/shopify";
-import flavorCopy from "@/data/flavor-copy.json";
 import { citricAcidNoteFromImages, ingredientListFromImages } from "@/lib/citric-acid";
 
 export async function getStaticPaths() {
@@ -22,7 +23,7 @@ const ingredientBadge = isChocolate
     ? "Main ingredients are freeze-dried fruit and sea salt"
     : "Core ingredients are listed on the jar";
 const cleanLabelBadge = "No natural flavors, no maltodextrin, no artificial dyes, no anti-caking agents";
-const displayTitle = product?.title.replace(/^10\s+servings?\s+/i, "") ?? "";
+const displayTitle = displayProductTitle(product?.title ?? "");
 const hasServingSizeVariants = product?.variants.some((v) => /^\d+\s+servings?$/i.test(v.title.trim())) ?? false;
 
 if (!product) return Astro.redirect("/products");
@@ -30,16 +31,10 @@ if (!product) return Astro.redirect("/products");
 const citricNote = citricAcidNoteFromImages(product.images ?? []);
 const citricIngredientList = ingredientListFromImages(product.images ?? []);
 
-// 20 serving jars are their own Shopify products. Editorial flavor copy is stored
-// under the 10 serving handle for the same flavor.
-const flavorCopyAliases: Record<string, string> = {
-  "20-servings-ginger-lime": "10-count-ginger-limeaid",
-  "20-servings-hibiscus-lime": "10-count-hibiscus-lime",
-  "20-servings-chocolate-cordyceps": "10-count-chocolate-cordyceps-1",
-  "20-servings-passion-cherry": "10-serving-passion-cherry",
-  "20-servings-cranberry": "10-servings-cranberry",
-};
-const flavorCopyKey = flavorCopyAliases[handle ?? ""] ?? handle;
+// 20 serving jars share the 10 serving flavor story. The lookup accepts a
+// leading size (`20-servings-ginger-lime`, "20 Servings Ginger Lime") and a
+// trailing size (`ginger-lime-20-servings`, "Ginger Lime 20 Servings").
+const editorial = flavorCopyFor(handle ?? "", product?.title);
 
 // The 5 Day Kit is single serve vials, not a scooped jar. Keep its existing answer.
 const vialProduct = handle === "5-day-hydration-kit" || handle === "20-count-variety-pack";
@@ -73,7 +68,7 @@ const metaViewContent = viewedVariant
   ? {
       content_ids: [shopifyNumericId(viewedVariant.id)],
       content_type: "product" as const,
-      content_name: product.title,
+      content_name: displayTitle,
       contents: [
         {
           id: shopifyNumericId(viewedVariant.id),
@@ -87,7 +82,7 @@ const metaViewContent = viewedVariant
   : null;
 ---
 
-<Layout title={isChocolate ? `${product.title} in a Glass Jar | Purest` : `${product.title} Real Fruit Electrolyte in Glass Jar | Purest`} description={product.description}>
+<Layout title={isChocolate ? `${displayTitle} in a Glass Jar | Purest` : `${displayTitle} Real Fruit Electrolyte in Glass Jar | Purest`} description={product.description}>
 
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",
@@ -142,13 +137,13 @@ const metaViewContent = viewedVariant
                   <div
                     class={`gallery-slide-wrap absolute inset-0 w-full h-full items-center justify-center bg-white ${i === 0 ? 'flex' : 'hidden'}`}
                     data-src={img.url}
-                    data-alt={img.altText ?? product.title}
+                    data-alt={img.altText ?? displayTitle}
                     data-index={String(i)}
                     aria-hidden={i === 0 ? 'false' : 'true'}
                   >
                     <img
                       src={img.url}
-                      alt={img.altText ?? product.title}
+                      alt={img.altText ?? displayTitle}
                       class="block w-full h-full object-contain p-3"
                       draggable="false"
                       loading={i === 0 ? 'eager' : 'lazy'}
@@ -243,7 +238,7 @@ const metaViewContent = viewedVariant
                   >
                     <img
                       src={img.url}
-                      alt={img.altText ?? product.title}
+                      alt={img.altText ?? displayTitle}
                       class="w-full h-full object-contain"
                     />
                   </button>
@@ -337,7 +332,7 @@ const metaViewContent = viewedVariant
 
   {/* Flavor story + details section */}
   {(() => {
-    const copy = (flavorCopy as any)[flavorCopyKey];
+    const copy = editorial;
     if (!copy) return null;
     return (
       <section class="bg-stone-50 border-t border-stone-100">
@@ -391,7 +386,7 @@ const metaViewContent = viewedVariant
   {/* Judge.me All Reviews */}
   <section class="container py-12 border-t border-stone-100">
     <h2 class="font-serif text-2xl mb-6">Customer reviews</h2>
-    <div class="jdgm-widget jdgm-review-widget jdgm-outside-widget" data-id={shopifyProductId} data-product-title={product.title}></div>
+    <div class="jdgm-widget jdgm-review-widget jdgm-outside-widget" data-id={shopifyProductId} data-product-title={displayTitle}></div>
   </section>
 
   {/* FAQ */}
