@@ -339,8 +339,6 @@ const metaViewContent = viewedVariant
   {(() => {
     const copy = (flavorCopy as any)[flavorCopyKey];
     if (!copy) return null;
-    const useStandardMixing = !["20-count-variety-pack", "free-purest-glass-water-bottle"].includes(flavorCopyKey ?? "");
-    const howToUse = useStandardMixing ? jarUsage : copy.howToUse;
     return (
       <section class="bg-stone-50 border-t border-stone-100">
         <div class="container py-12 md:py-16 grid gap-10 md:grid-cols-3">
@@ -364,10 +362,10 @@ const metaViewContent = viewedVariant
                 <p class="text-foreground/80 italic">{copy.flavorNote}</p>
               </div>
             )}
-            {howToUse && (
+            {copy.howToUse && (
               <div>
                 <h3 class="font-serif text-xl mb-2">How to use</h3>
-                <p class="text-foreground/70 leading-relaxed">{howToUse}</p>
+                <p class="text-foreground/70 leading-relaxed">{copy.howToUse}</p>
               </div>
             )}
           </div>
