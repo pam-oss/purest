@@ -1,5 +1,6 @@
 import { atom, computed } from "nanostores";
 import { shopifyNumericId, trackMetaEvent } from "@/lib/meta";
+import { displayProductTitle } from "@/lib/product-title";
 
 /**
  * Cart state shared across React islands.
@@ -40,7 +41,11 @@ function loadInitial(): CartItem[] {
   if (import.meta.env.SSR || typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as CartItem[]) : [];
+    if (!raw) return [];
+    return (JSON.parse(raw) as CartItem[]).map((item) => ({
+      ...item,
+      title: displayProductTitle(item.title),
+    }));
   } catch {
     return [];
   }
@@ -72,33 +77,36 @@ if (typeof window !== "undefined") {
 // --- Actions ---------------------------------------------------------------
 
 export function addToCart(item: Omit<CartItem, "quantity">, quantity = 1): void {
+  const titled = { ...item, title: displayProductTitle(item.title) };
   const current = $cart.get();
-  const existing = current.find((c) => c.variantId === item.variantId);
+  const existing = current.find((c) => c.variantId === titled.variantId);
   if (existing) {
     $cart.set(
       current.map((c) =>
-        c.variantId === item.variantId ? { ...c, quantity: c.quantity + quantity } : c,
+        c.variantId === titled.variantId
+          ? { ...c, title: titled.title, quantity: c.quantity + quantity }
+          : c,
       ),
     );
   } else {
-    $cart.set([...current, { ...item, quantity }]);
+    $cart.set([...current, { ...titled, quantity }]);
   }
   $cartOpen.set(true); // Open the drawer when something is added — instant feedback.
 
   // Every add button (product page, product card, homepage) comes through here.
-  const unitPrice = Number(item.price) || 0;
+  const unitPrice = Number(titled.price) || 0;
   void trackMetaEvent("AddToCart", {
-    content_ids: [shopifyNumericId(item.variantId)],
+    content_ids: [shopifyNumericId(titled.variantId)],
     content_type: "product",
-    content_name: item.title,
+    content_name: titled.title,
     contents: [
       {
-        id: shopifyNumericId(item.variantId),
+        id: shopifyNumericId(titled.variantId),
         quantity,
         item_price: Math.round(unitPrice * 100) / 100,
       },
     ],
-    currency: item.currencyCode || "USD",
+    currency: titled.currencyCode || "USD",
     value: Math.round(unitPrice * quantity * 100) / 100,
     num_items: quantity,
   });

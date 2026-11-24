@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
+import { displayProductTitle } from "@/lib/product-title";
 import type { Product } from "@/lib/shopify";
 import { formatPrice } from "@/lib/utils";
 
@@ -12,6 +13,7 @@ interface Props {
  * as the product card.
  */
 export default function FeaturedProduct({ product }: Props) {
+  const displayTitle = displayProductTitle(product.title);
   const variant = product.variants.find((v) => v.availableForSale) ?? product.variants[0];
   const price = variant?.price ?? product.priceRange.minVariantPrice;
   const soldOut = !variant?.availableForSale;
@@ -21,7 +23,7 @@ export default function FeaturedProduct({ product }: Props) {
     addToCart({
       variantId: variant.id,
       productId: product.id,
-      title: product.title,
+      title: displayTitle,
       variantTitle: variant.title,
       price: parseFloat(price.amount),
       currencyCode: price.currencyCode,
@@ -35,14 +37,14 @@ export default function FeaturedProduct({ product }: Props) {
         {product.image && (
           <img
             src={product.image.url}
-            alt={product.image.altText ?? product.title}
+            alt={product.image.altText ?? displayTitle}
             className="h-full w-full object-cover"
           />
         )}
       </div>
       <div>
         <h2 className="font-serif text-3xl tracking-tight md:text-4xl">
-          {product.title}
+          {displayTitle}
         </h2>
         <p className="mt-1 text-lg text-muted-foreground">
           {formatPrice(price.amount, price.currencyCode)}
