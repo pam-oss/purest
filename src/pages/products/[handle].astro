@@ -30,6 +30,22 @@ if (!product) return Astro.redirect("/products");
 const citricNote = citricAcidNoteFromImages(product.images ?? []);
 const citricIngredientList = ingredientListFromImages(product.images ?? []);
 
+// 20 serving jars are their own Shopify products. Editorial flavor copy is stored
+// under the 10 serving handle for the same flavor.
+const flavorCopyAliases: Record<string, string> = {
+  "20-servings-ginger-lime": "10-count-ginger-limeaid",
+  "20-servings-hibiscus-lime": "10-count-hibiscus-lime",
+  "20-servings-chocolate-cordyceps": "10-count-chocolate-cordyceps-1",
+  "20-servings-passion-cherry": "10-serving-passion-cherry",
+  "20-servings-cranberry": "10-servings-cranberry",
+};
+const flavorCopyKey = flavorCopyAliases[handle ?? ""] ?? handle;
+
+// The 5 Day Kit is single serve vials, not a scooped jar. Keep its existing answer.
+const vialProduct = handle === "5-day-hydration-kit" || handle === "20-count-variety-pack";
+const jarUsage =
+  "Mix 1 scoop into 8 to 16 oz of water and drink. Like it stronger? Use 2 scoops. There's no wrong way to hydrate, so adjust the water or the scoops to fit your taste and your day.";
+
 // Fetch other flavors to show in the "Try Other Flavors" section
 const allProducts = await getProducts();
 const flavorHandles = ['10-count-ginger-limeaid','10-count-hibiscus-lime','10-serving-passion-cherry','10-servings-cranberry','10-count-chocolate-cordyceps-1'];
@@ -321,7 +337,7 @@ const metaViewContent = viewedVariant
 
   {/* Flavor story + details section */}
   {(() => {
-    const copy = (flavorCopy as any)[product.handle];
+    const copy = (flavorCopy as any)[flavorCopyKey];
     if (!copy) return null;
     return (
       <section class="bg-stone-50 border-t border-stone-100">
@@ -383,7 +399,7 @@ const metaViewContent = viewedVariant
     <h2 class="font-serif text-2xl mb-6">Common questions</h2>
     <div class="divide-y divide-border max-w-2xl" id="faq-list">
       {[
-        { q: "How much should I use?", a: "One scoop (one serving) mixed into 12 to 16 oz of cold water. Most people drink 1 to 2 servings per day. More if you're active, sweating, or at altitude." },
+        { q: "How much should I use?", a: vialProduct ? "One scoop (one serving) mixed into 12 to 16 oz of cold water. Most people drink 1 to 2 servings per day. More if you're active, sweating, or at altitude." : jarUsage },
         { q: "Is there any sugar in this?", a: isChocolate ? "Zero added sugar. The sweetness comes from stevia and monk fruit. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." : "Zero added sugar. The sweetness comes from two sources: real freeze-dried fruit, and a small amount of stevia and monk fruit. Both are completely natural. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." },
         { q: "How is this different from LMNT, Liquid IV, or other brands?", a: isChocolate ? "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus organic cacao and organic cordyceps. No artificial anything." : "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus real freeze-dried fruit. No artificial anything." },
         { q: "Does the subscription auto-renew?", a: "Yes. Your subscription ships on your chosen schedule and can be paused or cancelled anytime with no fees. Manage it directly from your account or email us." },
