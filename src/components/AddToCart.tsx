@@ -22,10 +22,18 @@ export default function AddToCart({ product }: { product: Product }) {
     setSelectedVariantId(nextVariant.id);
   }
 
+  // Jars subscribe on the flavor page. The bottle, the kits, and other
+  // non consumable products that share this form are one time only.
+  const oneTimeOnly = new Set([
+    "free-purest-glass-water-bottle",
+    "5-day-hydration-kit",
+    "the-hydration-ritual-kit",
+  ]).has(product.handle);
+
   // Flatten all selling plans from all groups
-  const allPlans: SellingPlan[] = (product.sellingPlanGroups ?? []).flatMap(
-    (g) => g.sellingPlans,
-  );
+  const allPlans: SellingPlan[] = oneTimeOnly
+    ? []
+    : (product.sellingPlanGroups ?? []).flatMap((g) => g.sellingPlans);
   const hasSubscription = allPlans.length > 0;
 
   const [purchaseType, setPurchaseType] = useState<"one-time" | "subscribe">(
