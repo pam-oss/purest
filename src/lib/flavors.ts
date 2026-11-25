@@ -108,6 +108,30 @@ function fileName(url: string): string {
   return decodeURIComponent((url.split("?")[0] ?? url).split("/").pop() ?? "").toLowerCase();
 }
 
+/** Jar, glass, and fruit in one frame. These are the Shopify lifestyle files, not edited. */
+export function isLifestyleImage(url: string): boolean {
+  const file = fileName(url);
+  return file.includes("passion-size") || file.includes("uniform");
+}
+
+/** Plain jar on white. Lifestyle, ingredient, and nutrition frames are not jar tiles. */
+export function isPlainJarImage(url: string): boolean {
+  const file = fileName(url);
+  if (isLifestyleImage(url)) return false;
+  if (/ingredient|nutrition|how-to-use|how_to_use/.test(file)) return false;
+  return file.includes("front");
+}
+
+/** Puts the lifestyle frame first. Leaves the Shopify order alone when none exists. */
+export function withLifestyleFirst(images: ProductImage[]): ProductImage[] {
+  const index = images.findIndex((image) => isLifestyleImage(image.url));
+  if (index <= 0) return images;
+  const next = images.slice();
+  const [lifestyle] = next.splice(index, 1);
+  next.unshift(lifestyle);
+  return next;
+}
+
 /** Ingredient and nutrition files for the selected jar. Sized files must match that jar. */
 export function labelImagesFor(images: ProductImage[], servings: number): ProductImage[] {
   return images

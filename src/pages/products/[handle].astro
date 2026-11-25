@@ -8,6 +8,7 @@ import {
   FLAVOR_GROUPS,
   FLAVOR_PAGE_HEADING,
   flavorBlurbs,
+  isPlainJarImage,
   jarLabel,
   labelImagesFor,
   matchFlavor,
@@ -130,12 +131,14 @@ if (flavorMatch) {
     const tenProduct = allProducts.find((item) => item.handle === group.handles[10]);
     const twentyProduct = allProducts.find((item) => item.handle === group.handles[20]);
     if (!tenProduct && !twentyProduct) return [];
+    const jar20 = twentyProduct?.image?.url && isPlainJarImage(twentyProduct.image.url) ? twentyProduct.image.url : null;
+    const jar10 = tenProduct?.image?.url && isPlainJarImage(tenProduct.image.url) ? tenProduct.image.url : null;
     return [{
       name: group.name,
       handle10: group.handles[10],
       handle20: twentyProduct ? group.handles[20] : null,
-      image10: tenProduct?.image?.url ?? null,
-      image20: twentyProduct?.image?.url ?? null,
+      image10: jar10 ?? jar20,
+      image20: jar20 ?? jar10,
       current: group.name === flavorMatch.name,
       badge: group.badge ?? null,
     }];

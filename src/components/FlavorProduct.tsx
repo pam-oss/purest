@@ -2,7 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { Check, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
-import type { FlavorPageModel, FlavorSizeOption } from "@/lib/flavors";
+import { withLifestyleFirst, type FlavorPageModel, type FlavorSizeOption } from "@/lib/flavors";
 import { shopifyNumericId, trackMetaEvent } from "@/lib/meta";
 import type { ProductImage, SellingPlan } from "@/lib/shopify";
 import { formatPrice } from "@/lib/utils";
@@ -113,13 +113,13 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
         <ReviewSummary review={review} />
 
         <div>
-          <h1 className="font-serif text-3xl leading-tight tracking-tight md:text-4xl">{heading}</h1>
-          <p className="mt-2 text-base text-foreground/80">{subtitle}</p>
+          <h1 className="font-serif text-3xl tracking-tight md:text-4xl">{heading}</h1>
+          <p className="mt-3 text-base font-medium">{subtitle}</p>
         </div>
 
         {(shortCopy || moreCopy) && (
           <div>
-            <p className={`text-sm leading-relaxed text-foreground/80 ${expanded ? "" : "line-clamp-2"}`}>
+            <p className={`text-base leading-relaxed text-foreground/75 ${expanded ? "" : "line-clamp-2"}`}>
               {expanded && moreCopy ? `${shortCopy} ${moreCopy}` : shortCopy}
             </p>
             {moreCopy && (
@@ -163,41 +163,41 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                 }`}
               >
                 <span className="text-sm font-medium">{size.label}</span>
-                <span className="mt-1 text-base font-semibold">{formatPrice(price.amount, price.currencyCode)}</span>
+                <span className="mt-1 text-2xl font-medium">{formatPrice(price.amount, price.currencyCode)}</span>
               </a>
             );
           })}
         </div>
 
-        <ul className="grid grid-cols-3 gap-x-2 gap-y-3 pt-2 sm:grid-cols-5">
+        <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-3 lg:gap-5 lg:overflow-visible lg:pb-0">
           {tiles.map((tile) => {
             const href = servings === 20 && tile.handle20 ? `/products/${tile.handle20}` : `/products/${tile.handle10}`;
             const image = servings === 20 ? tile.image20 ?? tile.image10 : tile.image10 ?? tile.image20;
             return (
-              <li key={tile.name} className="min-w-0">
+              <li key={tile.name} className="w-44 shrink-0 snap-start lg:w-auto">
                 <a href={href} aria-current={tile.current ? "true" : undefined} className="block text-center">
                   <span
-                    className={`relative block aspect-square overflow-hidden rounded-md border-2 bg-white ${
-                      tile.current ? "border-foreground" : "border-border"
+                    className={`relative block aspect-square overflow-hidden rounded-md border bg-secondary p-4 ${
+                      tile.current ? "border-2 border-foreground" : "border-border"
                     }`}
                   >
                     {image ? (
-                      <img src={image} alt="" className="h-full w-full object-contain p-1" />
+                      <img src={image} alt="" className="h-full w-full object-contain" />
                     ) : (
-                      <span className="block h-full w-full bg-secondary" />
+                      <span className="block h-full w-full" />
                     )}
                     {tile.badge && (
-                      <span className="absolute inset-x-0 top-1 z-10 mx-auto w-max max-w-[calc(100%-0.35rem)] bg-foreground px-1 py-0.5 text-center text-[8px] font-semibold leading-none text-background sm:text-[10px]">
+                      <span className="absolute inset-x-0 top-2 z-10 mx-auto w-max max-w-[calc(100%-0.75rem)] bg-foreground px-2 py-0.5 text-center text-xs font-semibold leading-none tracking-wide text-background">
                         {tile.badge}
                       </span>
                     )}
                     {tile.current && (
-                      <span className="absolute bottom-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background">
+                      <span className="absolute bottom-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background">
                         <Check className="h-3 w-3" strokeWidth={3} />
                       </span>
                     )}
                   </span>
-                  <span className="mt-1 block text-xs leading-tight">{tile.name}</span>
+                  <span className="mt-3 block font-serif text-base tracking-tight">{tile.name}</span>
                 </a>
               </li>
             );
@@ -215,7 +215,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
             >
               <RadioMark selected={purchaseType === "one-time"} />
               <span className="flex-1 text-sm font-medium">One time purchase</span>
-              <span className="text-sm font-semibold">{formatPrice(unit, currency)}</span>
+              <span className="text-sm font-medium">{formatPrice(unit, currency)}</span>
             </button>
             <button
               type="button"
@@ -231,7 +231,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                   <span className="mt-0.5 block text-xs text-muted-foreground">{selectedPlan.name}</span>
                 )}
               </span>
-              <span className="text-right text-sm font-semibold">
+              <span className="text-right text-sm font-medium">
                 {subscribeAmount !== null ? formatPrice(subscribeAmount, currency) : formatPrice(unit, currency)}
               </span>
             </button>
@@ -279,7 +279,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
               <Plus className="h-4 w-4" />
             </button>
           </div>
-          <Button size="lg" className="h-12 flex-1 text-base" disabled={soldOut} onClick={handleAdd}>
+          <Button size="lg" className="h-14 flex-1 rounded-full text-base" disabled={soldOut} onClick={handleAdd}>
             {soldOut ? "Sold out" : purchaseType === "subscribe" && hasSubscription ? "Subscribe and save" : "Add to cart"}
           </Button>
         </div>
@@ -302,8 +302,8 @@ function plansFor(size: FlavorSizeOption | undefined): SellingPlan[] {
 }
 
 function galleryImages(size: FlavorSizeOption): ProductImage[] {
-  if (size.product.images.length > 0) return size.product.images;
-  return size.product.image ? [size.product.image] : [];
+  const images = size.product.images.length > 0 ? size.product.images : size.product.image ? [size.product.image] : [];
+  return withLifestyleFirst(images);
 }
 
 function discountPercent(plan: SellingPlan): number {
