@@ -11,7 +11,6 @@ import {
   jarLabel,
   labelImagesFor,
   matchFlavor,
-  perServingLabel,
   withoutDashes,
   type FlavorPageModel,
   type FlavorSizeOption,
@@ -101,16 +100,11 @@ const metaViewContent = viewedVariant
   : null;
 
 function sizeOption(item: DetailedProduct, servings: 10 | 20): FlavorSizeOption {
-  const variant = item.variants.find((entry) => entry.availableForSale) ?? item.variants[0];
-  const amount = variant?.price.amount ?? item.priceRange.minVariantPrice.amount;
-  const currency = variant?.price.currencyCode ?? item.priceRange.minVariantPrice.currencyCode;
   const ingredients = ingredientListFromImages(item.images);
   const note = citricAcidNoteFromImages(item.images);
   return {
     servings,
     label: jarLabel(servings),
-    bestValue: servings === 20,
-    perServing: perServingLabel(amount, servings, currency),
     ingredientText: ingredients ? withoutDashes(ingredients) : null,
     citricNote: note ? withoutDashes(note) : null,
     labelImages: labelImagesFor(item.images, servings),
@@ -143,6 +137,7 @@ if (flavorMatch) {
       image10: tenProduct?.image?.url ?? null,
       image20: twentyProduct?.image?.url ?? null,
       current: group.name === flavorMatch.name,
+      badge: group.badge ?? null,
     }];
   });
   const reviewOwner = ten ?? product;

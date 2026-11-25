@@ -6,7 +6,6 @@
 import { flavorCopyFor } from "@/lib/flavor-copy";
 import type { ReviewSummary } from "@/lib/reviews";
 import type { Product, ProductImage } from "@/lib/shopify";
-import { formatPrice } from "@/lib/utils";
 
 export interface FlavorTile {
   name: string;
@@ -15,13 +14,12 @@ export interface FlavorTile {
   image10: string | null;
   image20: string | null;
   current: boolean;
+  badge: string | null;
 }
 
 export interface FlavorSizeOption {
   servings: 10 | 20;
   label: string;
-  bestValue: boolean;
-  perServing: string;
   ingredientText: string | null;
   citricNote: string | null;
   labelImages: ProductImage[];
@@ -44,29 +42,34 @@ export const FLAVOR_PAGE_HEADING = "PUREST Real Fruit, Real Salt Electrolytes";
 export interface FlavorGroup {
   name: string;
   handles: { 10: string; 20: string };
+  badge?: string;
 }
 
-/** Tile order matches the shopper facing flavor list. */
+/** Tile order is popularity: Ginger Lime, then Hibiscus Lime, then the rest. */
 export const FLAVOR_GROUPS: FlavorGroup[] = [
-  {
-    name: "Chocolate Cordyceps",
-    handles: { 10: "10-count-chocolate-cordyceps-1", 20: "20-servings-chocolate-cordyceps" },
-  },
-  {
-    name: "Cranberry",
-    handles: { 10: "10-servings-cranberry", 20: "20-servings-cranberry" },
-  },
   {
     name: "Ginger Lime",
     handles: { 10: "10-count-ginger-limeaid", 20: "20-servings-ginger-lime" },
+    badge: "Most Popular",
   },
   {
     name: "Hibiscus Lime",
     handles: { 10: "10-count-hibiscus-lime", 20: "20-servings-hibiscus-lime" },
   },
   {
+    name: "Chocolate Cordyceps",
+    handles: { 10: "10-count-chocolate-cordyceps-1", 20: "20-servings-chocolate-cordyceps" },
+    badge: "Cult Favorite",
+  },
+  {
+    name: "Cranberry",
+    handles: { 10: "10-servings-cranberry", 20: "20-servings-cranberry" },
+    badge: "Lightest",
+  },
+  {
     name: "Passion Cherry",
     handles: { 10: "10-serving-passion-cherry", 20: "20-servings-passion-cherry" },
+    badge: "Sweetest",
   },
 ];
 
@@ -87,12 +90,6 @@ export function matchFlavor(handle: string): (FlavorGroup & { servings: 10 | 20 
 
 export function jarLabel(servings: 10 | 20): string {
   return servings === 20 ? "20 Serving Jar" : "10 Serving Jar";
-}
-
-export function perServingLabel(amount: string, servings: number, currency: string): string {
-  const each = parseFloat(amount) / servings;
-  if (!Number.isFinite(each)) return "";
-  return `${formatPrice(each, currency)} per serving`;
 }
 
 export function flavorBlurbs(

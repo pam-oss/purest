@@ -158,29 +158,23 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                   event.preventDefault();
                   chooseSize(size.servings);
                 }}
-                className={`relative flex min-h-[6.25rem] flex-col justify-center rounded-md border px-3 pb-3 pt-5 text-left transition-colors ${
+                className={`relative flex min-h-[4.75rem] flex-col justify-center rounded-md border px-3 py-3 text-left transition-colors ${
                   active ? "border-foreground bg-secondary" : "border-border bg-background hover:border-foreground/40"
                 }`}
               >
-                {size.bestValue && (
-                  <span className="absolute right-2 top-1.5 bg-foreground px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-background">
-                    BEST VALUE
-                  </span>
-                )}
                 <span className="text-sm font-medium">{size.label}</span>
                 <span className="mt-1 text-base font-semibold">{formatPrice(price.amount, price.currencyCode)}</span>
-                {size.perServing && <span className="text-xs text-muted-foreground">{size.perServing}</span>}
               </a>
             );
           })}
         </div>
 
-        <ul className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+        <ul className="grid grid-cols-3 gap-x-2 gap-y-3 pt-2 sm:grid-cols-5">
           {tiles.map((tile) => {
             const href = servings === 20 && tile.handle20 ? `/products/${tile.handle20}` : `/products/${tile.handle10}`;
             const image = servings === 20 ? tile.image20 ?? tile.image10 : tile.image10 ?? tile.image20;
             return (
-              <li key={tile.name}>
+              <li key={tile.name} className="min-w-0">
                 <a href={href} aria-current={tile.current ? "true" : undefined} className="block text-center">
                   <span
                     className={`relative block aspect-square overflow-hidden rounded-md border-2 bg-white ${
@@ -192,8 +186,13 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                     ) : (
                       <span className="block h-full w-full bg-secondary" />
                     )}
+                    {tile.badge && (
+                      <span className="absolute inset-x-0 top-1 z-10 mx-auto w-max max-w-[calc(100%-0.35rem)] bg-foreground px-1 py-0.5 text-center text-[8px] font-semibold leading-none text-background sm:text-[10px]">
+                        {tile.badge}
+                      </span>
+                    )}
                     {tile.current && (
-                      <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background">
+                      <span className="absolute bottom-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background">
                         <Check className="h-3 w-3" strokeWidth={3} />
                       </span>
                     )}
