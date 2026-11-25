@@ -444,7 +444,7 @@ const productSchema = flavorView
 
   {/* Try Other Flavors. Flavor jars use the tile grid in the buy column instead. */}
   {!flavorView && otherFlavors.length > 0 && (
-    <section class="container py-10 border-t border-stone-100">
+    <section class="container py-10 border-t border-neutral-200">
       <h2 class="font-serif text-2xl mb-2">Try other flavors</h2>
       <p class="text-sm text-foreground/60 mb-8">Same formula, different flavor. Add any to your cart below.</p>
       <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -460,13 +460,13 @@ const productSchema = flavorView
     const copy = editorial;
     if (!copy) return null;
     return (
-      <section class="bg-stone-50 border-t border-stone-100">
+      <section class="border-t border-neutral-200 bg-white">
         <div class="container py-12 md:py-16 grid gap-10 md:grid-cols-3">
 
           {/* Story */}
           <div class="md:col-span-2 space-y-8">
             {copy.badge && (
-              <div class="inline-block bg-stone-900 text-stone-50 text-xs font-semibold px-3 py-1 rounded-full tracking-wide">
+              <div class="inline-block rounded-full bg-black px-3 py-1 text-xs font-semibold tracking-wide text-white">
                 {withoutDashes(copy.badge)}
               </div>
             )}
@@ -477,7 +477,7 @@ const productSchema = flavorView
               </div>
             )}
             {copy.flavorNote && (
-              <div class="border-l-4 border-stone-300 pl-4">
+              <div class="border-l-4 border-black pl-4">
                 <p class="text-sm font-medium text-foreground/50 uppercase tracking-wider mb-1">Taste notes</p>
                 <p class="text-foreground/80 italic">{withoutDashes(copy.flavorNote)}</p>
               </div>
@@ -497,7 +497,7 @@ const productSchema = flavorView
               <ul class="space-y-2">
                 {copy.bestFor.map((item: string) => (
                   <li class="flex items-center gap-2 text-foreground/70 text-sm">
-                    <span class="text-stone-400">→</span> {withoutDashes(item)}
+                    <span class="text-neutral-400">→</span> {withoutDashes(item)}
                   </li>
                 ))}
               </ul>
@@ -509,7 +509,7 @@ const productSchema = flavorView
   })()}
 
   {/* Judge.me All Reviews */}
-  <section class="container py-12 border-t border-stone-100">
+  <section class="container py-12 border-t border-neutral-200">
     <h2 class="font-serif text-2xl mb-6">Customer reviews</h2>
     <div class="jdgm-widget jdgm-review-widget jdgm-outside-widget" data-id={reviewWidgetId} data-product-title={flavorView?.flavorName ?? displayTitle}></div>
   </section>

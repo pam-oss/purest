@@ -158,8 +158,8 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                   event.preventDefault();
                   chooseSize(size.servings);
                 }}
-                className={`relative flex min-h-[4.75rem] flex-col justify-center rounded-md border px-3 py-3 text-left transition-colors ${
-                  active ? "border-foreground bg-secondary" : "border-border bg-background hover:border-foreground/40"
+                className={`relative flex flex-col justify-center rounded-md bg-white px-3 py-3 text-left transition-colors ${
+                  active ? "border-2 border-black" : "border border-neutral-300 hover:border-black"
                 }`}
               >
                 <span className="text-sm font-medium">{size.label}</span>
@@ -187,8 +187,8 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
               <li key={tile.name} className="w-52 shrink-0 snap-start lg:w-auto">
                 <a href={href} aria-current={tile.current ? "true" : undefined} className="group block text-center">
                   <span
-                    className={`relative block aspect-square overflow-hidden rounded-lg bg-secondary p-6 shadow-sm transition duration-300 group-hover:-translate-y-0.5 group-hover:shadow-md ${
-                      tile.current ? "ring-1 ring-foreground" : "ring-1 ring-border"
+                    className={`relative block aspect-square overflow-hidden rounded-lg bg-white p-6 ${
+                      tile.current ? "ring-2 ring-black" : "ring-1 ring-black"
                     }`}
                   >
                     {image ? (
@@ -210,12 +210,12 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
         </ul>
 
         {hasSubscription && (
-          <div className="overflow-hidden rounded-xl border border-border">
+          <div className="overflow-hidden rounded-xl border border-neutral-300 bg-white">
             <button
               type="button"
               onClick={() => setPurchaseType("one-time")}
-              className={`flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left ${
-                purchaseType === "one-time" ? "bg-secondary" : "hover:bg-secondary"
+              className={`flex w-full items-center gap-3 border-b border-neutral-300 bg-white px-4 py-3 text-left ${
+                purchaseType === "one-time" ? "bg-neutral-100" : "hover:bg-neutral-100"
               }`}
             >
               <RadioMark selected={purchaseType === "one-time"} />
@@ -225,8 +225,8 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
             <button
               type="button"
               onClick={() => setPurchaseType("subscribe")}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left ${
-                purchaseType === "subscribe" ? "bg-secondary" : "hover:bg-secondary"
+              className={`flex w-full items-center gap-3 bg-white px-4 py-3 text-left ${
+                purchaseType === "subscribe" ? "bg-neutral-100" : "hover:bg-neutral-100"
               }`}
             >
               <RadioMark selected={purchaseType === "subscribe"} />
@@ -241,7 +241,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
               </span>
             </button>
             {purchaseType === "subscribe" && plans.length > 1 && (
-              <div className="border-t border-border px-4 py-3">
+              <div className="border-t border-neutral-300 bg-white px-4 py-3">
                 <label className="mb-1 block text-xs text-muted-foreground" htmlFor="delivery-frequency">
                   Deliver every
                 </label>
@@ -249,7 +249,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                   id="delivery-frequency"
                   value={planId}
                   onChange={(event) => setPlanId(event.target.value)}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm"
                 >
                   {plans.map((plan) => (
                     <option key={plan.id} value={plan.id}>
@@ -263,7 +263,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
         )}
 
         <div className="flex items-center gap-2">
-          <div className="inline-flex items-center rounded-full border border-border">
+          <div className="inline-flex items-center rounded-full border border-neutral-300 bg-white">
             <button
               type="button"
               aria-label="Decrease quantity"
@@ -428,7 +428,7 @@ function Gallery({ images, label }: { images: ProductImage[]; label: string }) {
 
   if (count === 0) {
     return (
-      <div className="flex aspect-square items-center justify-center rounded-lg bg-secondary text-sm text-muted-foreground">
+      <div className="flex aspect-square items-center justify-center rounded-lg bg-white text-sm text-muted-foreground ring-1 ring-black">
         No image
       </div>
     );
