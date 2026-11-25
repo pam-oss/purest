@@ -118,25 +118,23 @@ export default function ProductCard({ product }: Props) {
 
   return (
     <article className="group flex flex-col">
-      <a href={`/products/${product.handle}`} className="block relative">
-        {isBundle && (
-          <div className="absolute top-3 left-3 z-10 bg-foreground text-background text-xs font-medium px-3 py-1 rounded-full">
-            Best Value
-          </div>
-        )}
-        <div className="aspect-square overflow-hidden rounded-lg bg-white">
+      <a href={`/products/${product.handle}`} className="block">
+        <div className="aspect-square overflow-hidden rounded-lg bg-white p-8 ring-1 ring-black/20 sm:p-12">
           {product.image ? (
             <img
               src={product.image.url}
               alt={product.image.altText ?? displayTitle}
               loading="lazy"
-              className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-[1.02]"
+              className="h-full w-full object-contain"
             />
           ) : (
             <div className="h-full w-full" />
           )}
         </div>
-        <div className="mt-4">
+        <div className="mt-5">
+          {isBundle && (
+            <p className="mb-2 text-xs uppercase tracking-widest text-muted-foreground">Best Value</p>
+          )}
           <div className="flex items-baseline justify-between gap-2">
             <h3 className="text-base font-medium">{displayTitle}</h3>
             <div className="flex items-baseline gap-1.5 tabular-nums">
@@ -153,7 +151,7 @@ export default function ProductCard({ product }: Props) {
             </div>
           </div>
           {isBundle && (
-            <p className="text-xs font-medium text-green-700 mt-0.5">You save $17.98 vs. buying separately</p>
+            <p className="mt-0.5 text-xs font-medium text-muted-foreground">You save $17.98 vs. buying separately</p>
           )}
           <div className="mt-2" aria-label="Customer rating">
             <div
@@ -182,7 +180,7 @@ export default function ProductCard({ product }: Props) {
             onClick={handleAdd}
             disabled={soldOut || !isHydrated}
             aria-label={justAdded ? `${displayTitle} added to cart` : `Add ${displayTitle} to cart for ${formatPrice(price.amount, price.currencyCode)}`}
-            className="flex items-center justify-between w-full rounded-full border border-input bg-background px-5 py-2.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
+            className="flex items-center justify-between w-full rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-medium transition-colors hover:border-black disabled:opacity-50"
           >
             <span className="flex items-center gap-1.5">
               <span className="text-xs">{justAdded ? "✓" : "↗"}</span> {justAdded ? "Added" : "One time"}
@@ -208,7 +206,7 @@ export default function ProductCard({ product }: Props) {
             </div>
           ) : (
             /* Frequency picker — expands in place */
-            <div className="rounded-2xl border border-foreground/20 bg-stone-50 p-3 flex flex-col gap-2">
+            <div className="flex flex-col gap-2 rounded-2xl border border-neutral-300 bg-white p-3">
               <p className="text-xs font-medium text-foreground/60 uppercase tracking-wide">Delivery frequency</p>
               <div className="flex gap-2 flex-wrap">
                 {allPlans.map((plan) => (

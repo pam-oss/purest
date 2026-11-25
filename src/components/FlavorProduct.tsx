@@ -179,16 +179,16 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
           </p>
         </div>
 
-        <ul className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:pb-0">
+        <ul className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-3 lg:gap-8 lg:overflow-visible lg:pb-0">
           {tiles.map((tile) => {
             const href = servings === 20 && tile.handle20 ? `/products/${tile.handle20}` : `/products/${tile.handle10}`;
             const image = servings === 20 ? tile.image20 ?? tile.image10 : tile.image10 ?? tile.image20;
             return (
-              <li key={tile.name} className="w-52 shrink-0 snap-start lg:w-auto">
-                <a href={href} aria-current={tile.current ? "true" : undefined} className="group block text-center">
+              <li key={tile.name} className="w-72 shrink-0 snap-start lg:w-auto">
+                <a href={href} aria-current={tile.current ? "true" : undefined} className="block text-center">
                   <span
-                    className={`relative block aspect-square overflow-hidden rounded-lg bg-white p-6 ${
-                      tile.current ? "ring-2 ring-black" : "ring-1 ring-black"
+                    className={`relative block aspect-square overflow-hidden rounded-lg bg-white p-12 sm:p-14 ${
+                      tile.current ? "ring-2 ring-black" : "ring-1 ring-black/25"
                     }`}
                   >
                     {image ? (
@@ -198,9 +198,9 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                     )}
                   </span>
                   {tile.badge && (
-                    <span className="mt-4 block font-serif text-sm italic text-foreground/60">{tile.badge}</span>
+                    <span className="mt-5 block text-xs uppercase tracking-widest text-muted-foreground">{tile.badge}</span>
                   )}
-                  <span className={`${tile.badge ? "mt-1" : "mt-4"} block font-serif text-base tracking-tight`}>
+                  <span className={`${tile.badge ? "mt-1.5" : "mt-5"} block font-serif text-base tracking-tight`}>
                     {tile.name}
                   </span>
                 </a>
