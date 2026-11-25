@@ -124,7 +124,7 @@ export default function AddToCart({ product }: { product: Product }) {
                 <span className="w-2 h-2 rounded-full bg-foreground block" />
               )}
             </span>
-            <span className="text-sm font-medium">One-time purchase</span>
+            <span className="text-sm font-medium">One time purchase</span>
           </button>
 
           {/* Subscribe option */}

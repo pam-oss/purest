@@ -5,6 +5,8 @@
 interface ImportMetaEnv {
   readonly PUBLIC_SHOPIFY_STORE_DOMAIN: string;
   readonly PUBLIC_SHOPIFY_STOREFRONT_TOKEN: string;
+  /** Local preview only. Loads the public Shopify catalog when the Storefront token is absent. */
+  readonly PUBLIC_PUREST_PUBLIC_CATALOG?: string;
   /** Meta dataset / pixel id. Public. Falls back to the Purest Electrolyte dataset. */
   readonly PUBLIC_META_PIXEL_ID?: string;
   /** Meta's facebook-domain-verification code. Omit the tag when this is empty. */

@@ -1,13 +1,29 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import AddToCart from "@/components/AddToCart.tsx";
+import FlavorProduct from "@/components/FlavorProduct.tsx";
 import ProductCard from "@/components/ProductCard.tsx";
 import { flavorCopyFor } from "@/lib/flavor-copy";
+import {
+  FLAVOR_GROUPS,
+  FLAVOR_PAGE_HEADING,
+  flavorBlurbs,
+  isPlainJarImage,
+  jarLabel,
+  labelImagesFor,
+  matchFlavor,
+  withoutDashes,
+  type FlavorPageModel,
+  type FlavorSizeOption,
+} from "@/lib/flavors";
 import { shopifyNumericId } from "@/lib/meta";
 import { productPageTitle } from "@/lib/page-title";
 import { displayProductTitle } from "@/lib/product-title";
-import { getProduct, getProducts } from "@/lib/shopify";
+import { getReviewSummary } from "@/lib/reviews";
+import { getProduct, getProducts, type Product, type ProductImage } from "@/lib/shopify";
 import { citricAcidNoteFromImages, ingredientListFromImages } from "@/lib/citric-acid";
+
+type DetailedProduct = Product & { images: ProductImage[] };
 
 export async function getStaticPaths() {
   const products = await getProducts();
@@ -83,37 +99,142 @@ const metaViewContent = viewedVariant
       value: viewedPrice,
     }
   : null;
+
+function sizeOption(item: DetailedProduct, servings: 10 | 20): FlavorSizeOption {
+  const ingredients = ingredientListFromImages(item.images);
+  const note = citricAcidNoteFromImages(item.images);
+  return {
+    servings,
+    label: jarLabel(servings),
+    ingredientText: ingredients ? withoutDashes(ingredients) : null,
+    citricNote: note ? withoutDashes(note) : null,
+    labelImages: labelImagesFor(item.images, servings),
+    product: item,
+  };
+}
+
+const flavorMatch = matchFlavor(handle ?? "");
+let flavorView: FlavorPageModel | null = null;
+let reviewWidgetId = shopifyProductId;
+let schemaRating: { average: number; count: number } | null = null;
+
+if (flavorMatch) {
+  const otherServings: 10 | 20 = flavorMatch.servings === 10 ? 20 : 10;
+  const paired = await getProduct(flavorMatch.handles[otherServings]);
+  const ten = (flavorMatch.servings === 10 ? product : paired) as DetailedProduct | null;
+  const twenty = (flavorMatch.servings === 20 ? product : paired) as DetailedProduct | null;
+  const sizes = [ten ? sizeOption(ten, 10) : null, twenty ? sizeOption(twenty, 20) : null].filter(
+    (size): size is FlavorSizeOption => size !== null,
+  );
+  const blurbs = flavorBlurbs(product.handle, product.title, product.description);
+  const tiles = FLAVOR_GROUPS.flatMap((group) => {
+    const tenProduct = allProducts.find((item) => item.handle === group.handles[10]);
+    const twentyProduct = allProducts.find((item) => item.handle === group.handles[20]);
+    if (!tenProduct && !twentyProduct) return [];
+    const jar20 = twentyProduct?.image?.url && isPlainJarImage(twentyProduct.image.url) ? twentyProduct.image.url : null;
+    const jar10 = tenProduct?.image?.url && isPlainJarImage(tenProduct.image.url) ? tenProduct.image.url : null;
+    return [{
+      name: group.name,
+      handle10: group.handles[10],
+      handle20: twentyProduct ? group.handles[20] : null,
+      image10: jar10 ?? jar20,
+      image20: jar20 ?? jar10,
+      current: group.name === flavorMatch.name,
+      badge: group.badge ?? null,
+    }];
+  });
+  const reviewOwner = ten ?? product;
+  const review = await getReviewSummary(reviewOwner.id);
+  reviewWidgetId = shopifyNumericId(reviewOwner.id);
+  if (review && shopifyNumericId(reviewOwner.id) === shopifyNumericId(product.id)) {
+    schemaRating = review;
+  }
+  const initialServings = sizes.some((size) => size.servings === flavorMatch.servings)
+    ? flavorMatch.servings
+    : (sizes[0]?.servings ?? flavorMatch.servings);
+  flavorView = {
+    heading: FLAVOR_PAGE_HEADING,
+    flavorName: flavorMatch.name,
+    initialServings,
+    shortCopy: blurbs.shortCopy,
+    moreCopy: blurbs.moreCopy,
+    sizes,
+    tiles,
+    review,
+  };
+  if (metaViewContent) metaViewContent.content_name = flavorMatch.name;
+}
+
+const productSchema = flavorView
+  ? {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: flavorView.flavorName,
+      image: product.images.map((img) => img.url),
+      description: withoutDashes(product.description),
+      brand: { "@type": "Brand", name: "Purest Electrolyte" },
+      ...(schemaRating
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: schemaRating.average.toFixed(2),
+              reviewCount: schemaRating.count,
+            },
+          }
+        : {}),
+      offers: flavorView.sizes.map((size) => {
+        const variant = size.product.variants.find((entry) => entry.availableForSale) ?? size.product.variants[0];
+        const amount = variant?.price.amount ?? size.product.priceRange.minVariantPrice.amount;
+        const currency = variant?.price.currencyCode ?? size.product.priceRange.minVariantPrice.currencyCode;
+        return {
+          "@type": "Offer",
+          name: size.label,
+          url: `https://www.purestelectrolyte.com/products/${size.product.handle}`,
+          priceCurrency: currency,
+          price: parseFloat(amount).toFixed(2),
+          availability: size.product.variants.some((entry) => entry.availableForSale)
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+        };
+      }),
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: displayTitle,
+      image: product.images.map((img) => img.url),
+      description: product.description,
+      category: isChocolate ? "Electrolyte powder in a glass jar" : "Real fruit electrolyte powder in a glass jar",
+      ...(citricIngredientList
+        ? { additionalProperty: { "@type": "PropertyValue", name: "Ingredients", value: citricIngredientList } }
+        : citricNote
+          ? { additionalProperty: { "@type": "PropertyValue", name: "Citric acid", value: citricNote } }
+          : {}),
+      material: "Clear glass jar",
+      brand: { "@type": "Brand", name: "Purest Electrolyte" },
+      offers: {
+        "@type": "Offer",
+        url: `https://www.purestelectrolyte.com/products/${product.handle}`,
+        priceCurrency: product.priceRange.minVariantPrice.currencyCode,
+        price: parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2),
+        availability: product.variants?.some((variant) => variant.availableForSale)
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      },
+    };
 ---
 
-<Layout title={pageTitle} description={product.description}>
+<Layout title={pageTitle} description={withoutDashes(product.description)}>
 
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": displayTitle,
-  "image": product.images.map((img: any) => img.url),
-  "description": product.description,
-  "category": isChocolate ? "Electrolyte powder in a glass jar" : "Real fruit electrolyte powder in a glass jar",
-  ...(citricIngredientList
-    ? { additionalProperty: { "@type": "PropertyValue", name: "Ingredients", value: citricIngredientList } }
-    : citricNote
-      ? { additionalProperty: { "@type": "PropertyValue", name: "Citric acid", value: citricNote } }
-      : {}),
-  "material": "Clear glass jar",
-  "brand": {
-    "@type": "Brand",
-    "name": "Purest Electrolyte"
-  },
-  "offers": {
-    "@type": "Offer",
-    "url": `https://www.purestelectrolyte.com/products/${product.handle}`,
-    "priceCurrency": product.priceRange.minVariantPrice.currencyCode,
-    "price": parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2),
-    "availability": product.variants?.some((variant: any) => variant.availableForSale)
-      ? "https://schema.org/InStock"
-      : "https://schema.org/OutOfStock"
-  }
-})} />
+<script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+  {flavorView ? (
+    <section class="container overflow-x-clip py-8 md:py-12">
+      <a href="/products" class="mb-6 inline-block text-sm text-muted-foreground hover:text-foreground">
+        ← All flavors
+      </a>
+      <FlavorProduct client:load model={flavorView} />
+    </section>
+  ) : (
   <section class="container py-12 md:py-16 overflow-x-clip">
 
     <!-- Back link -->
@@ -319,9 +440,10 @@ const metaViewContent = viewedVariant
 
     </div>
   </section>
+  )}
 
-  {/* Try Other Flavors */}
-  {otherFlavors.length > 0 && (
+  {/* Try Other Flavors. Flavor jars use the tile grid in the buy column instead. */}
+  {!flavorView && otherFlavors.length > 0 && (
     <section class="container py-10 border-t border-stone-100">
       <h2 class="font-serif text-2xl mb-2">Try other flavors</h2>
       <p class="text-sm text-foreground/60 mb-8">Same formula, different flavor. Add any to your cart below.</p>
@@ -345,25 +467,25 @@ const metaViewContent = viewedVariant
           <div class="md:col-span-2 space-y-8">
             {copy.badge && (
               <div class="inline-block bg-stone-900 text-stone-50 text-xs font-semibold px-3 py-1 rounded-full tracking-wide">
-                {copy.badge}
+                {withoutDashes(copy.badge)}
               </div>
             )}
             {copy.story && (
               <div>
                 <h2 class="font-serif text-2xl mb-3">The flavor</h2>
-                <p class="text-foreground/70 leading-relaxed">{copy.story}</p>
+                <p class="text-foreground/70 leading-relaxed">{withoutDashes(copy.story)}</p>
               </div>
             )}
             {copy.flavorNote && (
               <div class="border-l-4 border-stone-300 pl-4">
                 <p class="text-sm font-medium text-foreground/50 uppercase tracking-wider mb-1">Taste notes</p>
-                <p class="text-foreground/80 italic">{copy.flavorNote}</p>
+                <p class="text-foreground/80 italic">{withoutDashes(copy.flavorNote)}</p>
               </div>
             )}
             {copy.howToUse && (
               <div>
                 <h3 class="font-serif text-xl mb-2">How to use</h3>
-                <p class="text-foreground/70 leading-relaxed">{copy.howToUse}</p>
+                <p class="text-foreground/70 leading-relaxed">{withoutDashes(copy.howToUse)}</p>
               </div>
             )}
           </div>
@@ -375,7 +497,7 @@ const metaViewContent = viewedVariant
               <ul class="space-y-2">
                 {copy.bestFor.map((item: string) => (
                   <li class="flex items-center gap-2 text-foreground/70 text-sm">
-                    <span class="text-stone-400">→</span> {item}
+                    <span class="text-stone-400">→</span> {withoutDashes(item)}
                   </li>
                 ))}
               </ul>
@@ -389,7 +511,7 @@ const metaViewContent = viewedVariant
   {/* Judge.me All Reviews */}
   <section class="container py-12 border-t border-stone-100">
     <h2 class="font-serif text-2xl mb-6">Customer reviews</h2>
-    <div class="jdgm-widget jdgm-review-widget jdgm-outside-widget" data-id={shopifyProductId} data-product-title={displayTitle}></div>
+    <div class="jdgm-widget jdgm-review-widget jdgm-outside-widget" data-id={reviewWidgetId} data-product-title={flavorView?.flavorName ?? displayTitle}></div>
   </section>
 
   {/* FAQ */}
@@ -400,15 +522,15 @@ const metaViewContent = viewedVariant
         { q: "How much should I use?", a: vialProduct ? "One scoop (one serving) mixed into 12 to 16 oz of cold water. Most people drink 1 to 2 servings per day. More if you're active, sweating, or at altitude." : jarUsage },
         { q: "Is there any sugar in this?", a: isChocolate ? "Zero added sugar. The sweetness comes from stevia and monk fruit. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." : "Zero added sugar. The sweetness comes from two sources: real freeze-dried fruit, and a small amount of stevia and monk fruit. Both are completely natural. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." },
         { q: "How is this different from LMNT, Liquid IV, or other brands?", a: isChocolate ? "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus organic cacao and organic cordyceps. No artificial anything." : "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus real freeze-dried fruit. No artificial anything." },
-        { q: "Does the subscription auto-renew?", a: "Yes. Your subscription ships on your chosen schedule and can be paused or cancelled anytime with no fees. Manage it directly from your account or email us." },
+        { q: "Does the subscription renew on its own?", a: "Yes. Your subscription ships on your chosen schedule and can be paused or cancelled anytime with no fees. Manage it directly from your account or email us." },
         { q: "What's the free shipping threshold?", a: "Free shipping on all orders over $39. Most single jars qualify. Subscribe and it's always free." },
       ].map((item, i) => (
         <div class="faq-item py-4 cursor-pointer" data-index={String(i)}>
           <button class="w-full text-left flex justify-between items-center gap-4 font-medium">
-            <span>{item.q}</span>
+            <span>{withoutDashes(item.q)}</span>
             <span class="faq-icon flex-shrink-0 text-foreground/40 transition-transform">+</span>
           </button>
-          <div class="faq-answer hidden mt-3 text-sm text-foreground/65 leading-relaxed pr-8">{item.a}</div>
+          <div class="faq-answer hidden mt-3 text-sm text-foreground/65 leading-relaxed pr-8">{withoutDashes(item.a)}</div>
         </div>
       ))}
     </div>

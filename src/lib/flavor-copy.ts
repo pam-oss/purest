@@ -1,4 +1,5 @@
 import flavorCopy from "@/data/flavor-copy.json";
+import { catalogSegments, flavorNameFromCatalogTitle } from "@/lib/product-title";
 
 export interface FlavorCopy {
   tagline?: string;
@@ -47,8 +48,15 @@ function flavorSlugFromHandle(handle: string): string | null {
   return null;
 }
 
-/** Size can lead the title ("10 Servings Ginger Lime") or follow the flavor ("Ginger Lime 10 Servings"). */
+/**
+ * Flavor name from an old title ("10 Servings Ginger Lime", "Ginger Lime 10 Servings")
+ * or the piped title ("PUREST Real Fruit, Real Salt Electrolytes | Ginger Lime | 20 Servings").
+ */
 export function flavorNameFromTitle(title: string): string | null {
+  const named = flavorNameFromCatalogTitle(title);
+  if (named) return named;
+  // A piped title that is not a known flavor (a kit) should not be parsed as one.
+  if (catalogSegments(title)) return null;
   const trimmed = title.trim();
   const leading = trimmed.match(/^\d+\s+servings?\s+(.+)$/i);
   if (leading) return leading[1].replace(/\s+/g, " ").trim();

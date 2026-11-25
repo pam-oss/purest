@@ -76,7 +76,7 @@ function withDisplayTitle<T extends { title: string }>(product: T): T {
   return title === product.title ? product : { ...product, title };
 }
 
-function applyCurrentPrice(product: Product): Product {
+function applyCurrentPrice<T extends Product>(product: T): T {
   const amount = currentPriceOverrides[product.handle];
   if (!amount) return product;
   const price = { amount, currencyCode: product.priceRange.minVariantPrice.currencyCode };
@@ -141,13 +141,18 @@ export async function shopifyFetch<T>(
 /** Fetches all products, or returns mock data if Shopify is not configured. */
 export async function getProducts(): Promise<Product[]> {
   if (!hasShopify) {
+    if (import.meta.env.PUBLIC_PUREST_PUBLIC_CATALOG === "1") {
+      const { loadPublicCatalog } = await import("@/lib/public-catalog");
+      const products = await loadPublicCatalog();
+      return products.map(({ images: _images, ...product }) => product);
+    }
     return (mockProducts as Product[]).map((product) => {
       const copy = applyProductClaims(product.handle, product.description, product.descriptionHtml ?? "");
       return withDisplayTitle({ ...product, ...copy });
     });
   }
   const query = `{
-    products(first: 20) {
+    products(first: 50) {
       edges {
         node {
           id
@@ -342,6 +347,11 @@ export async function getBlogArticles(blogHandle: string): Promise<{ handle: str
 /** Fetches a single product by handle with all images. */
 export async function getProduct(handle: string): Promise<Product & { images: ProductImage[] } | null> {
   if (!hasShopify) {
+    if (import.meta.env.PUBLIC_PUREST_PUBLIC_CATALOG === "1") {
+      const { loadPublicCatalog } = await import("@/lib/public-catalog");
+      const products = await loadPublicCatalog();
+      return products.find((item) => item.handle === handle) ?? null;
+    }
     const p = (mockProducts as Product[]).find(p => p.handle === handle);
     if (!p) return null;
     const copy = applyProductClaims(p.handle, p.description, "");
@@ -351,7 +361,7 @@ export async function getProduct(handle: string): Promise<Product & { images: Pr
     product(handle: "${handle}") {
       id title description descriptionHtml handle
       priceRange { minVariantPrice { amount currencyCode } }
-      images(first: 10) { edges { node { url altText } } }
+      images(first: 20) { edges { node { url altText } } }
       variants(first: 10) {
         edges { node { id title price { amount currencyCode } compareAtPrice { amount currencyCode } availableForSale } }
       }

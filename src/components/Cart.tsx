@@ -138,7 +138,7 @@ export default function Cart() {
                             }}
                             className="appearance-none rounded-md border border-input bg-background pl-3 pr-8 py-1.5 text-sm font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-ring"
                           >
-                            <option value="">One-time</option>
+                            <option value="">One time</option>
                             {item.availablePlans.map((plan) => (
                               <option key={plan.id} value={plan.id}>
                                 {plan.name}

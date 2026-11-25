@@ -185,7 +185,7 @@ export default function ProductCard({ product }: Props) {
             className="flex items-center justify-between w-full rounded-full border border-input bg-background px-5 py-2.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
           >
             <span className="flex items-center gap-1.5">
-              <span className="text-xs">{justAdded ? "✓" : "↗"}</span> {justAdded ? "Added" : "One-time"}
+              <span className="text-xs">{justAdded ? "✓" : "↗"}</span> {justAdded ? "Added" : "One time"}
             </span>
             <span className="font-semibold">{formatPrice(price.amount, price.currencyCode)}</span>
           </button>
