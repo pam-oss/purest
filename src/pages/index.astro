@@ -44,12 +44,26 @@ const flavorItems = FLAVOR_GROUPS.flatMap((group) => {
 });
 
 const moreHandles = [
-  { handle: "5-day-hydration-kit", label: "Five Day Hydration Kit", fit: "pack" as const },
-  { handle: "the-hydration-ritual-kit", label: "Hydration Ritual Kit", fit: "cover" as const },
-  { handle: "free-purest-glass-water-bottle", label: "Glass water bottle", fit: "cover" as const },
+  { handle: "5-day-hydration-kit", label: "Five Day Hydration Kit", fit: "pack" as const, target: 0.92 },
+  {
+    handle: "the-hydration-ritual-kit",
+    label: "Hydration Ritual Kit",
+    fit: "cover" as const,
+    target: undefined,
+    // Square window on the portrait still life, shifted up so the bottle cap stays in frame.
+    frame: { l: 0, t: 0.045, r: 1, b: 0.795 },
+  },
+  {
+    handle: "free-purest-glass-water-bottle",
+    label: "Glass water bottle",
+    fit: "cover" as const,
+    target: undefined,
+    // Tight square on the bottle in hand, not the wide sunset.
+    frame: { l: 0.334, t: 0.3174, r: 0.826, b: 0.9626 },
+  },
 ];
 
-const moreItems = moreHandles.flatMap(({ handle, label, fit }) => {
+const moreItems = moreHandles.flatMap(({ handle, label, fit, target, frame }) => {
   const product = findProduct(handle);
   if (!product) {
     console.warn(`Homepage product missing from Shopify: ${label} (${handle})`);
@@ -60,7 +74,8 @@ const moreItems = moreHandles.flatMap(({ handle, label, fit }) => {
     name: displayProductTitle(product.title),
     href: `/products/${handle}`,
     fit,
-    frame: PACK_FRAMES[handle],
+    target,
+    frame: frame ?? PACK_FRAMES[handle],
   }];
 });
 
@@ -87,7 +102,7 @@ if (missing.length || missingFlavors.length) {
       <div class="mt-14">
         <h3 class="text-xs uppercase tracking-widest text-muted-foreground">Kits and accessories</h3>
         <div class="mt-6">
-          <HomeProductCards items={moreItems} columns="three" />
+          <HomeProductCards items={moreItems} place="center" />
         </div>
       </div>
     )}

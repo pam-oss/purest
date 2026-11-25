@@ -15,19 +15,34 @@ interface Item {
   href: string;
   fit?: "cover" | "pack";
   frame?: Frame;
+  /** Fraction of the tile the framed subject should fill. Flavors use the glass height. */
+  target?: number;
 }
 
-const { items, columns = "five" } = Astro.props as { items: Item[]; columns?: "five" | "three" };
+const { items, place = "start" } = Astro.props as { items: Item[]; place?: "start" | "center" };
 
-function packStyle(frame: Frame) {
+function packStyle(frame: Frame, target = 0.74) {
   const height = frame.b - frame.t;
   const cx = (frame.l + frame.r) / 2;
   const cy = (frame.t + frame.b) / 2;
-  const scale = 0.74 / height;
+  const scale = target / height;
   const size = scale * 100;
   const left = (0.5 - cx * scale) * 100;
   const top = (0.5 - cy * scale) * 100;
   return `width:${size.toFixed(2)}%;height:${size.toFixed(2)}%;left:${left.toFixed(2)}%;top:${top.toFixed(2)}%`;
+}
+
+/** Map a source window onto the same inset every lifestyle tile uses. */
+function coverStyle(frame: Frame) {
+  const winW = frame.r - frame.l;
+  const winH = frame.b - frame.t;
+  const inner = 0.86;
+  const inset = (1 - inner) / 2;
+  const width = (inner / winW) * 100;
+  const height = (inner / winH) * 100;
+  const left = (inset - frame.l * (inner / winW)) * 100;
+  const top = (inset - frame.t * (inner / winH)) * 100;
+  return `width:${width.toFixed(2)}%;height:${height.toFixed(2)}%;left:${left.toFixed(2)}%;top:${top.toFixed(2)}%`;
 }
 
 const cards = await Promise.all(
@@ -40,6 +55,7 @@ const cards = await Promise.all(
       image: item.product.image,
       fit: item.fit ?? "pack",
       frame: item.frame,
+      target: item.target,
       rating: rated?.average ?? null,
       count: rated?.count ?? null,
     };
@@ -47,29 +63,27 @@ const cards = await Promise.all(
 );
 ---
 
-<ul
-  class:list={[
-    "grid grid-cols-2 gap-x-4 gap-y-8",
-    columns === "five"
-      ? "lg:grid-cols-5 lg:gap-x-6"
-      : "mx-auto lg:w-[calc(60%-0.4rem)] lg:grid-cols-3 lg:gap-x-6",
-  ]}
->
+<ul class="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-5 lg:gap-x-6">
   {cards.map((card, index) => {
     const centerOnPhone = cards.length % 2 === 1 && index === cards.length - 1;
+    const imageStyle = card.frame
+      ? card.fit === "cover"
+        ? coverStyle(card.frame)
+        : packStyle(card.frame, card.target)
+      : undefined;
     return (
-      <li class:list={[centerOnPhone && "col-span-2 flex justify-center lg:col-span-1 lg:block"]}>
+      <li class:list={[
+        centerOnPhone && "col-span-2 flex justify-center lg:col-span-1 lg:block",
+        place === "center" && index === 0 && "lg:col-start-2",
+      ]}>
         <a href={card.href} class:list={["flex h-full w-full flex-col text-center", centerOnPhone && "max-w-[calc(50%-0.5rem)] lg:max-w-none"]}>
-          <span class="relative block aspect-square w-full overflow-hidden bg-white">
+          <span class="relative block aspect-square w-full overflow-hidden bg-[#fafafa] ring-1 ring-inset ring-black/10">
             {card.image ? (
               <img
                 src={card.image.url}
                 alt={card.image.altText ?? card.name}
-                class:list={[
-                  "absolute max-w-none",
-                  card.fit === "cover" && "inset-0 h-full w-full object-cover",
-                ]}
-                style={card.fit === "pack" && card.frame ? packStyle(card.frame) : undefined}
+                class:list={["absolute max-w-none", card.fit === "cover" && "object-cover"]}
+                style={imageStyle}
                 loading="eager"
               />
             ) : (
