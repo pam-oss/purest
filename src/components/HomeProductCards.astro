@@ -6,6 +6,7 @@ interface Item {
   product: Product;
   name: string;
   href: string;
+  scale?: number;
 }
 
 const { items, columns = "five" } = Astro.props as { items: Item[]; columns?: "five" | "three" };
@@ -18,6 +19,7 @@ const cards = await Promise.all(
       href: item.href,
       name: item.name,
       image: item.product.image,
+      scale: item.scale ?? 1,
       rating: rated?.average ?? null,
       count: rated?.count ?? null,
     };
@@ -25,45 +27,58 @@ const cards = await Promise.all(
 );
 ---
 
-<ul class:list={["grid grid-cols-2 gap-x-4 gap-y-10", columns === "five" ? "lg:grid-cols-5 lg:gap-x-6" : "lg:grid-cols-3 lg:gap-x-8"]}>
-  {cards.map((card) => (
-    <li>
-      <a href={card.href} class="group block text-center">
-        <span class="block aspect-square overflow-hidden bg-white">
-          {card.image ? (
-            <img
-              src={card.image.url}
-              alt={card.image.altText ?? card.name}
-              class="h-full w-full object-contain"
-              loading="eager"
-            />
-          ) : (
-            <span class="block h-full w-full" />
-          )}
-        </span>
-        <span class="mt-4 block font-serif text-lg tracking-tight">{card.name}</span>
-        {card.rating !== null && card.count !== null && (
-          <span class="mt-2 flex items-center justify-center gap-1" aria-label={`${card.rating} out of 5 stars from ${card.count} reviews`}>
-            <span class="inline-flex text-foreground" aria-hidden="true">
-              {[0, 1, 2, 3, 4].map((index) => {
-                const amount = Math.min(1, Math.max(0, card.rating! - index));
-                const id = `${card.href}-${index}`.replace(/[^a-z0-9-]/gi, "");
-                return (
-                  <svg viewBox="0 0 20 20" class="h-3.5 w-3.5">
-                    <defs>
-                      <linearGradient id={id} x1="0" x2="1" y1="0" y2="0">
-                        <stop offset={`${amount * 100}%`} stop-color="currentColor" />
-                        <stop offset={`${amount * 100}%`} stop-color="transparent" />
-                      </linearGradient>
-                    </defs>
-                    <path d="M10 1.7 12.2 7.1l5.8.5-4.4 3.8 1.4 5.6L10 14.2 4.9 17l1.4-5.6L1.9 7.6l5.8-.5L10 1.7Z" fill={`url(#${id})`} stroke="currentColor" stroke-width="1" />
-                  </svg>
-                );
-              })}
-            </span>
+<ul
+  class:list={[
+    "grid grid-cols-2 gap-x-4 gap-y-12",
+    columns === "five"
+      ? "lg:grid-cols-5 lg:gap-x-6"
+      : "mx-auto lg:w-[calc(60%-0.4rem)] lg:grid-cols-3 lg:gap-x-6",
+  ]}
+>
+  {cards.map((card, index) => {
+    const centerOnPhone = cards.length % 2 === 1 && index === cards.length - 1;
+    return (
+      <li class:list={[centerOnPhone && "col-span-2 flex justify-center lg:col-span-1 lg:block"]}>
+        <a href={card.href} class:list={["flex h-full w-full flex-col text-center", centerOnPhone && "max-w-[calc(50%-0.5rem)] lg:max-w-none"]}>
+          <span class="relative block aspect-square w-full bg-white">
+            {card.image ? (
+              <img
+                src={card.image.url}
+                alt={card.image.altText ?? card.name}
+                class="absolute inset-0 h-full w-full object-contain p-4"
+                style={`transform:scale(${card.scale})`}
+                loading="eager"
+              />
+            ) : (
+              <span class="block h-full w-full" />
+            )}
           </span>
-        )}
-      </a>
-    </li>
-  ))}
+          <span class="mt-4 flex min-h-[2.75rem] items-start justify-center font-serif text-base leading-tight tracking-tight md:min-h-[3.25rem] md:text-lg">
+            {card.name}
+          </span>
+          <span class="mt-2 flex h-4 items-center justify-center" aria-label={card.rating !== null && card.count !== null ? `${card.rating} out of 5 stars from ${card.count} reviews` : undefined}>
+            {card.rating !== null && (
+              <span class="inline-flex text-foreground" aria-hidden="true">
+                {[0, 1, 2, 3, 4].map((star) => {
+                  const amount = Math.min(1, Math.max(0, card.rating! - star));
+                  const id = `${card.href}-${star}`.replace(/[^a-z0-9-]/gi, "");
+                  return (
+                    <svg viewBox="0 0 20 20" class="h-3.5 w-3.5">
+                      <defs>
+                        <linearGradient id={id} x1="0" x2="1" y1="0" y2="0">
+                          <stop offset={`${amount * 100}%`} stop-color="currentColor" />
+                          <stop offset={`${amount * 100}%`} stop-color="transparent" />
+                        </linearGradient>
+                      </defs>
+                      <path d="M10 1.7 12.2 7.1l5.8.5-4.4 3.8 1.4 5.6L10 14.2 4.9 17l1.4-5.6L1.9 7.6l5.8-.5L10 1.7Z" fill={`url(#${id})`} stroke="currentColor" stroke-width="1" />
+                    </svg>
+                  );
+                })}
+              </span>
+            )}
+          </span>
+        </a>
+      </li>
+    );
+  })}
 </ul>

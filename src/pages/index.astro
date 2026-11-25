@@ -28,18 +28,18 @@ const flavorItems = FLAVOR_GROUPS.flatMap((group) => {
 });
 
 const moreHandles = [
-  { handle: "5-day-hydration-kit", label: "Five Day Hydration Kit" },
-  { handle: "the-hydration-ritual-kit", label: "Hydration Ritual Kit" },
-  { handle: "free-purest-glass-water-bottle", label: "Glass water bottle" },
+  { handle: "5-day-hydration-kit", label: "Five Day Hydration Kit", scale: 0.9 },
+  { handle: "the-hydration-ritual-kit", label: "Hydration Ritual Kit", scale: 0.92 },
+  { handle: "free-purest-glass-water-bottle", label: "Glass water bottle", scale: 1 },
 ];
 
-const moreItems = moreHandles.flatMap(({ handle, label }) => {
+const moreItems = moreHandles.flatMap(({ handle, label, scale }) => {
   const product = findProduct(handle);
   if (!product) {
     console.warn(`Homepage product missing from Shopify: ${label} (${handle})`);
     return [];
   }
-  return [{ product, name: displayProductTitle(product.title), href: `/products/${handle}` }];
+  return [{ product, name: displayProductTitle(product.title), href: `/products/${handle}`, scale }];
 });
 
 const missing = moreHandles.filter(({ handle }) => !findProduct(handle)).map(({ label, handle }) => `${label} (${handle})`);
@@ -56,14 +56,14 @@ if (missing.length || missingFlavors.length) {
   <SaleBanner />
   <Hero />
 
-  <section id="flavors" class="container py-12 md:py-16">
+  <section id="flavors" class="container py-16 md:py-24">
     <p class="text-xs uppercase tracking-widest text-muted-foreground">Electrolytes</p>
-    <h2 class="mt-2 font-serif text-3xl tracking-tight md:text-4xl">Five flavors</h2>
-    <div class="mt-10">
+    <h2 class="mt-3 font-serif text-3xl tracking-tight md:text-4xl">Five flavors</h2>
+    <div class="mt-12">
       <HomeProductCards items={flavorItems} />
     </div>
     {moreItems.length > 0 && (
-      <div class="mt-16">
+      <div class="mt-12">
         <HomeProductCards items={moreItems} columns="three" />
       </div>
     )}
@@ -72,19 +72,19 @@ if (missing.length || missingFlavors.length) {
   <Comparison />
   <StatsBar />
 
-  <section class="container py-12 md:py-16">
-    <div class="grid items-center gap-10 md:grid-cols-2">
+  <section class="container py-16 md:py-24">
+    <div class="grid items-center gap-10 md:grid-cols-2 md:gap-16">
       <img
         src="/images/blog/pam-sweeney-salt-farmer-france.webp"
         alt="Pam, the founder, with one of our salt farmers beside sea salt in Guérande, France"
         width="1199"
         height="1600"
-        class="h-full max-h-[32rem] w-full object-cover object-[50%_20%]"
+        class="aspect-[4/5] w-full object-cover object-[50%_20%]"
         loading="eager"
       />
       <div>
         <p class="text-xs uppercase tracking-widest text-muted-foreground">Sourcing</p>
-        <h2 class="mt-2 font-serif text-3xl tracking-tight md:text-4xl">Real fruit and sea salt</h2>
+        <h2 class="mt-3 font-serif text-3xl tracking-tight md:text-4xl">Real fruit and sea salt</h2>
         <p class="mt-4 text-base leading-relaxed text-foreground/75">
           Most electrolyte drinks use cheap, processed table salt. We don't. We use French gray sea salt.
         </p>
@@ -104,21 +104,21 @@ if (missing.length || missingFlavors.length) {
   <Testimonials />
   <PressBar />
 
-  <section class="container py-12 md:py-16">
+  <section class="container py-16 md:py-24">
     <p class="text-xs uppercase tracking-widest text-muted-foreground">Learn</p>
-    <h2 class="mt-2 font-serif text-3xl tracking-tight md:text-4xl">Science and education</h2>
-    <div class="mt-10 grid gap-8 md:grid-cols-3">
-      <a href="/science/sea-salt-heavy-metal-test-results" class="block border border-black/15 bg-white">
+    <h2 class="mt-3 font-serif text-3xl tracking-tight md:text-4xl">Science and education</h2>
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+      <a href="/science/sea-salt-heavy-metal-test-results" class="flex h-full flex-col border border-black/15 bg-white">
         <img src="/images/blog/pam-sweeney-salt-farmer-france.webp" alt="Pam, the founder, with one of our salt farmers beside sea salt in Guérande, France" class="aspect-video w-full object-cover object-[50%_20%]" loading="eager" />
-        <span class="block p-5 font-serif text-xl tracking-tight">Purest Electrolyte Sea Salt Test Results</span>
+        <span class="block p-5 font-serif text-xl leading-snug tracking-tight">Purest Electrolyte Sea Salt Test Results</span>
       </a>
-      <a href="/science/trace-minerals-in-electrolytes" class="block border border-black/15 bg-white">
+      <a href="/science/trace-minerals-in-electrolytes" class="flex h-full flex-col border border-black/15 bg-white">
         <img src="https://cdn.shopify.com/s/files/1/0658/9864/3644/files/guerande-traditional-sea-salt-harvest.jpg?v=1794238729" alt="Traditional salt farmer raking sea salt in Guérande, France" class="aspect-video w-full object-cover" loading="eager" />
-        <span class="block p-5 font-serif text-xl tracking-tight">Trace Minerals in Electrolytes: More Than Just Salt</span>
+        <span class="block p-5 font-serif text-xl leading-snug tracking-tight">Trace Minerals in Electrolytes: More Than Just Salt</span>
       </a>
-      <a href="/science/electrolyte-in-a-glass-jar" class="block border border-black/15 bg-white">
+      <a href="/science/electrolyte-in-a-glass-jar" class="flex h-full flex-col border border-black/15 bg-white">
         <img src="/images/blog/purest-electrolyte-clear-glass-jars.jpg" alt="Five flavors of Purest Electrolyte powder in clear glass jars" class="aspect-video w-full object-cover" loading="eager" />
-        <span class="block p-5 font-serif text-xl tracking-tight">Why We Put Purest Electrolyte Powder in a Clear Glass Jar</span>
+        <span class="block p-5 font-serif text-xl leading-snug tracking-tight">Why We Put Purest Electrolyte Powder in a Clear Glass Jar</span>
       </a>
     </div>
     <a href="/science" class="mt-8 inline-block text-sm font-medium underline underline-offset-4">Read the science</a>
