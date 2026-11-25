@@ -3,18 +3,10 @@
  * and twitter:title. Brand comes first. Segments are separated with " | ".
  * Dashes are removed so a Shopify article title cannot put one back in.
  */
-import { displayProductTitle } from "@/lib/product-title";
+import { matchFlavor } from "@/lib/flavors";
+import { displayProductTitle, flavorNameFromCatalogTitle } from "@/lib/product-title";
 
 const DASHES = /[\u2010\u2011\u2012\u2013\u2014\u2212-]+/g;
-
-/** Longer names first so "Ginger Lime" is not cut out of a longer flavor. */
-const FLAVOR_NAMES = [
-  "Chocolate Cordyceps",
-  "Passion Cherry",
-  "Hibiscus Lime",
-  "Ginger Lime",
-  "Cranberry",
-];
 
 export const BEST_DRINK_MIX = "The Best Real Fruit Electrolyte Drink Mix";
 export const PREMIUM_SALT_JAR = "Premium French Sea Salt Hydration in a Glass Jar";
@@ -32,9 +24,12 @@ export function brandPageTitle(pageName: string): string {
   return name ? `Purest Electrolyte | ${name}` : "Purest Electrolyte";
 }
 
+/**
+ * Flavor jars, old titles ("Ginger Lime 10 Servings") and the piped Shopify
+ * titles ("PUREST Real Fruit, Real Salt Electrolytes | Ginger Lime | 20 Servings").
+ */
 function flavorFromTitle(title: string): string | null {
-  const display = stripTitleDashes(displayProductTitle(title)).toLowerCase();
-  return FLAVOR_NAMES.find((flavor) => display.includes(flavor.toLowerCase())) ?? null;
+  return flavorNameFromCatalogTitle(title);
 }
 
 /**
@@ -49,15 +44,17 @@ export function productPageTitle(product: { title: string; handle: string }): st
     return "Purest Electrolyte | Glass Water Bottle for Hydration";
   }
 
-  if (handle === "5-day-hydration-kit" || /5 day hydration kit/i.test(display)) {
+  if (handle === "5-day-hydration-kit" || /5 day (hydration )?kit/i.test(display)) {
     return "Purest Electrolyte | 5 Day Organic Real Fruit Hydration Kit";
   }
 
-  if (handle === "the-hydration-ritual-kit" || /hydration ritual kit/i.test(display)) {
+  if (handle === "the-hydration-ritual-kit" || /ritual kit/i.test(display)) {
     return "Purest Electrolyte | The Hydration Ritual Kit | Organic Real Fruit";
   }
 
-  const flavor = flavorFromTitle(product.title);
+  // Handles stay stable when Shopify renames the title. Title parsing covers
+  // a jar whose handle is not in the flavor map yet.
+  const flavor = matchFlavor(product.handle)?.name ?? flavorFromTitle(product.title);
   if (flavor) {
     return `Purest ${flavor} | ${BEST_DRINK_MIX} | ${PREMIUM_SALT_JAR} | ${ORGANIC_INGREDIENTS}`;
   }
