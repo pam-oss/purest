@@ -7,7 +7,8 @@ import Footer from "@/components/Footer.astro";
 import Cart from "@/components/Cart.tsx";
 import MetaPixel from "@/components/MetaPixel.astro";
 import siteConfig from "@/data/site-config.json";
-import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
+import { FLAVOR_GROUPS, FLAVOR_SHOP_PATH } from "@/lib/flavors";
+import { getProducts } from "@/lib/shopify";
 
 interface Props {
   canonical?: string;
@@ -35,6 +36,25 @@ const {
 
 const canonicalURL = canonical ?? new URL(Astro.url.pathname, "https://www.purestelectrolyte.com").toString();
 const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toString();
+
+const catalog = await getProducts();
+const flavorUpsells = FLAVOR_GROUPS.flatMap((group) => {
+  const product = catalog.find((item) => item.handle === group.handles[10]);
+  const larger = catalog.find((item) => item.handle === group.handles[20]);
+  if (!product) return [];
+  const variant = product.variants.find((item) => item.availableForSale) ?? product.variants[0];
+  if (!variant) return [];
+  return [{
+    name: group.name,
+    productId: product.id,
+    alsoProductIds: larger ? [larger.id] : [],
+    variantId: variant.id,
+    price: Number(variant.price.amount),
+    currencyCode: variant.price.currencyCode,
+    imageUrl: product.image?.url ?? null,
+    available: variant.availableForSale,
+  }];
+});
 ---
 
 <!doctype html>
@@ -176,7 +196,7 @@ const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toStr
      * from any page. `client:load` hydrates immediately on page load so the
      * cart's persisted state is visible right away.
      */}
-    <Cart client:load />
+    <Cart client:load upsells={flavorUpsells} />
 
     <!-- Email capture pop-up -->
     <div id="email-popup" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.55);backdrop-filter:blur(2px)">
@@ -192,7 +212,7 @@ const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toStr
         <!-- Content -->
         <div class="px-8 py-7">
           <div class="text-center mb-5">
-            <div class="inline-block bg-amber-50 text-amber-800 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">Limited Time</div>
+            <div class="inline-block border border-foreground px-3 py-1 text-xs font-medium uppercase tracking-widest mb-3">Limited Time</div>
             <h2 class="font-serif text-2xl text-stone-900 leading-snug">Get 10% off your<br/>first order</h2>
             <p class="text-stone-500 text-sm mt-2">Real Fruit. Real Salt. Real Hydration.<br/>Join thousands of athletes who already switched.</p>
           </div>

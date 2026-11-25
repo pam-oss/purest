@@ -22,10 +22,13 @@ export default function AddToCart({ product }: { product: Product }) {
     setSelectedVariantId(nextVariant.id);
   }
 
+  // Only the glass bottle is one time purchase. The 5 Day Kit keeps its selling plans.
+  const oneTimeOnly = product.handle === "free-purest-glass-water-bottle";
+
   // Flatten all selling plans from all groups
-  const allPlans: SellingPlan[] = (product.sellingPlanGroups ?? []).flatMap(
-    (g) => g.sellingPlans,
-  );
+  const allPlans: SellingPlan[] = oneTimeOnly
+    ? []
+    : (product.sellingPlanGroups ?? []).flatMap((g) => g.sellingPlans);
   const hasSubscription = allPlans.length > 0;
 
   const [purchaseType, setPurchaseType] = useState<"one-time" | "subscribe">(
@@ -131,18 +134,18 @@ export default function AddToCart({ product }: { product: Product }) {
           <button
             onClick={() => setPurchaseType("subscribe")}
             className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-              purchaseType === "subscribe" ? "bg-green-50" : "hover:bg-stone-50"
+              purchaseType === "subscribe" ? "bg-neutral-100" : "hover:bg-neutral-100"
             }`}
           >
             <span
               className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
                 purchaseType === "subscribe"
-                  ? "border-green-700"
+                  ? "border-foreground"
                   : "border-muted-foreground"
               }`}
             >
               {purchaseType === "subscribe" && (
-                <span className="w-2 h-2 rounded-full bg-green-700 block" />
+                <span className="w-2 h-2 rounded-full bg-foreground block" />
               )}
             </span>
             <div className="flex-1">

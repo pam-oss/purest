@@ -153,7 +153,7 @@ export default function ProductCard({ product }: Props) {
             </div>
           </div>
           {isBundle && (
-            <p className="text-xs font-medium text-green-700 mt-0.5">You save $17.98 vs. buying separately</p>
+            <p className="text-xs font-medium mt-0.5">You save $17.98 vs. buying separately</p>
           )}
           <div className="mt-2" aria-label="Customer rating">
             <div
@@ -208,7 +208,7 @@ export default function ProductCard({ product }: Props) {
             </div>
           ) : (
             /* Frequency picker — expands in place */
-            <div className="rounded-2xl border border-foreground/20 bg-stone-50 p-3 flex flex-col gap-2">
+            <div className="rounded-2xl border border-foreground/20 bg-white p-3 flex flex-col gap-2">
               <p className="text-xs font-medium text-foreground/60 uppercase tracking-wide">Delivery frequency</p>
               <div className="flex gap-2 flex-wrap">
                 {allPlans.map((plan) => (

@@ -57,6 +57,12 @@ const editorial = flavorCopyFor(handle ?? "", product?.title);
 
 // The 5 Day Kit is single serve vials, not a scooped jar. Keep its existing answer.
 const vialProduct = handle === "5-day-hydration-kit" || handle === "20-count-variety-pack";
+const oneTimeProduct = handle === "free-purest-glass-water-bottle";
+const hideJarChecklist = new Set([
+  "free-purest-glass-water-bottle",
+  "5-day-hydration-kit",
+  "the-hydration-ritual-kit",
+]).has(handle ?? "");
 const jarUsage =
   "Mix 1 scoop into 8 to 16 oz of water and drink. Like it stronger? Use 2 scoops. There's no wrong way to hydrate, so adjust the water or the scoops to fit your taste and your day.";
 
@@ -386,7 +392,7 @@ const productSchema = flavorView
               <>
                 <span class="text-sm text-muted-foreground line-through">$66.98</span>
                 <span class="text-2xl font-medium">{price}</span>
-                <span class="text-sm font-medium text-green-700">Save $17.98</span>
+                <span class="text-sm font-medium">Save $17.98</span>
               </>
             ) : (
               !hasServingSizeVariants && <span class="text-2xl font-medium">{price}</span>
@@ -399,11 +405,11 @@ const productSchema = flavorView
         </div>
 
         {product.variants?.some((v: any) => v.availableForSale && (v.quantityAvailable ?? 1) <= 0) && (
-          <div class="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 mb-4">
+          <div class="flex items-start gap-3 rounded-lg border border-foreground/20 bg-white px-4 py-3 mb-4">
             <span class="text-lg">⏳</span>
             <div>
-              <p class="font-semibold text-amber-900 text-sm">Currently on backorder</p>
-              <p class="text-amber-800 text-sm">Order now and we'll ship when it's available.</p>
+              <p class="font-semibold text-sm">Currently on backorder</p>
+              <p class="text-foreground/70 text-sm">Order now and we'll ship when it's available.</p>
             </div>
           </div>
         )}
@@ -423,13 +429,14 @@ const productSchema = flavorView
         <!-- Add to cart -->
         <AddToCart product={product} client:load />
 
-        <!-- Clean label badges -->
-        <div class="grid grid-cols-2 gap-2 text-sm text-foreground/60 pt-2 border-t border-border">
-          <div class="flex items-center gap-2"><span>✓</span> Zero added sugar</div>
-          <div class="flex items-center gap-2"><span>✓</span> No maltodextrin</div>
-          <div class="flex items-center gap-2"><span>✓</span> {ingredientBadge}</div>
-          <div class="flex items-center gap-2"><span>✓</span> {cleanLabelBadge}</div>
-        </div>
+        {hideJarChecklist ? null : (
+          <div class="grid grid-cols-2 gap-2 text-sm text-foreground/60 pt-2 border-t border-border">
+            <div class="flex items-center gap-2"><span>✓</span> Zero added sugar</div>
+            <div class="flex items-center gap-2"><span>✓</span> No maltodextrin</div>
+            <div class="flex items-center gap-2"><span>✓</span> {ingredientBadge}</div>
+            <div class="flex items-center gap-2"><span>✓</span> {cleanLabelBadge}</div>
+          </div>
+        )}
 
         <!-- Guarantee badge -->
         <div class="border-l-4 border-foreground pl-4 py-1 mt-2">
@@ -523,8 +530,8 @@ const productSchema = flavorView
         ...(!vialProduct ? [{ q: "How many drinks are in a jar?", a: "It depends on your day. One scoop for a light day, two for a hard training day. A 10 serving jar gives you 10 to 20 drinks, and a 20 serving jar gives you 20 to 40. No wasted packets, just what your body needs." }] : []),
         { q: "Is there any sugar in this?", a: isChocolate ? "Zero added sugar. The sweetness comes from stevia and monk fruit. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." : "Zero added sugar. The sweetness comes from two sources: real freeze-dried fruit, and a small amount of stevia and monk fruit. Both are completely natural. Stevia is extracted from a leaf, and monk fruit comes from a melon. Neither is an artificial sweetener. What you won't find here is sucralose, aspartame, or any lab-made synthetic sweetener. Just plants." },
         { q: "How is this different from LMNT, Liquid IV, or other brands?", a: isChocolate ? "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus organic cacao and organic cordyceps. No artificial anything." : "Most electrolyte brands use 3 synthetic minerals and artificial flavors. Purest delivers 85+ trace minerals from natural sun-dried sea salt, plus real freeze-dried fruit. No artificial anything." },
-        { q: "Does the subscription renew on its own?", a: "Yes. Your subscription ships on your chosen schedule and can be paused or cancelled anytime with no fees. Manage it directly from your account or email us." },
-        { q: "What's the free shipping threshold?", a: "Free shipping on all orders over $39. Most single jars qualify. Subscribe and it's always free." },
+        ...(oneTimeProduct ? [] : [{ q: "Does the subscription renew on its own?", a: "Yes. Your subscription ships on your chosen schedule and can be paused or cancelled anytime with no fees. Manage it directly from your account or email us." }]),
+        { q: "What's the free shipping threshold?", a: oneTimeProduct ? "Free shipping on all orders over $39." : "Free shipping on all orders over $39. Most single jars qualify. Subscribe and it's always free." },
       ].map((item, i) => (
         <div class="faq-item py-4 cursor-pointer" data-index={String(i)}>
           <button class="w-full text-left flex justify-between items-center gap-4 font-medium">

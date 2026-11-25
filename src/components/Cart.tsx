@@ -12,6 +12,7 @@ import {
   $cart,
   $cartOpen,
   $cartSubtotal,
+  addToCart,
   closeCart,
   removeFromCart,
   updateQuantity,
@@ -23,11 +24,22 @@ import { createCheckout } from "@/lib/shopify";
 import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 import { formatPrice } from "@/lib/utils";
 
+export interface CartUpsell {
+  name: string;
+  productId: string;
+  alsoProductIds: string[];
+  variantId: string;
+  price: number;
+  currencyCode: string;
+  imageUrl: string | null;
+  available: boolean;
+}
+
 /**
  * Slide-out cart drawer. Mounted once at the layout level.
  * Subscribes to the global cart store; opens automatically when items are added.
  */
-export default function Cart() {
+export default function Cart({ upsells = [] }: { upsells?: CartUpsell[] }) {
   const items = useStore($cart);
   const open = useStore($cartOpen);
   const subtotal = useStore($cartSubtotal);
@@ -35,6 +47,13 @@ export default function Cart() {
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const currency = items[0]?.currencyCode ?? "USD";
+  const inCart = new Set(items.flatMap((item) => [item.productId, item.title]));
+  const offers = upsells.filter(
+    (offer) =>
+      !inCart.has(offer.productId) &&
+      !inCart.has(offer.name) &&
+      !offer.alsoProductIds.some((id) => inCart.has(id)),
+  );
 
   // Why an event handler instead of an effect: this only runs when the user clicks.
   async function handleCheckout() {
@@ -88,7 +107,7 @@ export default function Cart() {
           </div>
         ) : (
           <>
-            <ul className="flex-1 divide-y overflow-y-auto px-6">
+            <ul className="divide-y overflow-y-auto px-6">
               {items.map((item) => (
                 <li key={item.variantId} className="flex gap-4 py-4">
                   {item.imageUrl && (
@@ -166,7 +185,7 @@ export default function Cart() {
                               <span className="line-through text-muted-foreground mr-1">
                                 {formatPrice(item.price * item.quantity, item.currencyCode)}
                               </span>
-                              <span className="text-green-700">
+                              <span>
                                 {formatPrice(subPrice, item.currencyCode)}
                               </span>
                             </>
@@ -180,6 +199,45 @@ export default function Cart() {
                 </li>
               ))}
             </ul>
+
+            {offers.length > 0 && (
+              <div className="min-w-0 border-t bg-white px-6 py-4">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">Complete your order</p>
+                <ul className="mt-3 flex snap-x gap-3 overflow-x-auto pb-1">
+                  {offers.map((offer) => (
+                    <li key={offer.variantId} className="w-28 shrink-0 snap-start">
+                      <div className="aspect-square overflow-hidden bg-white ring-1 ring-inset ring-black/10">
+                        {offer.imageUrl ? (
+                          <img src={offer.imageUrl} alt="" className="h-full w-full object-contain" />
+                        ) : (
+                          <span className="block h-full w-full" />
+                        )}
+                      </div>
+                      <p className="mt-2 text-sm font-medium leading-tight">{offer.name}</p>
+                      <p className="mt-1 text-xs">{formatPrice(offer.price, offer.currencyCode)}</p>
+                      <button
+                        type="button"
+                        disabled={!offer.available}
+                        onClick={() =>
+                          addToCart({
+                            variantId: offer.variantId,
+                            productId: offer.productId,
+                            title: offer.name,
+                            variantTitle: "10 Serving Jar",
+                            price: offer.price,
+                            currencyCode: offer.currencyCode,
+                            imageUrl: offer.imageUrl,
+                          })
+                        }
+                        className="mt-2 h-8 w-full rounded-full border border-foreground bg-white text-xs font-medium text-foreground transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        {offer.available ? "Add" : "Sold out"}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="border-t px-6 py-4">
               <div className="flex items-center justify-between text-sm">
