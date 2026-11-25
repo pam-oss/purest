@@ -17,6 +17,7 @@ interface Item {
   frame?: Frame;
   /** Fraction of the tile the framed subject should fill. Flavors use the glass height. */
   target?: number;
+  alsoProductIds?: string[];
 }
 
 const { items, place = "start" } = Astro.props as { items: Item[]; place?: "start" | "center" };
@@ -47,7 +48,7 @@ function coverStyle(frame: Frame) {
 
 const cards = await Promise.all(
   items.map(async (item) => {
-    const review = await getReviewSummary(item.product.id);
+    const review = await getReviewSummary(item.product.id, item.alsoProductIds ?? []);
     const rated = review && review.count > 0 ? review : null;
     return {
       href: item.href,

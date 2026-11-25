@@ -17,7 +17,12 @@ export interface ReviewSummary {
 
 const cache = new Map<string, Promise<ReviewSummary | null>>();
 
-export function getReviewSummary(productId: string): Promise<ReviewSummary | null> {
+export function getReviewSummary(productId: string, alsoProductIds: string[] = []): Promise<ReviewSummary | null> {
+  const ids = [productId, ...alsoProductIds].filter((id, index, all) => all.indexOf(id) === index);
+  return Promise.all(ids.map((id) => summaryFor(id))).then(combineSummaries);
+}
+
+function summaryFor(productId: string): Promise<ReviewSummary | null> {
   const externalId = shopifyNumericId(productId);
   if (!/^\d+$/.test(externalId)) return Promise.resolve(null);
   const existing = cache.get(externalId);
@@ -25,6 +30,14 @@ export function getReviewSummary(productId: string): Promise<ReviewSummary | nul
   const pending = fetchSummary(externalId);
   cache.set(externalId, pending);
   return pending;
+}
+
+function combineSummaries(summaries: (ReviewSummary | null)[]): ReviewSummary | null {
+  const rated = summaries.filter((summary): summary is ReviewSummary => summary !== null && summary.count > 0);
+  if (rated.length === 0) return null;
+  const count = rated.reduce((total, summary) => total + summary.count, 0);
+  const average = rated.reduce((total, summary) => total + summary.average * summary.count, 0) / count;
+  return { average, count };
 }
 
 async function fetchSummary(externalId: string): Promise<ReviewSummary | null> {
