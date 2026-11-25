@@ -87,56 +87,126 @@
 }
 
 /* Judge.me ships gold stars and colored buttons. Force the review UI to black. */
+.jdgm-star,
+.jdgm-star::before,
+.jdgm-star.jdgm--on,
+.jdgm-star.jdgm--on::before,
+.jdgm-star.jdgm--half,
+.jdgm-star.jdgm--half::before,
 .jdgm-widget .jdgm-star,
 .jdgm-preview-badge .jdgm-star,
+.jdgm-prev-badge .jdgm-star,
 .jdgm-rev-widg .jdgm-star,
+.jdgm-rev-widg__summary-stars .jdgm-star,
 .jdgm-all-reviews .jdgm-star,
 .jdgm-rev__rating .jdgm-star,
 .jdgm-histogram .jdgm-star {
   color: #171717 !important;
 }
 .jdgm-star.jdgm--off,
-.jdgm-star.jdgm--half::after {
+.jdgm-star.jdgm--off::before {
   color: #d4d4d4 !important;
 }
-.jdgm-histogram__bar {
+.jdgm-histogram__bar,
+.jdgm-histogram__bar::before {
   background: #e5e5e5 !important;
+  background-color: #e5e5e5 !important;
 }
 .jdgm-histogram__bar-content,
 .jdgm-histogram__bar-content::before {
   background: #171717 !important;
+  background-color: #171717 !important;
 }
 .jdgm-write-rev-link,
+a.jdgm-write-rev-link,
 .jdgm-ask-question-btn,
+.jdgm-ask-question-link,
 .jdgm-submit-rev,
+.jdgm-cancel-rev,
+.jdgm-btn,
 .jdgm-btn--solid,
 .jdgm-widget .jdgm-btn,
+.jdgm-widget button,
 .jdgm-all-reviews-widget .jdgm-write-rev-link {
   background: #171717 !important;
+  background-color: #171717 !important;
   border-color: #171717 !important;
   color: #ffffff !important;
 }
 .jdgm-rev__buyer-badge,
 .jdgm-rev__transparency-badge,
 .jdgm-chip,
-.jdgm-rev__pinned {
+.jdgm-rev__pinned,
+.jdgm-rev-widg__highlight,
+.jdgm-highlight,
+.jdgm-keyword,
+.jdgm-rev__highlight,
+.jdgm-gallery-badge,
+.jdgm-medal {
   background: #171717 !important;
+  background-color: #171717 !important;
   color: #ffffff !important;
+  border-color: #171717 !important;
 }
 .jdgm-widget a,
 .jdgm-rev-widg a,
 .jdgm-prev-badge__text,
 .jdgm-rev-widg__summary,
 .jdgm-rev-widg__summary-text,
+.jdgm-rev-widg__summary-average,
 .jdgm-rev__title,
 .jdgm-rev__body,
 .jdgm-rev__author,
-.jdgm-link {
+.jdgm-link,
+.jdgm-histogram__clear-filter,
+.jdgm-histogram__row {
   color: #171717 !important;
+}
+a.jdgm-write-rev-link,
+.jdgm-write-rev-link,
+.jdgm-submit-rev,
+.jdgm-ask-question-btn,
+.jdgm-widget .jdgm-btn,
+.jdgm-widget button {
+  color: #ffffff !important;
+}
+.jdgm-widget-actions-wrapper,
+.jdgm-row-actions,
+.jdgm-paginate,
+.jdgm-rev-widg__header,
+.jdgm-rev {
+  border-color: #e5e5e5 !important;
 }
 .jdgm-form__fieldset input:focus,
 .jdgm-form__fieldset textarea:focus,
 .jdgm-sort-dropdown:focus {
   outline-color: #171717 !important;
   border-color: #171717 !important;
+}
+.jdgm-rev__icon,
+.jdgm-rev__icon::before,
+.jdgm-rev__author-icon,
+.jdgm-rev__buyer-badge__icon,
+.jdgm-sort-dropdown,
+.jdgm-sort-dropdown-arrow,
+.jdgm-histogram__frequency,
+.jdgm-rev-widg__summary-text a {
+  color: #171717 !important;
+  fill: #171717 !important;
+}
+.jdgm-rev-widg,
+.jdgm-rev,
+.jdgm-rev-widg__header,
+.jdgm-rev-widg__body,
+.jdgm-rev-widg__summary,
+.jdgm-histogram,
+.jdgm-row-stars,
+.jdgm-divider,
+.jdgm-widget .jdgm-divider-top {
+  border-color: #e5e5e5 !important;
+}
+.jdgm-paginate__page.jdgm--current {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+  color: #ffffff !important;
 }

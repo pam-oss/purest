@@ -349,5 +349,56 @@ const flavorUpsells = FLAVOR_GROUPS.flatMap((group) => {
         });
       })();
     </script>
+    <style id="purest-review-ink">
+      .jdgm-star,
+      .jdgm-star::before,
+      .jdgm-star.jdgm--on,
+      .jdgm-star.jdgm--on::before,
+      .jdgm-star.jdgm--half,
+      .jdgm-star.jdgm--half::before { color: #171717 !important; }
+      .jdgm-star.jdgm--off,
+      .jdgm-star.jdgm--off::before { color: #d4d4d4 !important; }
+      .jdgm-histogram__bar-content,
+      .jdgm-histogram__bar-content::before { background-color: #171717 !important; }
+      .jdgm-histogram__clear-filter,
+      .jdgm-histogram__row { color: #171717 !important; }
+      .jdgm-write-rev-link,
+      a.jdgm-write-rev-link,
+      .jdgm-widget button { color: #fff !important; background-color: #171717 !important; border-color: #171717 !important; }
+      .jdgm-widget-actions-wrapper,
+      .jdgm-row-actions,
+      .jdgm-paginate,
+      .jdgm-rev { border-color: #e5e5e5 !important; }
+      a.jdgm-write-rev-link,
+      .jdgm-submit-rev,
+      .jdgm-ask-question-btn,
+      .jdgm-widget .jdgm-btn,
+      .jdgm-widget button { background-color: #171717 !important; border-color: #171717 !important; color: #fff !important; }
+      .jdgm-rev__icon,
+      .jdgm-rev__icon::before,
+      .jdgm-sort-dropdown,
+      .jdgm-sort-dropdown-arrow { color: #171717 !important; fill: #171717 !important; }
+      .jdgm-rev-widg,
+      .jdgm-rev,
+      .jdgm-histogram,
+      .jdgm-rev-widg__summary { border-color: #e5e5e5 !important; }
+      .jdgm-chip,
+      .jdgm-highlight,
+      .jdgm-keyword { background-color: #171717 !important; color: #fff !important; }
+    </style>
+    <script is:inline>
+      (function () {
+        function pin() {
+          var node = document.getElementById("purest-review-ink");
+          if (!node || document.body.lastElementChild === node) return;
+          document.body.appendChild(node);
+        }
+        pin();
+        window.addEventListener("load", function () {
+          pin();
+          new MutationObserver(pin).observe(document.documentElement, { childList: true, subtree: true });
+        });
+      })();
+    </script>
   </body>
 </html>
