@@ -164,9 +164,19 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
               >
                 <span className="text-sm font-medium">{size.label}</span>
                 <span className="mt-1 text-2xl font-medium">{formatPrice(price.amount, price.currencyCode)}</span>
+                <span className="mt-1 text-xs text-muted-foreground">
+                  {size.servings === 20 ? "20 to 40 drinks" : "10 to 20 drinks"}
+                </span>
               </a>
             );
           })}
+        </div>
+
+        <div>
+          <h2 className="font-serif text-lg tracking-tight">Dose it your way</h2>
+          <p className="mt-1 text-sm leading-relaxed text-foreground/75">
+            One scoop for a light day, two for a hard training day. No wasted packets, just what your body needs.
+          </p>
         </div>
 
         <ul className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:pb-0">
