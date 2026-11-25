@@ -177,7 +177,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
           <h2 className="font-serif text-lg tracking-tight">Dose it your way</h2>
           <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
             <li className="flex items-center gap-2.5">
-              <ScoopMark className="h-11 w-11 shrink-0" />
+              <ScoopMark className="h-12 w-auto shrink-0" />
               <p className="min-w-0 leading-tight">
                 <span className="font-serif text-2xl leading-none">1</span>
                 <span className="ml-1 text-sm">scoop</span>
@@ -185,9 +185,9 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
               </p>
             </li>
             <li className="flex items-center gap-2.5">
-              <span className="flex shrink-0" aria-hidden="true">
-                <ScoopMark className="h-10 w-10" />
-                <ScoopMark className="-ml-3 h-10 w-10" />
+              <span className="relative h-16 w-[6.8rem] shrink-0" aria-hidden="true">
+                <ScoopMark className="absolute left-0 top-0 h-12 w-auto" />
+                <ScoopMark className="absolute left-7 top-3.5 h-12 w-auto" />
               </span>
               <p className="min-w-0 leading-tight">
                 <span className="font-serif text-2xl leading-none">2</span>
@@ -330,11 +330,20 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
 function ScoopMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
-      <path d="M40 18c6-1 12-4 16-7" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
-      <path d="M10 30c0-8 8-14 20-14s20 6 20 14v8c0 10-9 17-20 17S10 48 10 38V30z" fill="#fff" stroke="currentColor" strokeWidth="2.5" />
-      <path d="M16 31c2.2-9 8-13 14-13s11.5 4 14 13c-4.2 2.4-23.8 2.4-28 0z" fill="currentColor" />
-      <path d="M24 26c2.2 1.6 6.4 2.2 10 .4" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+    <svg viewBox="0 0 78 48" className={className} aria-hidden="true">
+      <path d="M46 21.5h26.5a1.6 1.6 0 0 1 1.6 1.6v2.8a1.6 1.6 0 0 1-1.6 1.6H46" fill="currentColor" />
+      <circle cx="68.5" cy="24.5" r="1.15" fill="#fff" />
+      <path d="M14 23c0 11.5 6.2 19 16 19s16-7.5 16-19" fill="#fff" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <ellipse cx="30" cy="23" rx="16" ry="6.2" fill="#fff" stroke="currentColor" strokeWidth="2" />
+      <path d="M20 22.2c.6-8 5.2-12.2 10-12.2s9.4 4.2 10 12.2" fill="#fff" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <g fill="currentColor">
+        <circle cx="26" cy="16.2" r="0.85" />
+        <circle cx="30" cy="14.4" r="0.85" />
+        <circle cx="34" cy="16" r="0.85" />
+        <circle cx="28.2" cy="18.4" r="0.7" />
+        <circle cx="32.4" cy="18.2" r="0.7" />
+        <circle cx="30.2" cy="16.8" r="0.65" />
+      </g>
     </svg>
   );
 }
