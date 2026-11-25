@@ -114,7 +114,8 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <div>
           <h1 className="font-serif text-3xl tracking-tight md:text-4xl">{heading}</h1>
-          <p className="mt-2 font-serif text-3xl leading-tight tracking-tight md:text-4xl">{flavorName}</p>
+          <p className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Flavor</p>
+          <p className="mt-1 font-serif text-4xl italic leading-none tracking-tight md:text-5xl">{flavorName}</p>
         </div>
 
         {(shortCopy || moreCopy) && (
@@ -175,18 +176,18 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
         <div>
           <h2 className="font-serif text-lg tracking-tight">Dose it your way</h2>
           <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
-            <li className="flex items-center gap-2">
-              <ScoopIcon className="h-10 w-10 shrink-0" />
+            <li className="flex items-center gap-2.5">
+              <ScoopMark className="h-11 w-11 shrink-0" />
               <p className="min-w-0 leading-tight">
                 <span className="font-serif text-2xl leading-none">1</span>
                 <span className="ml-1 text-sm">scoop</span>
                 <span className="mt-0.5 block text-xs text-muted-foreground">Light day</span>
               </p>
             </li>
-            <li className="flex items-center gap-2">
-              <span className="flex shrink-0 gap-1" aria-hidden="true">
-                <ScoopIcon className="h-9 w-9" />
-                <ScoopIcon className="h-9 w-9" />
+            <li className="flex items-center gap-2.5">
+              <span className="flex shrink-0" aria-hidden="true">
+                <ScoopMark className="h-10 w-10" />
+                <ScoopMark className="-ml-3 h-10 w-10" />
               </span>
               <p className="min-w-0 leading-tight">
                 <span className="font-serif text-2xl leading-none">2</span>
@@ -327,13 +328,13 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
   );
 }
 
-function ScoopIcon({ className }: { className?: string }) {
+function ScoopMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 48" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M30 13c5-.6 11-3 14-5" />
-      <path d="M8 22c0-6 6.5-10 15-10s15 4 15 10" />
-      <path d="M8 22v6c0 7 6.7 12 15 12s15-5 15-12v-6" />
-      <path d="M11 24c3.5 2.5 22 2.5 26 0" />
+    <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
+      <path d="M40 18c6-1 12-4 16-7" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+      <path d="M10 30c0-8 8-14 20-14s20 6 20 14v8c0 10-9 17-20 17S10 48 10 38V30z" fill="#fff" stroke="currentColor" strokeWidth="2.5" />
+      <path d="M16 31c2.2-9 8-13 14-13s11.5 4 14 13c-4.2 2.4-23.8 2.4-28 0z" fill="currentColor" />
+      <path d="M24 26c2.2 1.6 6.4 2.2 10 .4" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
 }
