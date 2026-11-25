@@ -39,6 +39,9 @@ export interface FlavorPageModel {
 
 export const FLAVOR_PAGE_HEADING = "PUREST Real Fruit, Real Salt Electrolytes";
 
+/** The page where a shopper picks a flavor, a jar size, and adds it to the cart. */
+export const FLAVOR_SHOP_PATH = "/products/10-count-ginger-limeaid";
+
 export interface FlavorGroup {
   name: string;
   handles: { 10: string; 20: string };

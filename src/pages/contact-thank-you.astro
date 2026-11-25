@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 ---
 
 <Layout title="Purest Electrolyte | Thanks for Reaching Out" description="Thank you for contacting Purest Electrolyte.">
@@ -9,7 +10,7 @@ import Layout from "@/layouts/Layout.astro";
       <p class="thanks-eyebrow">Message sent</p>
       <h1 id="thanks-title">Thanks for<br />reaching out.</h1>
       <p class="thanks-description">Your message has been sent to Purest Electrolyte.<br />We will be in touch soon.</p>
-      <a class="thanks-shop" href="/products">Keep shopping <span aria-hidden="true">→</span></a>
+      <a class="thanks-shop" href={FLAVOR_SHOP_PATH}>Keep shopping <span aria-hidden="true">→</span></a>
     </div>
   </section>
 </Layout>

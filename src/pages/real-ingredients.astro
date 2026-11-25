@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 
 const categoryFaqs = [
   {
@@ -134,7 +135,7 @@ const categoryFaqs = [
 
     <div class="mt-16 pt-8 border-t border-border">
       <a
-        href="/products"
+        href={FLAVOR_SHOP_PATH}
         class="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-8 py-3 text-sm font-medium hover:opacity-90 transition-opacity"
       >
         Shop Purest Electrolyte →

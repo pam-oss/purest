@@ -1,4 +1,5 @@
 ---
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 ---
 <section class="bg-stone-50 py-14 md:py-20">
   <div class="container max-w-4xl text-center">
@@ -49,7 +50,7 @@
       <p class="mt-3 text-xs text-foreground/40 italic">Pam Sweeney, Founder · Developed at 8,900 ft in Aspen, Colorado</p>
     </div>
 
-    <a href="/products" class="mt-10 inline-flex h-12 items-center justify-center rounded-full border border-foreground px-8 text-sm font-medium hover:bg-foreground hover:text-background transition-colors">
+    <a href={FLAVOR_SHOP_PATH} class="mt-10 inline-flex h-12 items-center justify-center rounded-full border border-foreground px-8 text-sm font-medium hover:bg-foreground hover:text-background transition-colors">
       Shop all flavors →
     </a>
   </div>
