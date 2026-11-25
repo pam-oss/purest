@@ -38,14 +38,14 @@
 
     /* Primary = the brand action color. Black ink, same density as the logo. */
     --primary: 0 0% 9%;
-    --primary-foreground: 47 33% 96%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary surface = warm cream. Used for section accents to add warmth. */
-    --secondary: 47 33% 96%;
+    /* Secondary surface stays neutral gray, not cream. */
+    --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 9%;
 
-    --muted: 47 30% 96%;
-    --muted-foreground: 25 6% 42%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
 
     /*
      * Pure monochrome — no chromatic accent. Restraint per Rams.
@@ -53,13 +53,13 @@
      * the same near-black ink. The result is unified and quiet.
      */
     --accent: 0 0% 9%;
-    --accent-foreground: 47 33% 96%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 70% 45%;
+    --destructive: 0 0% 9%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 12% 86%;
-    --input: 30 12% 86%;
+    --border: 0 0% 86%;
+    --input: 0 0% 86%;
     --ring: 0 0% 9%;
 
     /* Sharper radius — architectural, not consumer-app. */
@@ -84,4 +84,59 @@
     text-wrap: balance;
     letter-spacing: -0.01em;
   }
+}
+
+/* Judge.me ships gold stars and colored buttons. Force the review UI to black. */
+.jdgm-widget .jdgm-star,
+.jdgm-preview-badge .jdgm-star,
+.jdgm-rev-widg .jdgm-star,
+.jdgm-all-reviews .jdgm-star,
+.jdgm-rev__rating .jdgm-star,
+.jdgm-histogram .jdgm-star {
+  color: #171717 !important;
+}
+.jdgm-star.jdgm--off,
+.jdgm-star.jdgm--half::after {
+  color: #d4d4d4 !important;
+}
+.jdgm-histogram__bar {
+  background: #e5e5e5 !important;
+}
+.jdgm-histogram__bar-content,
+.jdgm-histogram__bar-content::before {
+  background: #171717 !important;
+}
+.jdgm-write-rev-link,
+.jdgm-ask-question-btn,
+.jdgm-submit-rev,
+.jdgm-btn--solid,
+.jdgm-widget .jdgm-btn,
+.jdgm-all-reviews-widget .jdgm-write-rev-link {
+  background: #171717 !important;
+  border-color: #171717 !important;
+  color: #ffffff !important;
+}
+.jdgm-rev__buyer-badge,
+.jdgm-rev__transparency-badge,
+.jdgm-chip,
+.jdgm-rev__pinned {
+  background: #171717 !important;
+  color: #ffffff !important;
+}
+.jdgm-widget a,
+.jdgm-rev-widg a,
+.jdgm-prev-badge__text,
+.jdgm-rev-widg__summary,
+.jdgm-rev-widg__summary-text,
+.jdgm-rev__title,
+.jdgm-rev__body,
+.jdgm-rev__author,
+.jdgm-link {
+  color: #171717 !important;
+}
+.jdgm-form__fieldset input:focus,
+.jdgm-form__fieldset textarea:focus,
+.jdgm-sort-dropdown:focus {
+  outline-color: #171717 !important;
+  border-color: #171717 !important;
 }

@@ -57,7 +57,8 @@ const editorial = flavorCopyFor(handle ?? "", product?.title);
 
 // The 5 Day Kit is single serve vials, not a scooped jar. Keep its existing answer.
 const vialProduct = handle === "5-day-hydration-kit" || handle === "20-count-variety-pack";
-const oneTimeProduct = new Set([
+const oneTimeProduct = handle === "free-purest-glass-water-bottle";
+const hideJarChecklist = new Set([
   "free-purest-glass-water-bottle",
   "5-day-hydration-kit",
   "the-hydration-ritual-kit",
@@ -391,7 +392,7 @@ const productSchema = flavorView
               <>
                 <span class="text-sm text-muted-foreground line-through">$66.98</span>
                 <span class="text-2xl font-medium">{price}</span>
-                <span class="text-sm font-medium text-green-700">Save $17.98</span>
+                <span class="text-sm font-medium">Save $17.98</span>
               </>
             ) : (
               !hasServingSizeVariants && <span class="text-2xl font-medium">{price}</span>
@@ -404,11 +405,11 @@ const productSchema = flavorView
         </div>
 
         {product.variants?.some((v: any) => v.availableForSale && (v.quantityAvailable ?? 1) <= 0) && (
-          <div class="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 mb-4">
+          <div class="flex items-start gap-3 rounded-lg border border-foreground/20 bg-white px-4 py-3 mb-4">
             <span class="text-lg">⏳</span>
             <div>
-              <p class="font-semibold text-amber-900 text-sm">Currently on backorder</p>
-              <p class="text-amber-800 text-sm">Order now and we'll ship when it's available.</p>
+              <p class="font-semibold text-sm">Currently on backorder</p>
+              <p class="text-foreground/70 text-sm">Order now and we'll ship when it's available.</p>
             </div>
           </div>
         )}
@@ -428,13 +429,14 @@ const productSchema = flavorView
         <!-- Add to cart -->
         <AddToCart product={product} client:load />
 
-        <!-- Clean label badges -->
-        <div class="grid grid-cols-2 gap-2 text-sm text-foreground/60 pt-2 border-t border-border">
-          <div class="flex items-center gap-2"><span>✓</span> Zero added sugar</div>
-          <div class="flex items-center gap-2"><span>✓</span> No maltodextrin</div>
-          <div class="flex items-center gap-2"><span>✓</span> {ingredientBadge}</div>
-          <div class="flex items-center gap-2"><span>✓</span> {cleanLabelBadge}</div>
-        </div>
+        {hideJarChecklist ? null : (
+          <div class="grid grid-cols-2 gap-2 text-sm text-foreground/60 pt-2 border-t border-border">
+            <div class="flex items-center gap-2"><span>✓</span> Zero added sugar</div>
+            <div class="flex items-center gap-2"><span>✓</span> No maltodextrin</div>
+            <div class="flex items-center gap-2"><span>✓</span> {ingredientBadge}</div>
+            <div class="flex items-center gap-2"><span>✓</span> {cleanLabelBadge}</div>
+          </div>
+        )}
 
         <!-- Guarantee badge -->
         <div class="border-l-4 border-foreground pl-4 py-1 mt-2">

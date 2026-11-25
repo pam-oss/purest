@@ -105,7 +105,7 @@ export default function LaJollaSignup({ dark = false }: { dark?: boolean }) {
         {status === "submitting" ? "Entering…" : "Enter to Win"}
       </Button>
       {status === "error" && (
-        <p className="text-xs text-red-500 text-center">
+        <p className="text-xs text-center">
           Something went wrong. Try again or <a href="/contact" className="underline">contact us</a>.
         </p>
       )}

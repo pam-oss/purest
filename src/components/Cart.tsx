@@ -185,7 +185,7 @@ export default function Cart({ upsells = [] }: { upsells?: CartUpsell[] }) {
                               <span className="line-through text-muted-foreground mr-1">
                                 {formatPrice(item.price * item.quantity, item.currencyCode)}
                               </span>
-                              <span className="text-green-700">
+                              <span>
                                 {formatPrice(subPrice, item.currencyCode)}
                               </span>
                             </>
