@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
@@ -175,33 +175,25 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <div>
           <h2 className="font-serif text-lg tracking-tight">Dose it your way</h2>
-          <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
-            <li className="flex items-center gap-2.5">
-              <ScoopMark className="h-12 w-auto shrink-0" />
-              <p className="min-w-0 leading-tight">
-                <span className="font-serif text-2xl leading-none">1</span>
-                <span className="ml-1 text-sm">scoop</span>
-                <span className="mt-0.5 block text-xs text-muted-foreground">Light day</span>
-              </p>
-            </li>
-            <li className="flex items-center gap-2.5">
-              <span className="relative h-16 w-[6.8rem] shrink-0" aria-hidden="true">
-                <ScoopMark className="absolute left-0 top-0 h-12 w-auto" />
-                <ScoopMark className="absolute left-7 top-3.5 h-12 w-auto" />
-              </span>
-              <p className="min-w-0 leading-tight">
-                <span className="font-serif text-2xl leading-none">2</span>
-                <span className="ml-1 text-sm">scoops</span>
-                <span className="mt-0.5 block text-xs text-muted-foreground">Hard training day</span>
-              </p>
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckIcon className="h-7 w-7" />
-              <p className="min-w-0 leading-tight">
-                <span className="font-serif text-2xl leading-none">0</span>
-                <span className="mt-0.5 block text-xs text-muted-foreground">wasted product</span>
-              </p>
-            </li>
+          <ul className="mt-3 grid grid-cols-3 divide-x divide-black/15">
+            <DoseStat
+              icon={<ScoopMark className="h-11 w-auto" />}
+              value="1"
+              unit="scoop"
+              label="Light day"
+            />
+            <DoseStat
+              icon={<TwoScoops />}
+              value="2"
+              unit="scoops"
+              label={"Hard\ntraining day"}
+            />
+            <DoseStat
+              icon={<CheckIcon className="h-9 w-9" />}
+              value="0"
+              unit="waste"
+              label="Wasted product"
+            />
           </ul>
         </div>
 
@@ -325,6 +317,38 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
         <IngredientsDialog size={selected} flavorName={flavorName} onClose={() => setIngredientsOpen(false)} />
       )}
     </div>
+  );
+}
+
+function DoseStat({
+  icon,
+  value,
+  unit,
+  label,
+}: {
+  icon: ReactNode;
+  value: string;
+  unit: string;
+  label: string;
+}) {
+  return (
+    <li className="flex flex-col items-center px-1.5 text-center">
+      <span className="flex h-16 w-full items-center justify-center">{icon}</span>
+      <p className="mt-2 flex items-baseline justify-center text-foreground">
+        <span className="font-serif text-3xl leading-none">{value}</span>
+        <span className="ml-1 text-xs">{unit}</span>
+      </p>
+      <p className="mt-1 min-h-8 whitespace-pre-line text-xs leading-tight text-muted-foreground">{label}</p>
+    </li>
+  );
+}
+
+function TwoScoops() {
+  return (
+    <span className="relative h-14 w-[5.4rem]" aria-hidden="true">
+      <ScoopMark className="absolute left-0 top-0 h-10 w-auto" />
+      <ScoopMark className="absolute left-6 top-3 h-10 w-auto" />
+    </span>
   );
 }
 
