@@ -2,14 +2,13 @@
 import siteConfig from "@/data/site-config.json";
 import CartIcon from "@/components/CartIcon.tsx";
 import Logo from "@/components/Logo.astro";
-import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
   href === "/" ? path === "/" : path.startsWith(href);
 
 const links = [
-  { href: FLAVOR_SHOP_PATH, label: "Shop" },
+  { href: "/#flavors", label: "Shop" },
   { href: "/science", label: "Science" },
   { href: "/faq", label: "FAQ" },
   { href: "/about", label: "About" },
@@ -37,7 +36,7 @@ const links = [
         <a
           href={link.href}
           class:list={[
-            "rounded-md px-3 py-2 text-sm transition-colors hover:bg-secondary",
+            "rounded-md px-3 py-2 text-sm transition-colors hover:bg-neutral-100",
             isActive(link.href) ? "text-foreground" : "text-muted-foreground",
           ]}
         >
@@ -49,7 +48,7 @@ const links = [
     {/* Right side: cart + hamburger */}
     <div class="flex items-center gap-2">
       <a
-        href={FLAVOR_SHOP_PATH}
+        href="/#flavors"
         class="rounded-md px-3 py-2 text-sm font-medium text-foreground md:hidden"
       >
         Shop
@@ -59,7 +58,7 @@ const links = [
       {/* Hamburger button — mobile only */}
       <button
         id="menu-toggle"
-        class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px] rounded-md hover:bg-secondary transition-colors"
+        class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-[5px] rounded-md hover:bg-neutral-100 transition-colors"
         aria-label="Toggle menu"
         aria-expanded="false"
       >
@@ -80,7 +79,7 @@ const links = [
         <a
           href={link.href}
           class:list={[
-            "rounded-md px-4 py-3 text-sm transition-colors hover:bg-secondary",
+            "rounded-md px-4 py-3 text-sm transition-colors hover:bg-neutral-100",
             isActive(link.href) ? "text-foreground font-medium" : "text-muted-foreground",
           ]}
         >
