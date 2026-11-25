@@ -135,7 +135,7 @@ function handleAdd() {
             <img
               src={product.image.url}
               alt={product.image.altText ?? displayTitle}
-              loading="lazy"
+              loading="eager"
               className="h-full w-full object-contain"
             />
           ) : (
