@@ -1,11 +1,10 @@
 ---
 import siteConfig from "@/data/site-config.json";
-import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 
 const { image, imageFallback, imageAlt } = siteConfig.hero;
 ---
 
-<section class="w-full overflow-hidden bg-stone-50 md:grid md:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.2fr)] xl:grid-cols-[minmax(430px,0.78fr)_minmax(0,1.35fr)]">
+<section class="w-full overflow-hidden bg-white md:grid md:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.2fr)] xl:grid-cols-[minmax(430px,0.78fr)_minmax(0,1.35fr)]">
   <picture class="block w-full md:order-2 md:self-start">
     <source srcset={image} type="image/webp" />
     <img
@@ -28,14 +27,14 @@ const { image, imageFallback, imageAlt } = siteConfig.hero;
       </h1>
 
       <ul class="order-4 mt-6 space-y-2 text-sm text-foreground/75 md:order-3 md:mt-5 xl:mt-7 xl:text-base">
-        <li class="flex items-start gap-2"><span class="font-bold text-green-600">✓</span> 85+ trace minerals from natural sun-dried sea salt</li>
-        <li class="flex items-start gap-2"><span class="font-bold text-green-600">✓</span> 700+ mg sodium per serving, with 85+ trace minerals from Guérande sea salt</li>
-        <li class="flex items-start gap-2"><span class="font-bold text-green-600">✓</span> 0 added sugar, 0 anti-caking agents, 0 maltodextrin</li>
+        <li class="flex items-start gap-2"><span class="font-bold">✓</span> 85+ trace minerals from natural sun dried sea salt</li>
+        <li class="flex items-start gap-2"><span class="font-bold">✓</span> 700+ mg sodium per serving, with 85+ trace minerals from Guérande sea salt</li>
+        <li class="flex items-start gap-2"><span class="font-bold">✓</span> 0 added sugar, 0 anti caking agents, 0 maltodextrin</li>
       </ul>
 
       <div class="order-3 mt-5 flex flex-col gap-3 md:order-4 md:mt-4 xl:mt-5">
         <a
-          href={FLAVOR_SHOP_PATH}
+          href="/#flavors"
           class="inline-flex h-[52px] items-center justify-center rounded-full bg-primary px-10 text-base font-medium text-primary-foreground transition-all duration-150 hover:bg-primary/90 active:scale-[0.98]"
         >
           Shop now →
@@ -44,11 +43,10 @@ const { image, imageFallback, imageAlt } = siteConfig.hero;
           href="/products/5-day-hydration-kit"
           class="inline-flex h-[52px] items-center justify-center rounded-full border border-foreground/20 px-6 text-center text-base font-medium text-foreground transition-all hover:bg-foreground/5"
         >
-          Try the 5-Day Kit for $16.99
+          Try the 5 Day Kit
         </a>
       </div>
 
-      <p class="order-5 mt-4 text-xs text-foreground/40 md:mt-3 xl:mt-4">Free shipping on orders over $39</p>
     </div>
   </div>
 </section>
