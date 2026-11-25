@@ -183,16 +183,21 @@ a.jdgm-write-rev-link,
   outline-color: #171717 !important;
   border-color: #171717 !important;
 }
-.jdgm-rev__icon,
-.jdgm-rev__icon::before,
-.jdgm-rev__author-icon,
-.jdgm-rev__buyer-badge__icon,
-.jdgm-sort-dropdown,
-.jdgm-sort-dropdown-arrow,
 .jdgm-histogram__frequency,
-.jdgm-rev-widg__summary-text a {
+.jdgm-histogram__row[data-rating] .jdgm-histogram__frequency {
   color: #171717 !important;
-  fill: #171717 !important;
+  -webkit-text-fill-color: #171717 !important;
+}
+.jdgm-verified-checkmark {
+  filter: brightness(0);
+}
+.jdgm-rev__icon,
+.jdgm-rev__icon::before {
+  color: #171717 !important;
+}
+.jdgm-rev__icon::after {
+  background-color: #171717 !important;
+  color: #ffffff !important;
 }
 .jdgm-rev-widg,
 .jdgm-rev,
