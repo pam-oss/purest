@@ -55,6 +55,7 @@ export const FLAVOR_GROUPS: FlavorGroup[] = [
   {
     name: "Hibiscus Lime",
     handles: { 10: "10-count-hibiscus-lime", 20: "20-servings-hibiscus-lime" },
+    badge: "Most Popular",
   },
   {
     name: "Chocolate Cordyceps",
