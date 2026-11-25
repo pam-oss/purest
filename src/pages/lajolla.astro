@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import LaJollaSignup from "@/components/LaJollaSignup.tsx";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 ---
 
 <Layout
@@ -54,7 +55,7 @@ import LaJollaSignup from "@/components/LaJollaSignup.tsx";
       </div>
       <div class="mt-8">
         <a
-          href="/products"
+          href={FLAVOR_SHOP_PATH}
           class="inline-flex items-center justify-center rounded-full bg-foreground text-background px-8 py-3 text-sm font-medium hover:opacity-90 transition-opacity"
         >
           Shop now →
@@ -111,7 +112,7 @@ import LaJollaSignup from "@/components/LaJollaSignup.tsx";
           Shop the 5-Day Kit for $15.99
         </a>
         <a
-          href="/products"
+          href={FLAVOR_SHOP_PATH}
           class="inline-flex items-center justify-center rounded-full border border-foreground/20 text-foreground px-8 py-3 text-sm font-medium hover:bg-foreground/5 transition-colors"
         >
           See all flavors

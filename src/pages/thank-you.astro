@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 ---
 
 <Layout title="Purest Electrolyte | Thank You for Your Message" description="Your message has been sent to Purest Electrolyte.">
@@ -10,7 +11,7 @@ import Layout from "@/layouts/Layout.astro";
       get back to you as soon as possible.
     </p>
     <a
-      href="/products"
+      href={FLAVOR_SHOP_PATH}
       class="mt-10 inline-flex h-11 items-center justify-center rounded-full border border-input px-6 text-sm font-medium transition-colors hover:bg-secondary"
     >
       Continue shopping

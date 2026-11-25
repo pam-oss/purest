@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
 import { displayProductTitle } from "@/lib/product-title";
 import type { Product } from "@/lib/shopify";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 import { formatPrice } from "@/lib/utils";
 
 interface Props {
@@ -53,7 +54,7 @@ export default function FeaturedProduct({ product }: Props) {
           <Button size="lg" disabled={soldOut} onClick={handleAdd}>
             {soldOut ? "Sold out" : "Add to cart"}
           </Button>
-          <a href="/products" className="inline-block font-serif text-2xl font-bold tracking-tight text-foreground underline underline-offset-4 hover:opacity-70 transition-opacity">Explore all flavors →</a>
+          <a href={FLAVOR_SHOP_PATH} className="inline-block font-serif text-2xl font-bold tracking-tight text-foreground underline underline-offset-4 hover:opacity-70 transition-opacity">Explore all flavors →</a>
         </div>
       </div>
     </div>

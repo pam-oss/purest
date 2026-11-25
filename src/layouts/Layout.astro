@@ -7,6 +7,7 @@ import Footer from "@/components/Footer.astro";
 import Cart from "@/components/Cart.tsx";
 import MetaPixel from "@/components/MetaPixel.astro";
 import siteConfig from "@/data/site-config.json";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 
 interface Props {
   canonical?: string;
@@ -228,7 +229,7 @@ const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toStr
       </div>
     </div>
 
-    <script>
+    <script define:vars={{ FLAVOR_SHOP_PATH }}>
       (function() {
         const STORAGE_KEY = 'purest_popup_dismissed';
         const DELAY_MS = 10000; // 10 seconds
@@ -324,7 +325,7 @@ const socialImageURL = new URL(image, "https://www.purestelectrolyte.com").toStr
         // Shop button
         shopBtn?.addEventListener('click', () => {
           hidePopup();
-          window.location.href = '/products';
+          window.location.href = FLAVOR_SHOP_PATH;
         });
       })();
     </script>

@@ -1,5 +1,6 @@
 ---
 import siteConfig from "@/data/site-config.json";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 
 const { image, imageFallback, imageAlt } = siteConfig.hero;
 ---
@@ -34,7 +35,7 @@ const { image, imageFallback, imageAlt } = siteConfig.hero;
 
       <div class="order-3 mt-5 flex flex-col gap-3 md:order-4 md:mt-4 xl:mt-5">
         <a
-          href="#shop"
+          href={FLAVOR_SHOP_PATH}
           class="inline-flex h-[52px] items-center justify-center rounded-full bg-primary px-10 text-base font-medium text-primary-foreground transition-all duration-150 hover:bg-primary/90 active:scale-[0.98]"
         >
           Shop now →

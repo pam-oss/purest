@@ -10,6 +10,7 @@
 
 import mockProducts from "@/data/products.json";
 import { applyProductClaims, rewriteApprovedClaims } from "@/lib/claims";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 import { displayProductTitle } from "@/lib/product-title";
 
 const domain = import.meta.env.PUBLIC_SHOPIFY_STORE_DOMAIN;
@@ -101,7 +102,7 @@ export function repairArticleLinks(html: string): string {
     }
 
     if (href === 'undefined' || href === 'www.purestelectrolyte.com') {
-      return `href=${quote}/products${quote}`;
+      return `href=${quote}${FLAVOR_SHOP_PATH}${quote}`;
     }
 
     if (/^\/products\/cranberry-mint\/?(?:[?#].*)?$/.test(href)) {

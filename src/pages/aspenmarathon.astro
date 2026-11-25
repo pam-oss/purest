@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import AspenMarathonSignup from "@/components/AspenMarathonSignup.tsx";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 ---
 
 <Layout
@@ -117,7 +118,7 @@ import AspenMarathonSignup from "@/components/AspenMarathonSignup.tsx";
       </p>
       <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
         <a
-          href="/products"
+          href={FLAVOR_SHOP_PATH}
           class="inline-flex items-center justify-center rounded-full bg-foreground text-background px-8 py-3 text-sm font-medium hover:opacity-90 transition-opacity"
         >
           Shop all flavors →

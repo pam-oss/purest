@@ -20,6 +20,7 @@ import {
 import { shopifyNumericId, trackMetaEvent } from "@/lib/meta";
 import { displayProductTitle } from "@/lib/product-title";
 import { createCheckout } from "@/lib/shopify";
+import { FLAVOR_SHOP_PATH } from "@/lib/flavors";
 import { formatPrice } from "@/lib/utils";
 
 /**
@@ -82,7 +83,7 @@ export default function Cart() {
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
             <p className="text-muted-foreground">Your cart is empty.</p>
             <Button asChild variant="outline" onClick={closeCart}>
-              <a href="/products">Browse products</a>
+              <a href={FLAVOR_SHOP_PATH}>Browse products</a>
             </Button>
           </div>
         ) : (
