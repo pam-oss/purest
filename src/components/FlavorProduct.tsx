@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from "react";
-import { Check, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
 import { withLifestyleFirst, type FlavorPageModel, type FlavorSizeOption } from "@/lib/flavors";
@@ -169,16 +169,16 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
           })}
         </div>
 
-        <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-3 lg:gap-5 lg:overflow-visible lg:pb-0">
+        <ul className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:pb-0">
           {tiles.map((tile) => {
             const href = servings === 20 && tile.handle20 ? `/products/${tile.handle20}` : `/products/${tile.handle10}`;
             const image = servings === 20 ? tile.image20 ?? tile.image10 : tile.image10 ?? tile.image20;
             return (
-              <li key={tile.name} className="w-44 shrink-0 snap-start lg:w-auto">
-                <a href={href} aria-current={tile.current ? "true" : undefined} className="block text-center">
+              <li key={tile.name} className="w-52 shrink-0 snap-start lg:w-auto">
+                <a href={href} aria-current={tile.current ? "true" : undefined} className="group block text-center">
                   <span
-                    className={`relative block aspect-square overflow-hidden rounded-md border bg-secondary p-4 ${
-                      tile.current ? "border-2 border-foreground" : "border-border"
+                    className={`relative block aspect-square overflow-hidden rounded-lg bg-secondary p-6 shadow-sm transition duration-300 group-hover:-translate-y-0.5 group-hover:shadow-md ${
+                      tile.current ? "ring-1 ring-foreground" : "ring-1 ring-border"
                     }`}
                   >
                     {image ? (
@@ -186,18 +186,13 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                     ) : (
                       <span className="block h-full w-full" />
                     )}
-                    {tile.badge && (
-                      <span className="absolute inset-x-0 top-2 z-10 mx-auto w-max max-w-[calc(100%-0.75rem)] bg-foreground px-2 py-0.5 text-center text-xs font-semibold leading-none tracking-wide text-background">
-                        {tile.badge}
-                      </span>
-                    )}
-                    {tile.current && (
-                      <span className="absolute bottom-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background">
-                        <Check className="h-3 w-3" strokeWidth={3} />
-                      </span>
-                    )}
                   </span>
-                  <span className="mt-3 block font-serif text-base tracking-tight">{tile.name}</span>
+                  {tile.badge && (
+                    <span className="mt-4 block font-serif text-sm italic text-foreground/60">{tile.badge}</span>
+                  )}
+                  <span className={`${tile.badge ? "mt-1" : "mt-4"} block font-serif text-base tracking-tight`}>
+                    {tile.name}
+                  </span>
                 </a>
               </li>
             );
