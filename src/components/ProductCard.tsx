@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
 import { flavorCopyFor } from "@/lib/flavor-copy";
 import type { Product, SellingPlan } from "@/lib/shopify";
@@ -73,7 +72,13 @@ export default function ProductCard({ product }: Props) {
     return name;
   }
 
-  function handleAdd() {
+  function nameAndSize(title: string): { name: string; size: string | null } {
+  const match = title.match(/^(.*?)\s+(\d+)\s+servings$/i);
+  if (!match) return { name: title, size: null };
+  return { name: match[1], size: `${match[2]} servings` };
+}
+
+function handleAdd() {
     if (!variant) return;
     addToCart({
       variantId: variant.id,
@@ -115,11 +120,17 @@ export default function ProductCard({ product }: Props) {
 
   const firstPlanPrice = allPlans[0] ? getPlanPrice(allPlans[0]) : null;
   const selectedPlanPrice = selectedPlan ? getPlanPrice(selectedPlan) : null;
+  const parts = nameAndSize(displayTitle);
 
   return (
     <article className="group flex flex-col">
       <a href={`/products/${product.handle}`} className="block">
-        <div className="aspect-square overflow-hidden rounded-lg bg-white p-8 ring-1 ring-black/20 sm:p-12">
+        <div className="relative aspect-square overflow-hidden rounded-lg bg-white p-4 ring-1 ring-black/20 sm:p-8 lg:p-12">
+          {isBundle && (
+            <span className="absolute left-2 top-3 z-10 -rotate-6 border border-black bg-white px-1.5 py-0.5 text-xs font-medium uppercase tracking-widest text-black">
+              Best Value
+            </span>
+          )}
           {product.image ? (
             <img
               src={product.image.url}
@@ -131,13 +142,13 @@ export default function ProductCard({ product }: Props) {
             <div className="h-full w-full" />
           )}
         </div>
-        <div className="mt-5">
-          {isBundle && (
-            <p className="mb-2 text-xs uppercase tracking-widest text-muted-foreground">Best Value</p>
-          )}
-          <div className="flex items-baseline justify-between gap-2">
-            <h3 className="text-base font-medium">{displayTitle}</h3>
-            <div className="flex items-baseline gap-1.5 tabular-nums">
+        <div className="mt-3 text-center md:mt-5 md:text-left">
+          <div className="md:flex md:items-baseline md:justify-between md:gap-2">
+            <h3 className="text-sm font-semibold md:text-base md:font-medium">
+              <span className="md:hidden">{parts.name}</span>
+              <span className="hidden md:inline">{displayTitle}</span>
+            </h3>
+            <div className="mt-1 hidden items-baseline gap-1.5 tabular-nums md:flex">
               {compareAt && parseFloat(compareAt.amount) > parseFloat(price.amount) ? (
                 <span className="text-sm text-muted-foreground line-through">
                   {formatPrice(compareAt.amount, compareAt.currencyCode)}
@@ -150,16 +161,17 @@ export default function ProductCard({ product }: Props) {
               </span>
             </div>
           </div>
+          {parts.size && <p className="text-xs text-muted-foreground md:hidden">{parts.size}</p>}
           {isBundle && (
-            <p className="mt-0.5 text-xs font-medium text-muted-foreground">You save $17.98 vs. buying separately</p>
+            <p className="mt-0.5 hidden text-xs font-medium text-muted-foreground md:block">You save $17.98 vs. buying separately</p>
           )}
-          <div className="mt-2" aria-label="Customer rating">
+          <div className="mt-2 hidden md:block" aria-label="Customer rating">
             <div
               className="jdgm-widget jdgm-preview-badge"
               data-id={product.id.split("/").pop() ?? ""}
             ></div>
           </div>
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+          <p className="mt-1 line-clamp-2 hidden text-sm text-muted-foreground md:block">
             {tagline}
           </p>
         </div>
@@ -168,7 +180,7 @@ export default function ProductCard({ product }: Props) {
       {hasVariants ? (
         <a
           href={`/products/${product.handle}`}
-          className="mt-auto inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+          className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-black bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-neutral-100 md:mt-auto md:px-4 md:py-2.5 md:text-sm"
         >
           View sizes →
         </a>
@@ -180,7 +192,7 @@ export default function ProductCard({ product }: Props) {
             onClick={handleAdd}
             disabled={soldOut || !isHydrated}
             aria-label={justAdded ? `${displayTitle} added to cart` : `Add ${displayTitle} to cart for ${formatPrice(price.amount, price.currencyCode)}`}
-            className="flex items-center justify-between w-full rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-medium transition-colors hover:border-black disabled:opacity-50"
+            className="flex w-full items-center justify-between rounded-full border border-black bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-neutral-100 disabled:opacity-50 md:px-5 md:py-2.5 md:text-sm"
           >
             <span className="flex items-center gap-1.5">
               <span className="text-xs">{justAdded ? "✓" : "↗"}</span> {justAdded ? "Added" : "One time"}
@@ -195,10 +207,10 @@ export default function ProductCard({ product }: Props) {
                 type="button"
                 onClick={() => setShowFrequency(true)}
                 disabled={!isHydrated}
-                className="flex items-center justify-between w-full rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
+                className="flex w-full items-center justify-between rounded-full border border-black bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-neutral-100 md:px-5 md:py-2.5 md:text-sm"
               >
                 <span className="flex items-center gap-1.5">
-                  <span className="text-xs">↗</span> Subscribe &amp; Save
+                  <span className="text-xs">↗</span> Subscribe
                 </span>
                 <span className="font-semibold">{firstPlanPrice}</span>
               </button>
@@ -245,14 +257,14 @@ export default function ProductCard({ product }: Props) {
           )}
         </div>
       ) : (
-        <Button
-          className="mt-auto"
-          variant="outline"
+        <button
+          type="button"
+          className="mt-3 w-full rounded-full border border-black bg-white px-3 py-2 text-xs font-medium transition-colors hover:bg-neutral-100 disabled:opacity-50 md:mt-auto md:px-5 md:py-2.5 md:text-sm"
           disabled={soldOut}
           onClick={handleAdd}
         >
           {soldOut ? "Sold out" : "Add to cart"}
-        </Button>
+        </button>
       )}
     </article>
   );
