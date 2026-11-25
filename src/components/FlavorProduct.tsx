@@ -114,7 +114,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <div>
           <h1 className="font-serif text-3xl tracking-tight md:text-4xl">{heading}</h1>
-          <p className="mt-3 text-base font-medium">{subtitle}</p>
+          <p className="mt-2 font-serif text-3xl leading-tight tracking-tight md:text-4xl">{flavorName}</p>
         </div>
 
         {(shortCopy || moreCopy) && (
@@ -174,9 +174,34 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <div>
           <h2 className="font-serif text-lg tracking-tight">Dose it your way</h2>
-          <p className="mt-1 text-sm leading-relaxed text-foreground/75">
-            One scoop for a light day, two for a hard training day. No wasted packets, just what your body needs.
-          </p>
+          <ul className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
+            <li className="flex items-center gap-2">
+              <ScoopIcon className="h-10 w-10 shrink-0" />
+              <p className="min-w-0 leading-tight">
+                <span className="font-serif text-2xl leading-none">1</span>
+                <span className="ml-1 text-sm">scoop</span>
+                <span className="mt-0.5 block text-xs text-muted-foreground">Light day</span>
+              </p>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="flex shrink-0 gap-1" aria-hidden="true">
+                <ScoopIcon className="h-9 w-9" />
+                <ScoopIcon className="h-9 w-9" />
+              </span>
+              <p className="min-w-0 leading-tight">
+                <span className="font-serif text-2xl leading-none">2</span>
+                <span className="ml-1 text-sm">scoops</span>
+                <span className="mt-0.5 block text-xs text-muted-foreground">Hard training day</span>
+              </p>
+            </li>
+            <li className="flex items-center gap-2">
+              <CheckIcon className="h-7 w-7" />
+              <p className="min-w-0 leading-tight">
+                <span className="font-serif text-2xl leading-none">0</span>
+                <span className="mt-0.5 block text-xs text-muted-foreground">wasted product</span>
+              </p>
+            </li>
+          </ul>
         </div>
 
         <ul className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:pb-0">
@@ -299,6 +324,26 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
         <IngredientsDialog size={selected} flavorName={flavorName} onClose={() => setIngredientsOpen(false)} />
       )}
     </div>
+  );
+}
+
+function ScoopIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M30 13c5-.6 11-3 14-5" />
+      <path d="M8 22c0-6 6.5-10 15-10s15 4 15 10" />
+      <path d="M8 22v6c0 7 6.7 12 15 12s15-5 15-12v-6" />
+      <path d="M11 24c3.5 2.5 22 2.5 26 0" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="16" cy="16" r="11" />
+      <path d="M10.5 16.5 14 20l7.5-8" />
+    </svg>
   );
 }
 
