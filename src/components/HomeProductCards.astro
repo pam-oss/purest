@@ -2,14 +2,33 @@
 import { getReviewSummary } from "@/lib/reviews";
 import type { Product } from "@/lib/shopify";
 
+interface Frame {
+  l: number;
+  t: number;
+  r: number;
+  b: number;
+}
+
 interface Item {
   product: Product;
   name: string;
   href: string;
-  scale?: number;
+  fit?: "cover" | "pack";
+  frame?: Frame;
 }
 
 const { items, columns = "five" } = Astro.props as { items: Item[]; columns?: "five" | "three" };
+
+function packStyle(frame: Frame) {
+  const height = frame.b - frame.t;
+  const cx = (frame.l + frame.r) / 2;
+  const cy = (frame.t + frame.b) / 2;
+  const scale = 0.74 / height;
+  const size = scale * 100;
+  const left = (0.5 - cx * scale) * 100;
+  const top = (0.5 - cy * scale) * 100;
+  return `width:${size.toFixed(2)}%;height:${size.toFixed(2)}%;left:${left.toFixed(2)}%;top:${top.toFixed(2)}%`;
+}
 
 const cards = await Promise.all(
   items.map(async (item) => {
@@ -19,7 +38,8 @@ const cards = await Promise.all(
       href: item.href,
       name: item.name,
       image: item.product.image,
-      scale: item.scale ?? 1,
+      fit: item.fit ?? "pack",
+      frame: item.frame,
       rating: rated?.average ?? null,
       count: rated?.count ?? null,
     };
@@ -29,7 +49,7 @@ const cards = await Promise.all(
 
 <ul
   class:list={[
-    "grid grid-cols-2 gap-x-4 gap-y-12",
+    "grid grid-cols-2 gap-x-4 gap-y-8",
     columns === "five"
       ? "lg:grid-cols-5 lg:gap-x-6"
       : "mx-auto lg:w-[calc(60%-0.4rem)] lg:grid-cols-3 lg:gap-x-6",
@@ -40,23 +60,26 @@ const cards = await Promise.all(
     return (
       <li class:list={[centerOnPhone && "col-span-2 flex justify-center lg:col-span-1 lg:block"]}>
         <a href={card.href} class:list={["flex h-full w-full flex-col text-center", centerOnPhone && "max-w-[calc(50%-0.5rem)] lg:max-w-none"]}>
-          <span class="relative block aspect-square w-full bg-white">
+          <span class="relative block aspect-square w-full overflow-hidden bg-white">
             {card.image ? (
               <img
                 src={card.image.url}
                 alt={card.image.altText ?? card.name}
-                class="absolute inset-0 h-full w-full object-contain p-4"
-                style={`transform:scale(${card.scale})`}
+                class:list={[
+                  "absolute max-w-none",
+                  card.fit === "cover" && "inset-0 h-full w-full object-cover",
+                ]}
+                style={card.fit === "pack" && card.frame ? packStyle(card.frame) : undefined}
                 loading="eager"
               />
             ) : (
               <span class="block h-full w-full" />
             )}
           </span>
-          <span class="mt-4 flex min-h-[2.75rem] items-start justify-center font-serif text-base leading-tight tracking-tight md:min-h-[3.25rem] md:text-lg">
+          <span class="mt-2 line-clamp-2 min-h-[2.25rem] font-serif text-sm leading-tight tracking-tight md:min-h-[2.5rem] md:text-base">
             {card.name}
           </span>
-          <span class="mt-2 flex h-4 items-center justify-center" aria-label={card.rating !== null && card.count !== null ? `${card.rating} out of 5 stars from ${card.count} reviews` : undefined}>
+          <span class="mt-1 flex h-3.5 items-center justify-center" aria-label={card.rating !== null && card.count !== null ? `${card.rating} out of 5 stars from ${card.count} reviews` : undefined}>
             {card.rating !== null && (
               <span class="inline-flex text-foreground" aria-hidden="true">
                 {[0, 1, 2, 3, 4].map((star) => {
