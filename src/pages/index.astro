@@ -35,11 +35,13 @@ const PACK_FRAMES: Record<string, { l: number; t: number; r: number; b: number }
 const flavorItems = FLAVOR_GROUPS.flatMap((group) => {
   const product = findProduct(group.handles[10]);
   if (!product) return [];
+  const larger = findProduct(group.handles[20]);
   return [{
     product,
     name: group.name,
     href: `/products/${group.handles[10]}`,
     frame: PACK_FRAMES[group.handles[10]],
+    alsoProductIds: larger ? [larger.id] : [],
   }];
 });
 
