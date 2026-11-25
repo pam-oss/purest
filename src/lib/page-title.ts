@@ -16,10 +16,11 @@ const FLAVOR_NAMES = [
   "Cranberry",
 ];
 
-export const BEST_DRINK_MIX = "The Best Organic Real Fruit Electrolyte Drink Mix";
+export const BEST_DRINK_MIX = "The Best Real Fruit Electrolyte Drink Mix";
 export const PREMIUM_SALT_JAR = "Premium French Sea Salt Hydration in a Glass Jar";
+const ORGANIC_INGREDIENTS = "Organic Ingredients";
 
-export const HOME_TITLE = `Purest Electrolyte | ${BEST_DRINK_MIX} | ${PREMIUM_SALT_JAR}`;
+export const HOME_TITLE = `Purest Electrolyte | ${BEST_DRINK_MIX} | ${PREMIUM_SALT_JAR} | ${ORGANIC_INGREDIENTS}`;
 export const PRODUCTS_INDEX_TITLE = "Purest Electrolyte | Shop Real Fruit Electrolytes in Glass Jars";
 
 export function stripTitleDashes(value: string): string {
@@ -58,7 +59,7 @@ export function productPageTitle(product: { title: string; handle: string }): st
 
   const flavor = flavorFromTitle(product.title);
   if (flavor) {
-    return `Purest ${flavor} | ${BEST_DRINK_MIX} | ${PREMIUM_SALT_JAR}`;
+    return `Purest ${flavor} | ${BEST_DRINK_MIX} | ${PREMIUM_SALT_JAR} | ${ORGANIC_INGREDIENTS}`;
   }
 
   const name = display.replace(/^Purest\s+/i, "");
