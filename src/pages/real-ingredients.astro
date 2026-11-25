@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { BEST_DRINK_MIX } from "@/lib/page-title";
 
 const categoryFaqs = [
   {
@@ -22,7 +23,7 @@ const categoryFaqs = [
 ---
 
 <Layout
-  title="Real Fruit Electrolyte in a Glass Jar | Purest Electrolyte"
+  title={`Purest Electrolyte | ${BEST_DRINK_MIX}`}
   description="What makes Purest a real fruit electrolyte in a clear glass jar: freeze-dried fruit, French gray sea salt, visible ingredients, and no natural flavors."
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify({
