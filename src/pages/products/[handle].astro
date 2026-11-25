@@ -4,6 +4,7 @@ import AddToCart from "@/components/AddToCart.tsx";
 import ProductCard from "@/components/ProductCard.tsx";
 import { flavorCopyFor } from "@/lib/flavor-copy";
 import { shopifyNumericId } from "@/lib/meta";
+import { productPageTitle } from "@/lib/page-title";
 import { displayProductTitle } from "@/lib/product-title";
 import { getProduct, getProducts } from "@/lib/shopify";
 import { citricAcidNoteFromImages, ingredientListFromImages } from "@/lib/citric-acid";
@@ -27,6 +28,8 @@ const displayTitle = displayProductTitle(product?.title ?? "");
 const hasServingSizeVariants = product?.variants.some((v) => /^\d+\s+servings?$/i.test(v.title.trim())) ?? false;
 
 if (!product) return Astro.redirect("/products");
+
+const pageTitle = productPageTitle(product);
 
 const citricNote = citricAcidNoteFromImages(product.images ?? []);
 const citricIngredientList = ingredientListFromImages(product.images ?? []);
@@ -82,7 +85,7 @@ const metaViewContent = viewedVariant
   : null;
 ---
 
-<Layout title={isChocolate ? `${displayTitle} in a Glass Jar | Purest` : `${displayTitle} Real Fruit Electrolyte in Glass Jar | Purest`} description={product.description}>
+<Layout title={pageTitle} description={product.description}>
 
 <script type="application/ld+json" set:html={JSON.stringify({
   "@context": "https://schema.org",

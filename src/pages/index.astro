@@ -12,6 +12,7 @@ import Comparison from "@/components/Comparison.astro";
 import StatsBar from "@/components/StatsBar.astro";
 import WhatsInside from "@/components/WhatsInside.astro";
 import PressBar from "@/components/PressBar.astro";
+import { HOME_TITLE } from "@/lib/page-title";
 
 const products = await getProducts();
 const duplicate20Handles = [
@@ -40,7 +41,7 @@ const orderedProducts = [...kit, ...ginger, ...bundle, ...passionCherry, ...rema
 ---
 
 <Layout
-  title="Real Fruit Electrolyte in a Glass Jar | Purest Electrolyte"
+  title={HOME_TITLE}
   description="Purest is a real fruit electrolyte in a clear glass jar, made with freeze-dried fruit and French gray sea salt with no natural flavors."
 >
   <SaleBanner />

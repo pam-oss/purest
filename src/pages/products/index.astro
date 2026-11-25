@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import ProductGrid from "@/components/ProductGrid.tsx";
+import { PRODUCTS_INDEX_TITLE } from "@/lib/page-title";
 import { getProducts } from "@/lib/shopify";
 
 const allProducts = await getProducts();
@@ -19,7 +20,7 @@ const products = [
 ];
 ---
 
-<Layout title="Shop Real Fruit Electrolytes in Glass Jars | Purest" description="Shop real fruit electrolyte powders packaged in clear glass jars. Five flavors made with freeze-dried fruit and French gray sea salt.">
+<Layout title={PRODUCTS_INDEX_TITLE} description="Shop real fruit electrolyte powders packaged in clear glass jars. Five flavors made with freeze-dried fruit and French gray sea salt.">
   <section class="container py-16 md:py-20">
     <header class="max-w-2xl">
       <h1 class="font-serif text-4xl tracking-tight md:text-5xl">Real fruit electrolytes in glass jars</h1>
