@@ -218,7 +218,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                     }`}
                   >
                     {image ? (
-                      <img src={image} alt="" className="h-full w-full object-contain" />
+                      <img src={image} alt="" className="h-full w-full origin-center scale-[1.15] object-contain" />
                     ) : (
                       <span className="block h-full w-full" />
                     )}
