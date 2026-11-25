@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
@@ -114,7 +114,8 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <div>
           <h1 className="font-serif text-3xl tracking-tight md:text-4xl">{heading}</h1>
-          <p className="mt-3 text-base font-medium">{subtitle}</p>
+          <p className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Flavor</p>
+          <p className="mt-1 font-serif text-4xl italic leading-none tracking-tight md:text-5xl">{flavorName}</p>
         </div>
 
         {(shortCopy || moreCopy) && (
@@ -174,9 +175,26 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <div>
           <h2 className="font-serif text-lg tracking-tight">Dose it your way</h2>
-          <p className="mt-1 text-sm leading-relaxed text-foreground/75">
-            One scoop for a light day, two for a hard training day. No wasted packets, just what your body needs.
-          </p>
+          <ul className="mt-3 grid grid-cols-3 divide-x divide-black/15">
+            <DoseStat
+              icon={<ScoopMark className="h-11 w-auto" />}
+              value="1"
+              unit="scoop"
+              label="Light day"
+            />
+            <DoseStat
+              icon={<TwoScoops />}
+              value="2"
+              unit="scoops"
+              label={"Hard\ntraining day"}
+            />
+            <DoseStat
+              icon={<CheckIcon className="h-9 w-9" />}
+              value="0"
+              unit="waste"
+              label="Wasted product"
+            />
+          </ul>
         </div>
 
         <ul className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:pb-0">
@@ -192,7 +210,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                     }`}
                   >
                     {image ? (
-                      <img src={image} alt="" className="h-full w-full object-contain" />
+                      <img src={image} alt="" className="h-full w-full origin-center scale-[1.15] object-contain" />
                     ) : (
                       <span className="block h-full w-full" />
                     )}
@@ -299,6 +317,67 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
         <IngredientsDialog size={selected} flavorName={flavorName} onClose={() => setIngredientsOpen(false)} />
       )}
     </div>
+  );
+}
+
+function DoseStat({
+  icon,
+  value,
+  unit,
+  label,
+}: {
+  icon: ReactNode;
+  value: string;
+  unit: string;
+  label: string;
+}) {
+  return (
+    <li className="flex flex-col items-center px-1.5 text-center">
+      <span className="flex h-16 w-full items-center justify-center">{icon}</span>
+      <p className="mt-2 flex items-baseline justify-center text-foreground">
+        <span className="font-serif text-3xl leading-none">{value}</span>
+        <span className="ml-1 text-xs">{unit}</span>
+      </p>
+      <p className="mt-1 min-h-8 whitespace-pre-line text-xs leading-tight text-muted-foreground">{label}</p>
+    </li>
+  );
+}
+
+function TwoScoops() {
+  return (
+    <span className="relative h-14 w-[5.4rem]" aria-hidden="true">
+      <ScoopMark className="absolute left-0 top-0 h-10 w-auto" />
+      <ScoopMark className="absolute left-6 top-3 h-10 w-auto" />
+    </span>
+  );
+}
+
+function ScoopMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 78 48" className={className} aria-hidden="true">
+      <path d="M46 21.5h26.5a1.6 1.6 0 0 1 1.6 1.6v2.8a1.6 1.6 0 0 1-1.6 1.6H46" fill="currentColor" />
+      <circle cx="68.5" cy="24.5" r="1.15" fill="#fff" />
+      <path d="M14 23c0 11.5 6.2 19 16 19s16-7.5 16-19" fill="#fff" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <ellipse cx="30" cy="23" rx="16" ry="6.2" fill="#fff" stroke="currentColor" strokeWidth="2" />
+      <path d="M20 22.2c.6-8 5.2-12.2 10-12.2s9.4 4.2 10 12.2" fill="#fff" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <g fill="currentColor">
+        <circle cx="26" cy="16.2" r="0.85" />
+        <circle cx="30" cy="14.4" r="0.85" />
+        <circle cx="34" cy="16" r="0.85" />
+        <circle cx="28.2" cy="18.4" r="0.7" />
+        <circle cx="32.4" cy="18.2" r="0.7" />
+        <circle cx="30.2" cy="16.8" r="0.65" />
+      </g>
+    </svg>
+  );
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="16" cy="16" r="11" />
+      <path d="M10.5 16.5 14 20l7.5-8" />
+    </svg>
   );
 }
 
