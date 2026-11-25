@@ -15,6 +15,7 @@ export interface FlavorTile {
   image20: string | null;
   current: boolean;
   badge: string | null;
+  accent: string;
 }
 
 export interface FlavorSizeOption {
@@ -43,6 +44,7 @@ export interface FlavorGroup {
   name: string;
   handles: { 10: string; 20: string };
   badge?: string;
+  accent: string;
 }
 
 /** Tile order is popularity: Ginger Lime, then Hibiscus Lime, then the rest. */
@@ -51,26 +53,31 @@ export const FLAVOR_GROUPS: FlavorGroup[] = [
     name: "Ginger Lime",
     handles: { 10: "10-count-ginger-limeaid", 20: "20-servings-ginger-lime" },
     badge: "Most Popular",
+    accent: "#c6a15b",
   },
   {
     name: "Hibiscus Lime",
     handles: { 10: "10-count-hibiscus-lime", 20: "20-servings-hibiscus-lime" },
     badge: "Most Popular",
+    accent: "#e07a9a",
   },
   {
     name: "Chocolate Cordyceps",
     handles: { 10: "10-count-chocolate-cordyceps-1", 20: "20-servings-chocolate-cordyceps" },
     badge: "Cult Favorite",
+    accent: "#8a5a3c",
   },
   {
     name: "Cranberry",
     handles: { 10: "10-servings-cranberry", 20: "20-servings-cranberry" },
     badge: "Lightest",
+    accent: "#c73b4a",
   },
   {
     name: "Passion Cherry",
     handles: { 10: "10-serving-passion-cherry", 20: "20-servings-passion-cherry" },
     badge: "Sweetest",
+    accent: "#e7a0b0",
   },
 ];
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
 import { displayProductTitle } from "@/lib/product-title";
@@ -43,6 +43,20 @@ export default function AddToCart({ product }: { product: Product }) {
     if (adj?.adjustmentPercentage) return `${adj.adjustmentPercentage}% off`;
     return "discounted";
   }
+
+  useEffect(() => {
+    const previous = document.body.style.paddingBottom;
+    const query = window.matchMedia("(max-width: 1023px)");
+    const apply = () => {
+      document.body.style.paddingBottom = query.matches ? "5.5rem" : previous;
+    };
+    apply();
+    query.addEventListener("change", apply);
+    return () => {
+      query.removeEventListener("change", apply);
+      document.body.style.paddingBottom = previous;
+    };
+  }, []);
 
   function handleAdd() {
     if (!variant) return;
@@ -185,6 +199,12 @@ export default function AddToCart({ product }: { product: Product }) {
       <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">Satisfaction guaranteed</span>
         <span className="flex items-center gap-1">Free shipping over $39</span>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black bg-white p-3 lg:hidden">
+        <Button size="lg" className="h-12 w-full rounded-full text-base" disabled={soldOut} onClick={handleAdd}>
+          {soldOut ? "Sold out" : "Add to cart"}
+        </Button>
       </div>
     </div>
   );

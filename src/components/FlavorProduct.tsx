@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { FileText, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart-store";
 import { withLifestyleFirst, type FlavorPageModel, type FlavorSizeOption } from "@/lib/flavors";
@@ -45,6 +45,20 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
     setPlanId(nextPlans[0]?.id ?? "");
     setQuantity(1);
   }, [selected?.product.id]);
+
+  useEffect(() => {
+    const previous = document.body.style.paddingBottom;
+    const query = window.matchMedia("(max-width: 1023px)");
+    const apply = () => {
+      document.body.style.paddingBottom = query.matches ? "5.5rem" : previous;
+    };
+    apply();
+    query.addEventListener("change", apply);
+    return () => {
+      query.removeEventListener("change", apply);
+      document.body.style.paddingBottom = previous;
+    };
+  }, []);
 
   useEffect(() => {
     if (!ingredientsOpen) return;
@@ -106,7 +120,8 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
   }
 
   return (
-    <div className="grid min-w-0 gap-8 md:grid-cols-2 md:items-start md:gap-12" data-serving={selected.servings} data-flavor={flavorName}>
+    <div data-serving={selected.servings} data-flavor={flavorName}>
+    <div className="grid min-w-0 gap-8 md:grid-cols-2 md:items-start md:gap-12">
       <Gallery key={`${selected.product.id}-${images[0]?.url ?? "none"}`} images={images} label={subtitle} />
 
       <div className="min-w-0 space-y-5">
@@ -137,9 +152,10 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <button
           type="button"
-          className="text-sm font-medium underline underline-offset-4"
+          className="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-4"
           onClick={() => setIngredientsOpen(true)}
         >
+          <FileText className="h-4 w-4" aria-hidden="true" />
           View Ingredients
         </button>
 
@@ -159,7 +175,9 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                   chooseSize(size.servings);
                 }}
                 className={`relative flex flex-col justify-center rounded-md bg-white px-3 py-3 text-left transition-colors ${
-                  active ? "border-2 border-black" : "border border-neutral-300 hover:border-black"
+                  active
+                    ? "border border-neutral-300 border-b-[3px] border-b-black md:border-2 md:border-black"
+                    : "border border-neutral-300 hover:border-black"
                 }`}
               >
                 <span className="text-sm font-medium">{size.label}</span>
@@ -179,16 +197,35 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
           </p>
         </div>
 
-        <ul className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:pb-0">
+        <ul className="grid grid-cols-3 gap-2 lg:hidden" data-flavor-picker>
+          {tiles.map((tile) => {
+            const href = servings === 20 && tile.handle20 ? `/products/${tile.handle20}` : `/products/${tile.handle10}`;
+            return (
+              <li key={tile.name}>
+                <a
+                  href={href}
+                  aria-current={tile.current ? "true" : undefined}
+                  className={`flex min-h-[3.25rem] items-center gap-1.5 bg-white px-1.5 py-2 ${
+                    tile.current ? "border-2 border-black" : "border-2 border-black/20"
+                  }`}
+                >
+                  <span className="h-7 w-1 shrink-0" style={{ backgroundColor: tile.accent }} aria-hidden="true" />
+                  <span className="text-xs font-medium leading-tight">{tile.name}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+        <ul className="hidden lg:grid lg:grid-cols-3 lg:gap-8" data-flavor-tiles>
           {tiles.map((tile) => {
             const href = servings === 20 && tile.handle20 ? `/products/${tile.handle20}` : `/products/${tile.handle10}`;
             const image = servings === 20 ? tile.image20 ?? tile.image10 : tile.image10 ?? tile.image20;
             return (
-              <li key={tile.name} className="w-52 shrink-0 snap-start lg:w-auto">
-                <a href={href} aria-current={tile.current ? "true" : undefined} className="group block text-center">
+              <li key={tile.name}>
+                <a href={href} aria-current={tile.current ? "true" : undefined} className="block text-center">
                   <span
-                    className={`relative block aspect-square overflow-hidden rounded-lg bg-white p-6 ${
-                      tile.current ? "ring-2 ring-black" : "ring-1 ring-black"
+                    className={`relative block aspect-square overflow-hidden rounded-lg bg-white p-12 ${
+                      tile.current ? "ring-2 ring-black" : "ring-1 ring-black/25"
                     }`}
                   >
                     {image ? (
@@ -198,9 +235,9 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                     )}
                   </span>
                   {tile.badge && (
-                    <span className="mt-4 block font-serif text-sm italic text-foreground/60">{tile.badge}</span>
+                    <span className="mt-5 block text-xs uppercase tracking-widest text-muted-foreground">{tile.badge}</span>
                   )}
-                  <span className={`${tile.badge ? "mt-1" : "mt-4"} block font-serif text-base tracking-tight`}>
+                  <span className={`${tile.badge ? "mt-1.5" : "mt-5"} block font-serif text-base tracking-tight`}>
                     {tile.name}
                   </span>
                 </a>
@@ -233,17 +270,17 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
               <span className="flex-1">
                 <span className="block text-sm font-medium">Subscribe and save</span>
                 {purchaseType === "subscribe" && selectedPlan && (
-                  <span className="mt-0.5 block text-xs text-muted-foreground">{selectedPlan.name}</span>
+                  <span className="mt-0.5 block text-xs text-muted-foreground">{deliveryPhrase(selectedPlan.name)}</span>
                 )}
               </span>
               <span className="text-right text-sm font-medium">
                 {subscribeAmount !== null ? formatPrice(subscribeAmount, currency) : formatPrice(unit, currency)}
               </span>
             </button>
-            {purchaseType === "subscribe" && plans.length > 1 && (
+            {purchaseType === "subscribe" && plans.length > 0 && (
               <div className="border-t border-neutral-300 bg-white px-4 py-3">
-                <label className="mb-1 block text-xs text-muted-foreground" htmlFor="delivery-frequency">
-                  Deliver every
+                <label className="sr-only" htmlFor="delivery-frequency">
+                  Delivery schedule
                 </label>
                 <select
                   id="delivery-frequency"
@@ -253,7 +290,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
                 >
                   {plans.map((plan) => (
                     <option key={plan.id} value={plan.id}>
-                      {plan.name}
+                      {deliveryPhrase(plan.name)}
                     </option>
                   ))}
                 </select>
@@ -285,7 +322,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
             </button>
           </div>
           <Button size="lg" className="h-14 flex-1 rounded-full text-base" disabled={soldOut} onClick={handleAdd}>
-            {soldOut ? "Sold out" : purchaseType === "subscribe" && hasSubscription ? "Subscribe and save" : "Add to cart"}
+            {soldOut ? "Sold out" : "Add to cart"}
           </Button>
         </div>
 
@@ -294,11 +331,126 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
           <span>Free shipping over $39</span>
         </div>
       </div>
+    </div>
+
+      <WhatsInside onOpen={() => setIngredientsOpen(true)} />
+      <ReviewsPanel review={review} />
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black bg-white p-3 lg:hidden">
+        <Button size="lg" className="h-12 w-full rounded-full text-base" disabled={soldOut} onClick={handleAdd}>
+          {soldOut ? "Sold out" : "Add to cart"}
+        </Button>
+      </div>
 
       {ingredientsOpen && (
         <IngredientsDialog size={selected} flavorName={flavorName} onClose={() => setIngredientsOpen(false)} />
       )}
     </div>
+  );
+}
+
+function deliveryPhrase(name: string): string {
+  if (/month/i.test(name) && /3/.test(name)) return "Deliver every 3 months";
+  if (/month/i.test(name) && /2/.test(name)) return "Deliver every 2 months";
+  if (/month/i.test(name)) return "Deliver every 1 month";
+  return name;
+}
+
+const MINERALS: { number: string; symbol: string; name: string; amount?: string }[] = [
+  { number: "11", symbol: "Na", name: "Sodium", amount: "700+ mg" },
+  { number: "12", symbol: "Mg", name: "Magnesium" },
+  { number: "19", symbol: "K", name: "Potassium" },
+];
+
+function WhatsInside({ onOpen }: { onOpen: () => void }) {
+  return (
+    <section className="mt-12 bg-black px-5 py-10 text-white md:mt-16 md:px-10" data-whats-inside>
+      <h2 className="font-serif text-3xl tracking-tight">What's inside?</h2>
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-white/80">
+        700+ mg sodium per serving, from French gray sea salt.
+      </p>
+      <button type="button" className="mt-3 text-sm font-medium underline underline-offset-4" onClick={onOpen}>
+        View full ingredients
+      </button>
+      <ul className="mt-8 flex flex-wrap gap-3">
+        {MINERALS.map((mineral) => (
+          <li key={mineral.symbol} className="flex h-32 w-24 flex-col border border-white p-2">
+            <span className="text-xs">{mineral.number}</span>
+            <span className="mt-1 font-serif text-3xl leading-none">{mineral.symbol}</span>
+            <span className="mt-auto text-xs">{mineral.name}</span>
+            {mineral.amount ? <span className="text-xs">{mineral.amount}</span> : null}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function ReviewsPanel({ review }: { review: FlavorPageModel["review"] }) {
+  const [tab, setTab] = useState<"reviews" | "questions">("reviews");
+  const shown = review
+    ? Number.isInteger(review.average)
+      ? String(review.average)
+      : review.average.toFixed(1)
+    : null;
+  const noun = review?.count === 1 ? "review" : "reviews";
+  return (
+    <section className="mt-12 text-center md:mt-16" data-reviews>
+      <h2 className="font-serif text-3xl font-medium uppercase tracking-tight">Reviews</h2>
+      <div className="mt-4 flex justify-center gap-6 text-sm font-medium" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "reviews"}
+          className={tab === "reviews" ? "border-b-2 border-black pb-1" : "pb-1 text-muted-foreground"}
+          onClick={() => setTab("reviews")}
+        >
+          Reviews
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "questions"}
+          className={tab === "questions" ? "border-b-2 border-black pb-1" : "pb-1 text-muted-foreground"}
+          onClick={() => setTab("questions")}
+        >
+          Questions
+        </button>
+      </div>
+      {tab === "reviews" && review && shown && (
+        <div className="mx-auto mt-6 max-w-sm border border-black bg-white px-6 py-8">
+          <p className="font-serif text-5xl tracking-tight">{shown}</p>
+          <div className="mt-3 flex justify-center">
+            <Stars value={review.average} />
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Based on {review.count} {noun}
+          </p>
+          {review.bars.length === 5 && (
+            <ul className="mt-5 space-y-1.5 text-left text-xs">
+              {review.bars.map((bar) => (
+                <li key={bar.stars} className="flex items-center gap-2">
+                  <span className="w-3 tabular-nums">{bar.stars}</span>
+                  <span className="h-1.5 flex-1 bg-neutral-200">
+                    <span
+                      className="block h-full bg-black"
+                      style={{ width: `${review.count > 0 ? (bar.count / review.count) * 100 : 0}%` }}
+                    />
+                  </span>
+                  <span className="w-4 text-right tabular-nums">{bar.count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+      {tab === "reviews" && !review && <p className="mt-6 text-sm text-muted-foreground">No reviews yet.</p>}
+      {tab === "questions" && (
+        <p className="mt-6 text-sm text-muted-foreground">
+          {review && review.questions > 0 ? `${review.questions} questions` : "No questions yet."}
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -482,7 +634,7 @@ function Gallery({ images, label }: { images: ProductImage[]; label: string }) {
               aria-label={`Show image ${imageIndex + 1}`}
               aria-current={imageIndex === safeIndex}
               className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 bg-white md:h-20 md:w-20 ${
-                imageIndex === safeIndex ? "border-foreground" : "border-transparent"
+                imageIndex === safeIndex ? "border-black" : "border-neutral-300"
               }`}
               onClick={() => setIndex(imageIndex)}
             >
