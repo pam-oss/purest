@@ -106,7 +106,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
   }
 
   return (
-    <div className="grid min-w-0 gap-8 md:grid-cols-2 md:items-start md:gap-12" data-serving={selected.servings} data-flavor={flavorName}>
+    <div className="grid min-w-0 items-start gap-8 md:grid-cols-2 md:gap-10 lg:grid-cols-[minmax(0,11fr)_minmax(0,9fr)] lg:gap-12" data-serving={selected.servings} data-flavor={flavorName}>
       <Gallery key={`${selected.product.id}-${images[0]?.url ?? "none"}`} images={images} label={subtitle} />
 
       <div className="min-w-0 space-y-5">
@@ -437,8 +437,8 @@ function Gallery({ images, label }: { images: ProductImage[]; label: string }) {
   const current = images[safeIndex];
 
   return (
-    <div className="min-w-0 space-y-3">
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-white">
+    <div className="min-w-0 space-y-3 lg:sticky lg:top-20 lg:z-10 lg:self-start">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-white lg:aspect-auto lg:h-[calc(100dvh-16.5rem)]">
         <button
           type="button"
           className="block h-full w-full cursor-zoom-in"
