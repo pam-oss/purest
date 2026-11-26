@@ -134,6 +134,22 @@
 .jdgm-link {
   color: #171717 !important;
 }
+.jdgm-widget a.jdgm-write-rev-link,
+.jdgm-rev-widg a.jdgm-write-rev-link,
+a.jdgm-write-rev-link {
+  display: block !important;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: #171717 !important;
+  border: 1px solid #171717 !important;
+  color: #ffffff !important;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+}
 .jdgm-form__fieldset input:focus,
 .jdgm-form__fieldset textarea:focus,
 .jdgm-sort-dropdown:focus {
