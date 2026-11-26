@@ -1,0 +1,169 @@
+---
+/**
+ * Instagram opt-in for the Black Friday code.
+ * ManyChat opens this page. The email form subscribes to Klaviyo list YwQrEQ
+ * with the public client key already used by the site popup. No private key.
+ * The discount code is never shown on this page.
+ */
+import "@/styles/global.css";
+
+const title = "PUREST | Black Friday | 15% Off Electrolytes";
+const description = "Real fruit, real salt electrolytes. Enter your email and we'll send your code.";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-dvh bg-white text-neutral-900">
+    <main class="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pb-10 pt-8 sm:px-6 sm:pt-12">
+      <img
+        src="/images/purest-logo.png"
+        alt="Purest Electrolyte"
+        width="1524"
+        height="493"
+        class="mx-auto h-10 w-auto"
+        loading="eager"
+        decoding="async"
+      />
+
+      <img
+        src="/images/hero-all-flavors.webp"
+        alt="Five Purest electrolyte jars"
+        width="2048"
+        height="1365"
+        class="mt-8 aspect-[3/2] w-full object-cover object-center"
+        loading="eager"
+        decoding="async"
+      />
+
+      <h1 class="mt-8 font-serif text-[2rem] leading-[1.15] tracking-tight sm:text-4xl">
+        Get 15% off Purest this Black Friday
+      </h1>
+      <p class="mt-3 text-base leading-relaxed text-neutral-700">
+        Real fruit, real salt electrolytes. Enter your email and we'll send your code.
+      </p>
+
+      <form id="thirsty-form" class="mt-8" novalidate>
+        <label for="thirsty-email" class="sr-only">Email address</label>
+        <input
+          id="thirsty-email"
+          name="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          autocapitalize="none"
+          spellcheck="false"
+          required
+          placeholder="Email address"
+          class="h-12 w-full border border-neutral-900 bg-white px-4 text-base text-neutral-900 outline-none placeholder:text-neutral-500 focus:ring-2 focus:ring-neutral-900"
+        />
+        <p id="thirsty-error" class="mt-2 hidden text-sm text-neutral-900" role="alert"></p>
+        <button
+          id="thirsty-submit"
+          type="submit"
+          class="mt-3 h-12 w-full bg-neutral-900 text-base font-medium text-white disabled:opacity-60"
+        >
+          Send my code
+        </button>
+        <p class="mt-3 text-center text-xs text-neutral-500">No spam. Unsubscribe anytime.</p>
+      </form>
+
+      <p id="thirsty-success" class="mt-8 hidden font-serif text-2xl leading-snug tracking-tight">
+        You're in. Check your inbox for your 15% off code.
+      </p>
+    </main>
+
+    <script is:inline>
+      (function () {
+        var form = document.getElementById("thirsty-form");
+        var input = document.getElementById("thirsty-email");
+        var button = document.getElementById("thirsty-submit");
+        var error = document.getElementById("thirsty-error");
+        var success = document.getElementById("thirsty-success");
+        if (!form || !input || !button || !error || !success) return;
+
+        function showError(message) {
+          error.textContent = message;
+          error.classList.remove("hidden");
+          input.setAttribute("aria-invalid", "true");
+        }
+
+        function clearError() {
+          error.textContent = "";
+          error.classList.add("hidden");
+          input.removeAttribute("aria-invalid");
+        }
+
+        function validEmail(value) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          var email = input.value.trim();
+          if (!validEmail(email)) {
+            showError("Enter a valid email address.");
+            input.focus();
+            return;
+          }
+          clearError();
+          button.disabled = true;
+          input.disabled = true;
+          button.textContent = "Sending";
+
+          fetch("https://a.klaviyo.com/client/subscriptions/?company_id=TYfncY", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              revision: "2024-10-15",
+            },
+            body: JSON.stringify({
+              data: {
+                type: "subscription",
+                attributes: {
+                  custom_source: "Instagram THIRSTY15",
+                  profile: {
+                    data: {
+                      type: "profile",
+                      attributes: {
+                        email: email,
+                        properties: { source: "Instagram THIRSTY15" },
+                      },
+                    },
+                  },
+                },
+                relationships: {
+                  list: { data: { type: "list", id: "YwQrEQ" } },
+                },
+              },
+            }),
+          })
+            .then(function (response) {
+              if (!response.ok) throw new Error("subscribe failed");
+              form.classList.add("hidden");
+              success.classList.remove("hidden");
+            })
+            .catch(function () {
+              button.disabled = false;
+              input.disabled = false;
+              button.textContent = "Send my code";
+              showError("We could not send that. Please try again.");
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>
