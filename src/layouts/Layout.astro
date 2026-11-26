@@ -202,10 +202,10 @@ const flavorUpsells = FLAVOR_GROUPS.flatMap((group) => {
     <div id="email-popup" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.55);backdrop-filter:blur(2px)">
       <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
         <!-- Close -->
-        <button id="popup-close" class="absolute top-4 right-4 text-stone-400 hover:text-stone-700 text-xl w-8 h-8 flex items-center justify-center" aria-label="Close">&times;</button>
+        <button id="popup-close" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-800 text-xl w-8 h-8 flex items-center justify-center" aria-label="Close">&times;</button>
 
         <!-- Hero image strip -->
-        <div class="h-40 bg-stone-100 overflow-hidden">
+        <div class="h-40 bg-neutral-100 overflow-hidden">
           <img src="/images/lifestyle-all-flavors.jpg" alt="Purest Electrolyte" class="w-full h-full object-cover object-center" />
         </div>
 
@@ -213,8 +213,8 @@ const flavorUpsells = FLAVOR_GROUPS.flatMap((group) => {
         <div class="px-8 py-7">
           <div class="text-center mb-5">
             <div class="inline-block border border-foreground px-3 py-1 text-xs font-medium uppercase tracking-widest mb-3">Limited Time</div>
-            <h2 class="font-serif text-2xl text-stone-900 leading-snug">Get 10% off your<br/>first order</h2>
-            <p class="text-stone-500 text-sm mt-2">Real Fruit. Real Salt. Real Hydration.<br/>Join thousands of athletes who already switched.</p>
+            <h2 class="font-serif text-2xl leading-snug">Get 10% off your<br/>first order</h2>
+            <p class="text-neutral-500 text-sm mt-2">Real Fruit. Real Salt. Real Hydration.<br/>Join thousands of athletes who already switched.</p>
           </div>
 
           <form id="popup-form" class="space-y-3">
@@ -223,12 +223,12 @@ const flavorUpsells = FLAVOR_GROUPS.flatMap((group) => {
               id="popup-email"
               placeholder="Your email address"
               required
-              class="w-full border border-stone-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400"
+              class="w-full border border-neutral-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-800"
             />
             <button
               type="submit"
               id="popup-submit"
-              class="w-full bg-stone-900 text-white rounded-lg px-4 py-3 text-sm font-semibold hover:bg-stone-700 transition-colors"
+              class="w-full bg-neutral-900 text-white rounded-lg px-4 py-3 text-sm font-semibold hover:bg-neutral-700 transition-colors"
             >
               Claim my 10% off
             </button>
@@ -237,14 +237,14 @@ const flavorUpsells = FLAVOR_GROUPS.flatMap((group) => {
           <!-- Success state (hidden initially) -->
           <div id="popup-success" class="hidden text-center py-2">
             <div class="text-3xl mb-2">📬</div>
-            <div class="font-serif font-semibold text-stone-900 text-lg">Check your inbox!</div>
-            <div class="text-stone-500 text-sm mt-2 leading-relaxed">Your 10% off code is on its way.<br/>Click the link in your email to confirm<br/>and grab your discount.</div>
-            <button id="popup-shop" class="mt-5 w-full bg-stone-900 text-white rounded-lg px-4 py-3 text-sm font-semibold hover:bg-stone-700 transition-colors">
+            <div class="font-serif font-semibold text-lg">Check your inbox!</div>
+            <div class="text-neutral-500 text-sm mt-2 leading-relaxed">Your 10% off code is on its way.<br/>Click the link in your email to confirm<br/>and grab your discount.</div>
+            <button id="popup-shop" class="mt-5 w-full bg-neutral-900 text-white rounded-lg px-4 py-3 text-sm font-semibold hover:bg-neutral-700 transition-colors">
               Got it &rarr;
             </button>
           </div>
 
-          <p class="text-center text-xs text-stone-400 mt-4">No spam. Unsubscribe anytime.</p>
+          <p class="text-center text-xs text-neutral-400 mt-4">No spam. Unsubscribe anytime.</p>
         </div>
       </div>
     </div>
@@ -346,6 +346,63 @@ const flavorUpsells = FLAVOR_GROUPS.flatMap((group) => {
         shopBtn?.addEventListener('click', () => {
           hidePopup();
           window.location.href = FLAVOR_SHOP_PATH;
+        });
+      })();
+    </script>
+    <style id="purest-review-ink">
+      .jdgm-star,
+      .jdgm-star::before,
+      .jdgm-star.jdgm--on,
+      .jdgm-star.jdgm--on::before,
+      .jdgm-star.jdgm--half,
+      .jdgm-star.jdgm--half::before { color: #171717 !important; }
+      .jdgm-star.jdgm--off,
+      .jdgm-star.jdgm--off::before { color: #d4d4d4 !important; }
+      .jdgm-histogram__bar-content,
+      .jdgm-histogram__bar-content::before { background-color: #171717 !important; }
+      .jdgm-histogram__clear-filter,
+      .jdgm-histogram__row { color: #171717 !important; }
+      .jdgm-write-rev-link,
+      a.jdgm-write-rev-link,
+      .jdgm-widget button { color: #fff !important; background-color: #171717 !important; border-color: #171717 !important; }
+      .jdgm-widget-actions-wrapper,
+      .jdgm-row-actions,
+      .jdgm-paginate,
+      .jdgm-rev { border-color: #e5e5e5 !important; }
+      a.jdgm-write-rev-link,
+      .jdgm-submit-rev,
+      .jdgm-ask-question-btn,
+      .jdgm-widget .jdgm-btn,
+      .jdgm-widget button { background-color: #171717 !important; border-color: #171717 !important; color: #fff !important; }
+      .jdgm-histogram__frequency { color: #171717 !important; -webkit-text-fill-color: #171717 !important; }
+      .jdgm-verified-checkmark { filter: brightness(0); }
+      .jdgm-rev__icon,
+      .jdgm-rev__icon::before { color: #171717 !important; }
+      .jdgm-rev__icon::after { background-color: #171717 !important; color: #fff !important; }
+      .jdgm-sort-dropdown,
+      .jdgm-sort-dropdown option,
+      .jdgm-sort-dropdown-arrow { color: #171717 !important; border-color: #171717 !important; background-color: #fff !important; }
+      .jdgm-widget a.jdgm-write-rev-link,
+      a.jdgm-write-rev-link { display: block !important; color: #fff !important; background-color: #171717 !important; border-color: #171717 !important; }
+      .jdgm-rev-widg,
+      .jdgm-rev,
+      .jdgm-histogram,
+      .jdgm-rev-widg__summary { border-color: #e5e5e5 !important; }
+      .jdgm-chip,
+      .jdgm-highlight,
+      .jdgm-keyword { background-color: #171717 !important; color: #fff !important; }
+    </style>
+    <script is:inline>
+      (function () {
+        function pin() {
+          var node = document.getElementById("purest-review-ink");
+          if (!node || document.body.lastElementChild === node) return;
+          document.body.appendChild(node);
+        }
+        pin();
+        window.addEventListener("load", function () {
+          pin();
+          new MutationObserver(pin).observe(document.documentElement, { childList: true, subtree: true });
         });
       })();
     </script>

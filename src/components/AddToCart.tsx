@@ -112,8 +112,8 @@ export default function AddToCart({ product }: { product: Product }) {
             onClick={() => setPurchaseType("one-time")}
             className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
               purchaseType === "one-time"
-                ? "bg-stone-50 border-b border-border"
-                : "hover:bg-stone-50 border-b border-border"
+                ? "bg-neutral-50 border-b border-border"
+                : "hover:bg-neutral-50 border-b border-border"
             }`}
           >
             <span

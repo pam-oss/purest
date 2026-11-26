@@ -60,7 +60,6 @@ const vialProduct = handle === "5-day-hydration-kit" || handle === "20-count-var
 const oneTimeProduct = handle === "free-purest-glass-water-bottle";
 const hideJarChecklist = new Set([
   "free-purest-glass-water-bottle",
-  "5-day-hydration-kit",
   "the-hydration-ritual-kit",
 ]).has(handle ?? "");
 const jarUsage =
@@ -304,7 +303,7 @@ const productSchema = flavorView
                   <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-2 pointer-events-none">
                     {product.images.map((_img: any, i: number) => (
                       <span
-                        class={`dot-indicator block w-2 h-2 rounded-full transition-colors duration-200 ${i === 0 ? 'bg-stone-700' : 'bg-stone-300'}`}
+                        class={`dot-indicator block w-2 h-2 rounded-full transition-colors duration-200 ${i === 0 ? 'bg-neutral-800' : 'bg-neutral-300'}`}
                         data-index={String(i)}
                       />
                     ))}
@@ -363,7 +362,7 @@ const productSchema = flavorView
               <div class="thumbnail-strip flex min-w-0 w-full max-w-full gap-2 overflow-x-auto pb-1" style="scrollbar-width:none; overscroll-behavior-x:contain;">
                 {product.images.map((img: any, i: number) => (
                   <button
-                    class={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden bg-white border-2 transition-colors thumbnail-btn ${i === 0 ? 'border-stone-700' : 'border-transparent hover:border-stone-400'}`}
+                    class={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden bg-white border-2 transition-colors thumbnail-btn ${i === 0 ? 'border-neutral-800' : 'border-transparent hover:border-neutral-400'}`}
                     data-index={String(i)}
                   >
                     <img
@@ -377,7 +376,7 @@ const productSchema = flavorView
             )}
           </>
         ) : (
-          <div class="aspect-square rounded-lg bg-stone-100 flex items-center justify-center">
+          <div class="aspect-square rounded-lg bg-neutral-100 flex items-center justify-center">
             <span class="text-muted-foreground text-sm">No image</span>
           </div>
         )}
@@ -593,11 +592,11 @@ const productSchema = flavorView
       slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
     });
     dots.forEach((dot, i) => {
-      dot.classList.toggle('bg-stone-700', i === index);
-      dot.classList.toggle('bg-stone-300', i !== index);
+      dot.classList.toggle('bg-neutral-800', i === index);
+      dot.classList.toggle('bg-neutral-300', i !== index);
     });
     thumbnails.forEach((button, i) => {
-      button.classList.toggle('border-stone-700', i === index);
+      button.classList.toggle('border-neutral-800', i === index);
       button.classList.toggle('border-transparent', i !== index);
     });
 
