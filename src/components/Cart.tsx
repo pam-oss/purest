@@ -114,7 +114,7 @@ export default function Cart({ upsells = [] }: { upsells?: CartUpsell[] }) {
                     <img
                       src={item.imageUrl}
                       alt=""
-                      className="h-20 w-20 flex-shrink-0 rounded-md bg-secondary object-cover"
+                      className="h-20 w-20 flex-shrink-0 rounded-md bg-white object-contain ring-1 ring-inset ring-black/10"
                     />
                   )}
                   <div className="flex flex-1 flex-col">
