@@ -30,6 +30,11 @@
       "source": "/products/cranberry-mint",
       "destination": "/products/10-servings-cranberry",
       "permanent": true
+    },
+    {
+      "source": "/bfcm",
+      "destination": "/thirsty",
+      "permanent": false
     }
   ]
 }
