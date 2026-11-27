@@ -45,11 +45,11 @@ export function rewriteApprovedClaims(text: string, handle = ""): string {
   if (handle.includes("chocolate-cordyceps")) {
     next = next.replaceAll(
       "The real fruit electrolyte in a clear glass jar.",
-      "Chocolate Cordyceps in a clear glass jar.",
+      "Chocolate in a clear glass jar.",
     );
     next = next.replaceAll(
       "the real fruit electrolyte in a clear glass jar.",
-      "Chocolate Cordyceps in a clear glass jar.",
+      "Chocolate in a clear glass jar.",
     );
     next = next.replaceAll(
       "combines organic freeze-dried fruit with",
