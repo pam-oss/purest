@@ -10,7 +10,7 @@
     "ctaHref": "/products",
     "image": "/images/hero-all-flavors.webp",
     "imageFallback": "/images/blog/purest-electrolyte-clear-glass-jars.jpg",
-    "imageAlt": "All 5 Purest Electrolyte flavors on a tropical beach: Ginger Limeaid, Hibiscus Lime, Passion Cherry, Cranberry, and Chocolate"
+    "imageAlt": "All 5 Purest Electrolyte flavors on a tropical beach: Ginger Lime, Hibiscus Lime, Passion Cherry, Cranberry, and Chocolate"
   },
   "saleBanner": {
     "enabled": false,

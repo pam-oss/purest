@@ -20,6 +20,8 @@ const flavorCopyAliases: Record<string, string> = {
   "20-servings-chocolate-cordyceps": "10-count-chocolate-cordyceps-1",
   "20-servings-passion-cherry": "10-serving-passion-cherry",
   "20-servings-cranberry": "10-servings-cranberry",
+  // The 5 Day Kit is sold under this handle. Its copy lives on the older variety pack handle.
+  "5-day-hydration-kit": "20-count-variety-pack",
 };
 
 const flavorSlugToHandle: Record<string, string> = {

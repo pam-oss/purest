@@ -18,12 +18,17 @@ const SERVING_SEGMENT = /^(\d+)\s+servings?$/i;
 
 /** Longer names first so "Ginger Lime" is not cut out of a longer flavor. */
 export const CATALOG_FLAVORS = [
-  "Chocolate Cordyceps",
   "Passion Cherry",
   "Hibiscus Lime",
   "Ginger Lime",
+  "Chocolate",
   "Cranberry",
 ] as const;
+
+/** Shopify still titles this jar "Chocolate Cordyceps". Cards and the cart show "Chocolate". */
+function shopperChocolateName(value: string): string {
+  return value.replace(/\bChocolate Cordyceps\b/g, "Chocolate");
+}
 
 function clean(value: string): string {
   return value.replace(/\s+/g, " ").trim();
@@ -42,7 +47,7 @@ export function catalogSegments(title: string): string[] | null {
 }
 
 export function displayProductTitle(title: string): string {
-  const trimmed = clean(title);
+  const trimmed = shopperChocolateName(clean(title));
   const segments = catalogSegments(trimmed);
   if (segments) {
     const size = clean(segments[segments.length - 1]).match(SERVING_SEGMENT);

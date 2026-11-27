@@ -61,7 +61,7 @@ export const FLAVOR_GROUPS: FlavorGroup[] = [
     badge: "Most Popular",
   },
   {
-    name: "Chocolate Cordyceps",
+    name: "Chocolate",
     handles: { 10: "10-count-chocolate-cordyceps-1", 20: "20-servings-chocolate-cordyceps" },
     badge: "Cult Favorite",
   },
