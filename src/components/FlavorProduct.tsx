@@ -309,7 +309,7 @@ export default function FlavorProduct({ model }: { model: FlavorPageModel }) {
 
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span>Satisfaction guaranteed</span>
-          <span>Free shipping over $39</span>
+          <span>Free shipping over $45</span>
         </div>
       </div>
 
